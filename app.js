@@ -75,7 +75,14 @@
       }
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 
-    revealables.forEach((el) => io.observe(el));
+    /* The -12% bottom margin holds an element back until it is properly in
+       view, which is right while scrolling and wrong on first paint: it can
+       leave the hero's call to action invisible until the reader scrolls.
+       Anything already on screen at load is revealed outright. */
+    revealables.forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-in');
+      else io.observe(el);
+    });
   } else {
     revealables.forEach((el) => el.classList.add('is-in'));
   }

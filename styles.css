@@ -317,8 +317,27 @@ h1, h2, h3, .display {
 .actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: .75rem;
 }
+
+/* Google's official badge, used unmodified as their brand guidelines require.
+   The artwork itself is never recoloured or filtered -- the hover lives on
+   the link around it. The asset carries its own clear space, so it is not
+   given extra padding. */
+.badge-play {
+  display: inline-block;
+  line-height: 0;
+  border-radius: 12px;
+  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+.badge-play img { width: 218px; height: auto; }
+.badge-play:hover,
+.badge-play:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px -18px rgba(0, 0, 0, .95);
+}
+.badge-play:active { transform: translateY(0); }
 
 /* ==========================================================================
    Lit surfaces — the depth system
@@ -1092,6 +1111,18 @@ a.panel:focus-visible { transform: translateY(-3px); }
    Responsive
    ========================================================================== */
 
+/* Short desktop viewports — 1366x768 and every 13" laptop — were tall enough
+   for the headline and nothing else, pushing the install button below the
+   fold. The hero tightens rather than the reader having to scroll to it. */
+@media (min-width: 961px) and (max-height: 860px) {
+  .hero { padding-block: clamp(1.25rem, 2.5vw, 2.75rem) clamp(2.25rem, 5vw, 4rem); }
+  .hero .d1 { font-size: clamp(2.3rem, 1rem + 3.2vw, 4.1rem); }
+  .hero .lede { font-size: clamp(1rem, .95rem + .3vw, 1.14rem); }
+  .hero-copy > * + * { margin-top: 1.15rem; }
+  .hero-copy .label + .d1 { margin-top: .8rem; }
+  .hero .actions { margin-top: 0; }
+}
+
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 8vw, 4rem); }
   .hero-copy { max-width: 34rem; }
@@ -1136,6 +1167,11 @@ a.panel:focus-visible { transform: translateY(-3px); }
   .promise-list li { grid-template-columns: 22px 1fr; gap: .8rem; }
   .actions .btn { width: 100%; }
   .close-panel .actions .btn { width: 100%; }
+  /* The badge is never stretched to fit -- distorting it breaks Google's
+     brand guidelines -- so it centres at its own size instead. */
+  .actions { justify-content: center; }
+  .hero .actions { justify-content: flex-start; }
+  .badge-play img { width: 200px; }
 }
 
 @media (max-width: 480px) {
