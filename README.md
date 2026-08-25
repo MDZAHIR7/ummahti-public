@@ -20,6 +20,7 @@ app.js              scroll, reveals, the search demo, the lighting model
 vendor/lenis.min.js smooth scroll, self-hosted (the CSP forbids CDNs)
 fonts/              Cinzel + Plus Jakarta Sans, subset to latin, with licences
 media/screens/      app screenshots, WebP at 840w and 420w
+media/scripts/      Al-Faatiha set once per Arabic script, WebP at 720w and 420w
 media/brand/        crescent mark, favicons, social card
 ```
 
@@ -39,6 +40,13 @@ Nothing here is a mockup.
 - **The crescent** is the launcher mark from `docs/design_provenance/`.
 - **Search examples** are documented behaviours of the real search engine.
   Surah names use the spellings in `app/src/main/assets/quran_data.json`.
+- **The four script pages** are rendered by `make_script_pages.py`. It does not
+  choose its own pairings: which font goes with which orthography comes from
+  `QuranScriptRegistry.kt` (that registry exists so a face is never paired with
+  the wrong text) and the per-face leading comes from the measured policy in
+  `ReaderSettings.kt`.
+- **The Warm Cream section** uses that theme's own token values, so the page
+  demonstrates the theme rather than illustrating it.
 
 ## Two rules worth keeping
 

@@ -49,6 +49,7 @@
     </a>
     <div class="nav-links">
       <a href="#mushaf">The Mushaf</a>
+      <a href="#search">Search</a>
       <a href="#inside">Inside</a>
       <a href="#promise">Privacy</a>
       <a href="/support">Support</a>
@@ -136,15 +137,51 @@
         </ul>
       </div>
 
-      <div class="split-media stage" data-reveal style="--delay:120ms">
-        <div class="device" data-tilt>
-          <img src="/media/screens/mushaf-840.webp"
-               srcset="/media/screens/mushaf-420.webp 420w, /media/screens/mushaf-840.webp 840w"
-               sizes="(max-width: 960px) 66vw, 330px"
-               width="840" height="1867" loading="lazy" decoding="async"
-               alt="Surah Al-Faatiha shown as a Mushaf page in Uthmani script, with the reading-mode switcher along the bottom.">
+      <!-- The same page, set four times. With scripting off this is a
+           side-by-side comparison strip; app.js turns it into one page you
+           can switch. -->
+      <div class="split-media scripts" data-scripts data-reveal style="--delay:120ms">
+        <div class="script-stack">
+          <img class="script-page is-on" data-script="uthmani"
+               src="/media/scripts/uthmani-720.webp"
+               srcset="/media/scripts/uthmani-420.webp 420w, /media/scripts/uthmani-720.webp 720w"
+               sizes="(max-width: 960px) 70vw, 380px"
+               width="720" height="1426" loading="lazy" decoding="async"
+               alt="Al-Faatiha set in the Uthmani script, drawn with Amiri Regular.">
+          <img class="script-page" data-script="indopak"
+               src="/media/scripts/indopak-720.webp"
+               srcset="/media/scripts/indopak-420.webp 420w, /media/scripts/indopak-720.webp 720w"
+               sizes="(max-width: 960px) 70vw, 380px"
+               width="720" height="1426" loading="lazy" decoding="async"
+               alt="The same page in the IndoPak script, drawn with Scheherazade New.">
+          <img class="script-page" data-script="naskh"
+               src="/media/scripts/naskh-720.webp"
+               srcset="/media/scripts/naskh-420.webp 420w, /media/scripts/naskh-720.webp 720w"
+               sizes="(max-width: 960px) 70vw, 380px"
+               width="720" height="1426" loading="lazy" decoding="async"
+               alt="The same page in the Naskh script, drawn with Noto Naskh Arabic.">
+          <img class="script-page" data-script="nastaliq"
+               src="/media/scripts/nastaliq-720.webp"
+               srcset="/media/scripts/nastaliq-420.webp 420w, /media/scripts/nastaliq-720.webp 720w"
+               sizes="(max-width: 960px) 70vw, 380px"
+               width="720" height="1426" loading="lazy" decoding="async"
+               alt="The same page in the Nastaliq script, drawn with Gulzar, on its sloping hanging baseline.">
         </div>
-        <span class="device-cast" aria-hidden="true"></span>
+
+        <div class="script-tabs" role="group" aria-label="Choose an Arabic script" hidden>
+          <button type="button" aria-pressed="true" data-tab="uthmani">
+            Uthmani <small>Amiri Regular</small>
+          </button>
+          <button type="button" aria-pressed="false" data-tab="indopak">
+            IndoPak <small>Scheherazade New</small>
+          </button>
+          <button type="button" aria-pressed="false" data-tab="naskh">
+            Naskh <small>Noto Naskh Arabic</small>
+          </button>
+          <button type="button" aria-pressed="false" data-tab="nastaliq">
+            Nastaliq <small>Gulzar</small>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -342,8 +379,11 @@
   </section>
 
   <!-- ========================================================== themes -->
+  <!-- This section is rendered in the app's Warm Cream palette, using its
+       real token values. The page argues that you can read in a different
+       light, so at this point it changes light. -->
   <section class="bay shell" id="themes">
-    <div class="split themes-split">
+    <div class="themes-panel split themes-split" data-reveal>
       <div class="split-copy">
         <p class="label" data-reveal>Nine themes</p>
         <h2 class="d2" data-reveal data-split>Read in a light that suits the hour.</h2>

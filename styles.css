@@ -654,6 +654,85 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .notes svg { width: 18px; height: 18px; color: var(--gold); margin-top: .28rem; }
 .notes b { color: var(--text); font-weight: 600; }
 
+/* --- the four scripts, set on the same page ----------------------------- */
+
+.scripts { display: grid; gap: 1.1rem; justify-items: center; }
+
+/* No JavaScript: a comparison strip you can swipe. This is a legitimate
+   final state, not a degraded one. */
+.script-stack {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: .75rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.script-stack::-webkit-scrollbar { display: none; }
+
+.script-page {
+  flex: none;
+  width: min(70vw, 380px);
+  height: auto;
+  border-radius: 12px;
+  scroll-snap-align: center;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, .6),
+    0 30px 60px -32px rgba(0, 0, 0, 1),
+    0 0 70px -34px rgba(212, 175, 55, calc(.2 + var(--lit) * .3));
+}
+
+/* With JavaScript: one page, switched. */
+.scripts.is-live .script-page { width: min(72vw, 336px); }
+.scripts.is-live .script-stack {
+  display: grid;
+  overflow: visible;
+  padding-bottom: 0;
+  width: auto;
+}
+.scripts.is-live .script-page {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 620ms var(--ease);
+}
+.scripts.is-live .script-page.is-on { opacity: 1; }
+
+.script-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+}
+.script-tabs button {
+  display: grid;
+  gap: .1rem;
+  justify-items: center;
+  padding: .5rem .85rem;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(245, 230, 179, .05), rgba(245, 230, 179, .01));
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .14);
+  transition: color 240ms var(--ease), box-shadow 240ms var(--ease);
+}
+.script-tabs small {
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  opacity: .72;
+}
+.script-tabs button:hover { color: var(--gold-light); }
+.script-tabs button[aria-pressed='true'] {
+  color: var(--gold-light);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .5);
+  background: linear-gradient(180deg, rgba(245, 230, 179, .12), rgba(245, 230, 179, .03));
+}
+
 /* --- search: the panel that performs the feature ------------------------ */
 
 .search-demo {
@@ -872,6 +951,35 @@ a.panel:focus-visible { transform: translateY(-3px); }
 }
 
 /* --- themes ------------------------------------------------------------- */
+
+/* The one place the page changes light. Every value below is the Warm Cream
+   theme's own — tokens.py THEMES[1] — so the section is not "a light section",
+   it is that theme, shown by being used. Overriding the tokens flips the whole
+   subtree, because everything in here reads them. */
+.themes-panel {
+  --ink: #faf7f2;
+  --surface: #f2ece1;
+  --gold: #7a4f00;
+  --gold-light: #5f3d00;
+  --gold-dark: #7a4f00;
+  --text: #000000;
+  --muted: #4b453b;
+  --rule: rgba(122, 79, 0, .26);
+  --rule-soft: rgba(122, 79, 0, .14);
+
+  color: var(--text);
+  background:
+    radial-gradient(90% 120% at 12% 0%, rgba(255, 255, 255, .85) 0%, transparent 60%),
+    var(--ink);
+  border-radius: clamp(18px, 2.4vw, 28px);
+  padding: clamp(1.6rem, 4.5vw, 3.6rem);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 2px 4px rgba(0, 0, 0, .5),
+    0 40px 80px -40px rgba(0, 0, 0, 1);
+}
+.themes-panel .prose { color: var(--muted); }
+.themes-panel .label { color: var(--gold); }
 
 /* Nine themes land as a clean 3 x 3 block beside the heading, rather than
    as a full-width row that breaks 6 + 3. */
