@@ -133,6 +133,69 @@
     });
   }
 
+  /* ------------------------------------------------------- the four scripts */
+
+  /* One page set four ways. It cycles while on screen so the difference is
+     visible without asking for a click, and stops the moment the reader
+     takes over — an autoplay that fights the person using it is worse than
+     no autoplay. Without JS the markup stays a swipeable comparison strip. */
+  const scripts = document.querySelector('[data-scripts]');
+
+  if (scripts) {
+    const pages = [...scripts.querySelectorAll('.script-page')];
+    const tabs = [...scripts.querySelectorAll('[data-tab]')];
+    const tablist = scripts.querySelector('.script-tabs');
+
+    if (pages.length && tabs.length) {
+      scripts.classList.add('is-live');
+      tablist.hidden = false;
+
+      let index = 0;
+      let taken = false;          // the reader has chosen; stop cycling
+      let visible = false;
+      let timer = null;
+
+      function show(next) {
+        index = (next + pages.length) % pages.length;
+        pages.forEach((p, i) => p.classList.toggle('is-on', i === index));
+        tabs.forEach((t, i) => t.setAttribute('aria-pressed', String(i === index)));
+      }
+
+      function tick() {
+        clearTimeout(timer);
+        if (taken || !visible || reduced.matches) return;
+        timer = setTimeout(() => { show(index + 1); tick(); }, 2800);
+      }
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => { taken = true; clearTimeout(timer); show(i); });
+        tab.addEventListener('keydown', (e) => {
+          const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (!step) return;
+          e.preventDefault();
+          taken = true;
+          clearTimeout(timer);
+          show(index + step);
+          tabs[index].focus();
+        });
+      });
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            visible = entry.isIntersecting;
+            if (visible) tick(); else clearTimeout(timer);
+          }
+        }, { threshold: 0.3 }).observe(scripts);
+      } else {
+        visible = true;
+        tick();
+      }
+
+      show(0);
+    }
+  }
+
   /* --------------------------------------------------------- search demo */
 
   /* Every case here is a documented capability of the search engine, and
