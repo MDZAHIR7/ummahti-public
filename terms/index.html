@@ -23,7 +23,8 @@
 
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260825b">
+<link rel="stylesheet" href="/styles.css?v=20260828a">
+<script src="/theme.js?v=20260828a"></script>
 </head>
 
 <body>
@@ -35,6 +36,8 @@
   <div class="sky-moon"><img src="/media/brand/crescent.svg" alt="" width="891" height="941" decoding="async"></div>
   <div class="sky-grain"></div>
 </div>
+
+<div class="theme-sweep" data-theme-sweep aria-hidden="true"></div>
 
 <div class="page">
 
@@ -50,6 +53,14 @@
       <a href="/privacy">Privacy</a>
       <a href="/terms" aria-current="page">Terms</a>
       <a href="/support">Support</a>
+      <div class="theme-pick" data-theme-pick hidden>
+        <button class="theme-pick-btn" type="button" aria-expanded="false" aria-controls="theme-menu" data-theme-toggle>
+          <span class="theme-dot" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span data-theme-label>Obsidian</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="theme-menu" id="theme-menu" role="menu" aria-label="Reading theme"></div>
+      </div>
       <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.ummahti.quran">Get Ummahti</a>
     </div>
   </nav>
@@ -87,7 +98,7 @@
 
 </div>
 
-<script src="/vendor/lenis.min.js?v=20260825b" defer></script>
-<script src="/app.js?v=20260825b" defer></script>
+<script src="/vendor/lenis.min.js?v=20260828a" defer></script>
+<script src="/app.js?v=20260828a" defer></script>
 </body>
 </html>

@@ -283,6 +283,250 @@
     }
   }
 
+  /* ---------------------------------------------------------------- themes */
+
+  /* The app ships nine reading themes and the site wears the same nine. A
+     theme is a block of tokens in the stylesheet, so everything here is
+     names: which one is on, where it is remembered, and what to light up.
+     No colour is written in this file — the picker's chips are themed
+     subtrees, and the address bar's colour is read back off the document —
+     so a palette can never drift from the stylesheet that defines it.
+
+     The nine names below are the only duplication of the app's theme list
+     outside the stylesheet, and they exist because the picker is on every
+     page while the swatch cards are only on the landing page. */
+  const THEMES = [
+    { id: 'obsidian', name: 'Obsidian Dark' },
+    { id: 'warm-cream', name: 'Warm Cream' },
+    { id: 'crisp-light', name: 'Crisp Light' },
+    { id: 'madinah', name: 'Madinah Mushaf' },
+    { id: 'ottoman', name: 'Ottoman Manuscript' },
+    { id: 'andalusian', name: 'Andalusian' },
+    { id: 'persian', name: 'Persian Illumination' },
+    { id: 'sheikh-zayed', name: 'Sheikh Zayed' },
+    { id: 'haramain', name: 'Haramain' },
+  ];
+
+  const STORE = 'ummahti:theme';
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const sweep = document.querySelector('[data-theme-sweep]');
+  const panel = document.querySelector('.themes-panel');
+
+  let current = root.getAttribute('data-theme') || 'obsidian';
+  let themingTimer = null;
+
+  function dots(themeId) {
+    const dot = document.createElement('span');
+    dot.className = 'theme-dot';
+    dot.setAttribute('data-theme', themeId);
+    dot.setAttribute('aria-hidden', 'true');
+    dot.innerHTML = '<i></i><i></i><i></i>';
+    return dot;
+  }
+
+  /* The one place a theme is actually put on. Everything else calls this.
+     `chosen` separates the reader picking a theme from the page catching up
+     with one already restored: only a choice is announced, and only a choice
+     is written down. */
+  function applyTheme(id, origin, chosen) {
+    const theme = THEMES.find((t) => t.id === id);
+    if (!theme) return;
+    current = id;
+
+    if (chosen && !reduced.matches) {
+      root.classList.add('is-theming');
+      clearTimeout(themingTimer);
+      themingTimer = setTimeout(() => root.classList.remove('is-theming'), 520);
+
+      if (sweep && origin) {
+        const r = origin.getBoundingClientRect();
+        sweep.style.setProperty('--sx', `${((r.left + r.width / 2) / window.innerWidth) * 100}%`);
+        sweep.style.setProperty('--sy', `${((r.top + r.height / 2) / window.innerHeight) * 100}%`);
+        sweep.classList.remove('is-running');
+        void sweep.offsetWidth;                 // restart the animation
+        sweep.classList.add('is-running');
+      }
+    }
+
+    root.setAttribute('data-theme', id);
+
+    if (chosen) {
+      try { window.localStorage.setItem(STORE, id); } catch (e) { /* storage denied */ }
+    }
+
+    const styles = getComputedStyle(root);
+
+    // The address bar follows the page, read back rather than tabulated here.
+    if (themeMeta) {
+      const ink = styles.getPropertyValue('--ink').trim();
+      if (ink) themeMeta.setAttribute('content', ink);
+    }
+
+    /* The themes section is the page's argument that you can read in another
+       light, so it is never dressed in the light the page is already in.
+       Polarity comes from the stylesheet's own color-scheme, so this rule
+       cannot fall out of step with the palettes. */
+    if (panel) {
+      const dark = styles.getPropertyValue('color-scheme').trim() !== 'light';
+      panel.setAttribute('data-theme', dark ? 'warm-cream' : 'obsidian');
+    }
+
+    document.querySelectorAll('[data-theme-id]').forEach((card) => {
+      card.setAttribute('aria-pressed', String(card.dataset.themeId === id));
+    });
+
+    document.querySelectorAll('[data-theme-opt]').forEach((opt) => {
+      opt.setAttribute('aria-checked', String(opt.dataset.themeOpt === id));
+    });
+
+    const label = document.querySelector('[data-theme-label]');
+    if (label) label.textContent = theme.name;
+
+    /* On a narrow screen the name is hidden and the chips stand alone, so the
+       button carries its name here. The visible text stays a substring of it,
+       which is what keeps voice control able to say what it sees. */
+    const toggleBtn = document.querySelector('[data-theme-toggle]');
+    if (toggleBtn) toggleBtn.setAttribute('aria-label', `Reading theme: ${theme.name}`);
+
+    const btnDot = document.querySelector('.theme-pick-btn .theme-dot');
+    if (btnDot) btnDot.setAttribute('data-theme', id);
+  }
+
+  /* --- the picker in the header ------------------------------------------ */
+
+  const pick = document.querySelector('[data-theme-pick]');
+
+  if (pick) {
+    const toggle = pick.querySelector('[data-theme-toggle]');
+    const menu = pick.querySelector('.theme-menu');
+
+    const head = document.createElement('p');
+    head.className = 'theme-menu-head';
+    head.textContent = 'Reading theme';
+    menu.append(head);
+
+    THEMES.forEach((theme) => {
+      const opt = document.createElement('button');
+      opt.type = 'button';
+      opt.className = 'theme-opt';
+      opt.setAttribute('role', 'menuitemradio');
+      opt.setAttribute('aria-checked', String(theme.id === current));
+      opt.dataset.themeOpt = theme.id;
+      opt.append(dots(theme.id), document.createTextNode(theme.name));
+      opt.addEventListener('click', () => {
+        applyTheme(theme.id, opt, true);
+        close(true);
+      });
+      menu.append(opt);
+    });
+
+    const options = [...menu.querySelectorAll('[data-theme-opt]')];
+
+    function open() {
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      (options.find((o) => o.getAttribute('aria-checked') === 'true') || options[0]).focus();
+    }
+
+    function close(refocus) {
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      if (refocus) toggle.focus();
+    }
+
+    toggle.addEventListener('click', () => {
+      if (menu.classList.contains('is-open')) close(true); else open();
+    });
+
+    menu.addEventListener('keydown', (e) => {
+      const i = options.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+      if (i < 0) return;
+      const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+      if (step) {
+        e.preventDefault();
+        options[(i + step + options.length) % options.length].focus();
+      } else if (e.key === 'Home') { e.preventDefault(); options[0].focus(); }
+      else if (e.key === 'End') { e.preventDefault(); options[options.length - 1].focus(); }
+    });
+
+    document.addEventListener('pointerdown', (e) => {
+      if (menu.classList.contains('is-open') && !pick.contains(e.target)) close(false);
+    });
+
+    // A menu that survives the reader tabbing out of it is a menu in the way.
+    pick.addEventListener('focusout', () => {
+      requestAnimationFrame(() => {
+        if (!pick.contains(document.activeElement)) close(false);
+      });
+    });
+
+    pick.hidden = false;
+  }
+
+  /* --- the nine cards, which are the picker written large ---------------- */
+
+  /* They ship as <div>s: without this script they are nine specimens, and a
+     specimen must not look pressable. With it they become real buttons. */
+  document.querySelectorAll('[data-theme-id]').forEach((card) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = card.className;
+    button.dataset.themeId = card.dataset.themeId;
+    button.setAttribute('style', card.getAttribute('style') || '');
+    button.setAttribute('aria-pressed', String(card.dataset.themeId === current));
+    button.innerHTML = card.innerHTML;
+
+    const name = card.querySelector('.theme-name');
+    if (name) button.setAttribute('aria-label', `Read this page in ${name.textContent.trim()}`);
+
+    button.addEventListener('click', () => applyTheme(button.dataset.themeId, button, true));
+    card.replaceWith(button);
+  });
+
+  const themesHint = document.querySelector('[data-themes-hint]');
+  if (themesHint && document.querySelector('button[data-theme-id]')) themesHint.hidden = false;
+
+  // Whatever theme.js restored, everything above now agrees with it.
+  applyTheme(current, null, false);
+
+  /* ------------------------------------------------------------- the count */
+
+  /* The five figures count up to the numbers already in the markup — the
+     markup is the source, so with no script, or under reduced motion, the
+     band is simply the finished number. */
+  const factGrid = document.querySelector('.facts-grid');
+
+  if (factGrid && !reduced.matches && 'IntersectionObserver' in window) {
+    const figures = [...factGrid.querySelectorAll('dt')].map((el) => ({
+      el,
+      to: Number(el.textContent.replace(/[^0-9]/g, '')),
+      final: el.textContent,
+    }));
+
+    const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    let counted = false;
+    new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || counted) continue;
+        counted = true;
+        obs.disconnect();
+
+        const started = performance.now();
+        const run = (now) => {
+          const t = Math.min(1, (now - started) / 1300);
+          const eased = 1 - Math.pow(1 - t, 3);
+          for (const f of figures) {
+            f.el.textContent = t < 1 ? group(Math.round(f.to * eased)) : f.final;
+          }
+          if (t < 1) requestAnimationFrame(run);
+        };
+        requestAnimationFrame(run);
+      }
+    }, { threshold: 0.4 }).observe(factGrid);
+  }
+
   /* ------------------------------------------------------- the scroll loop */
 
   const header = document.querySelector('.site-header');
@@ -292,6 +536,12 @@
   const track = document.querySelector('.modes-track');
   const rail = document.querySelector('.modes-rail');
   const bar = document.querySelector('.modes-progress i');
+
+  /* The devices beside the copy drift against the scroll. They are already
+     measured for the lighting pass, so the parallax costs one lookup and no
+     extra layout read. */
+  const drifters = new WeakSet();
+  document.querySelectorAll('.split .device').forEach((el) => drifters.add(el));
 
   // Only surfaces currently on screen pay for the lighting calculation.
   const lit = new Set();
@@ -358,6 +608,7 @@
     if (header) header.classList.toggle('is-stuck', y > 12);
 
     root.style.setProperty('--lit', progress.toFixed(3));
+    root.style.setProperty('--read', progress.toFixed(4));
 
     if (ambient) ambient.style.setProperty('--sky-y', `${y * -0.05}px`);
     const drift = `${y * -0.11}px`;
@@ -382,6 +633,12 @@
       if (Math.abs((prev.get(el) || 0) - v) > 0.015) {
         el.style.setProperty('--lit', v.toFixed(3));
         prev.set(el, v);
+      }
+
+      if (drifters.has(el)) {
+        // -1 above the fold to 1 below it, taken to a few pixels of lag.
+        const off = ((cy - vh / 2) / vh) * -22;
+        el.style.setProperty('--par', `${off.toFixed(1)}px`);
       }
     }
 

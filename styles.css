@@ -27,7 +27,31 @@
   font-style: normal;
 }
 
-:root {
+/* --------------------------------------------------------------------------
+   Themes
+
+   The app ships nine reading themes; so does the page. A theme is nothing but
+   a block of tokens, so `[data-theme]` works on the document — the whole site
+   changes light — and equally on a single subtree, which is how the themes
+   section renders itself in a theme rather than describing one.
+
+   Every palette below is the app's own. The background, surface, accent,
+   secondary and text of each theme are the values in tokens.py, the same ones
+   the swatches in the themes section show. The remaining tokens — the accent's
+   readable tint, the muted text, the button gradient — are derived from those
+   five, never chosen freshly, so a theme here cannot drift from the theme
+   there.
+
+   Polarity is carried by five scalars rather than by a second stylesheet:
+   light themes want a white specular instead of a gold one (--glow-rgb),
+   stronger (--spec-k) because white on cream is nearly invisible at the
+   alphas that model a dark surface, and far less black in their shadows
+   (--shadow-k). --amb-a dims the ambient wash that a dark page can carry and
+   a pale one cannot.
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme='obsidian'] {
   color-scheme: dark;
 
   /* Obsidian, the app's default theme — Theme.kt / Color.kt */
@@ -40,9 +64,259 @@
   --emerald: #132a22;
   --text: #f0f0f5;
   --muted: #9ca3af;
+  --muted-2: #6b7280;
 
-  --rule: rgba(212, 175, 55, .16);
-  --rule-soft: rgba(212, 175, 55, .09);
+  --ink-rgb: 8, 8, 10;
+  --surface-rgb: 20, 23, 31;
+  --gold-rgb: 212, 175, 55;
+  --gold-dark-rgb: 139, 110, 42;
+  --glow-rgb: 245, 230, 179;
+  --amb-rgb: 19, 42, 34;
+
+  --gold-hi: #f5e6b3;
+  --gold-deep: #b8912b;
+  --gold-ink: #07070a;
+
+  --shadow-k: 1;
+  --spec-k: 1;
+  --amb-a: 1;
+  --grain-a: .05;
+  --moon-a: .16;
+}
+
+[data-theme='warm-cream'] {
+  color-scheme: light;
+  --ink: #faf7f2;
+  --ink-2: #f5f0e6;
+  --surface: #f2ece1;
+  --gold: #7a4f00;
+  --gold-light: #5f3d00;
+  --gold-dark: #7a4f00;
+  --emerald: #7a4f00;
+  --text: #000000;
+  --muted: #4b453b;
+  --muted-2: #6b6357;
+
+  --ink-rgb: 250, 247, 242;
+  --surface-rgb: 242, 236, 225;
+  --gold-rgb: 122, 79, 0;
+  --gold-dark-rgb: 122, 79, 0;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 122, 79, 0;
+
+  --gold-hi: #9a6a12;
+  --gold-deep: #5c3a00;
+  --gold-ink: #fff8ea;
+}
+
+[data-theme='crisp-light'] {
+  color-scheme: light;
+  --ink: #ffffff;
+  --ink-2: #fbfbfc;
+  --surface: #f6f7f9;
+  --gold: #8a6a16;
+  --gold-light: #6b520f;
+  --gold-dark: #8a6a16;
+  --emerald: #64748b;
+  --text: #0b0f17;
+  --muted: #4a5261;
+  --muted-2: #6b7280;
+
+  --ink-rgb: 255, 255, 255;
+  --surface-rgb: 246, 247, 249;
+  --gold-rgb: 138, 106, 22;
+  --gold-dark-rgb: 138, 106, 22;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 100, 116, 139;
+
+  --gold-hi: #a8811f;
+  --gold-deep: #6b520f;
+  --gold-ink: #fffdf5;
+}
+
+[data-theme='madinah'] {
+  color-scheme: dark;
+  --ink: #06120e;
+  --ink-2: #0a1913;
+  --surface: #0e2019;
+  --gold: #c9a227;
+  --gold-light: #efe0ac;
+  --gold-dark: #85691a;
+  --emerald: #16402f;
+  --text: #f1f6f2;
+  --muted: #9ab0a4;
+  --muted-2: #6d8378;
+
+  --ink-rgb: 6, 18, 14;
+  --surface-rgb: 14, 32, 25;
+  --gold-rgb: 201, 162, 39;
+  --gold-dark-rgb: 133, 105, 26;
+  --glow-rgb: 239, 224, 172;
+  --amb-rgb: 22, 64, 47;
+
+  --gold-hi: #f2e5b6;
+  --gold-deep: #a8871f;
+  --gold-ink: #06120e;
+}
+
+[data-theme='ottoman'] {
+  color-scheme: dark;
+  --ink: #060a14;
+  --ink-2: #0a1020;
+  --surface: #111a2e;
+  --gold: #d8b44a;
+  --gold-light: #f4e6b8;
+  --gold-dark: #8f7526;
+  --emerald: #1b3a6b;
+  --text: #f0f3fa;
+  --muted: #9aa6c0;
+  --muted-2: #6d7794;
+
+  --ink-rgb: 6, 10, 20;
+  --surface-rgb: 17, 26, 46;
+  --gold-rgb: 216, 180, 74;
+  --gold-dark-rgb: 143, 117, 38;
+  --glow-rgb: 244, 230, 184;
+  --amb-rgb: 27, 58, 107;
+
+  --gold-hi: #f4e6b8;
+  --gold-deep: #b3922f;
+  --gold-ink: #060a14;
+}
+
+[data-theme='andalusian'] {
+  color-scheme: light;
+  --ink: #fbf4e8;
+  --ink-2: #f7eedf;
+  --surface: #f3e7d4;
+  --gold: #8a4b24;
+  --gold-light: #6f3a17;
+  --gold-dark: #8a4b24;
+  --emerald: #b4652f;
+  --text: #1b1209;
+  --muted: #5b4a37;
+  --muted-2: #7c6b56;
+
+  --ink-rgb: 251, 244, 232;
+  --surface-rgb: 243, 231, 212;
+  --gold-rgb: 138, 75, 36;
+  --gold-dark-rgb: 138, 75, 36;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 180, 101, 47;
+
+  --gold-hi: #b4652f;
+  --gold-deep: #6f3a17;
+  --gold-ink: #fff6ec;
+}
+
+[data-theme='persian'] {
+  color-scheme: dark;
+  --ink: #050d12;
+  --ink-2: #08151c;
+  --surface: #0d1e28;
+  --gold: #e0b94e;
+  --gold-light: #f7e7b6;
+  --gold-dark: #957a2c;
+  --emerald: #12707a;
+  --text: #eef4f7;
+  --muted: #9bb0b8;
+  --muted-2: #6e858e;
+
+  --ink-rgb: 5, 13, 18;
+  --surface-rgb: 13, 30, 40;
+  --gold-rgb: 224, 185, 78;
+  --gold-dark-rgb: 149, 122, 44;
+  --glow-rgb: 247, 231, 182;
+  --amb-rgb: 18, 112, 122;
+
+  --gold-hi: #f9ecc4;
+  --gold-deep: #bb9634;
+  --gold-ink: #050d12;
+}
+
+[data-theme='sheikh-zayed'] {
+  color-scheme: light;
+  --ink: #fdfcf8;
+  --ink-2: #f7f7f2;
+  --surface: #efefea;
+  --gold: #7a6a34;
+  --gold-light: #5f5326;
+  --gold-dark: #7a6a34;
+  --emerald: #9ba79f;
+  --text: #0a0b0c;
+  --muted: #4d5150;
+  --muted-2: #6a6f6f;
+
+  --ink-rgb: 253, 252, 248;
+  --surface-rgb: 239, 239, 234;
+  --gold-rgb: 122, 106, 52;
+  --gold-dark-rgb: 122, 106, 52;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 155, 167, 159;
+
+  --gold-hi: #94824a;
+  --gold-deep: #5f5326;
+  --gold-ink: #fdfcf5;
+}
+
+[data-theme='haramain'] {
+  color-scheme: dark;
+  --ink: #0a0705;
+  --ink-2: #120c07;
+  --surface: #171009;
+  --gold: #d4af37;
+  --gold-light: #f6e7bb;
+  --gold-dark: #8b6e2a;
+  --emerald: #4a3312;
+  --text: #f5efe2;
+  --muted: #b0a48f;
+  --muted-2: #837868;
+
+  --ink-rgb: 10, 7, 5;
+  --surface-rgb: 23, 16, 9;
+  --gold-rgb: 212, 175, 55;
+  --gold-dark-rgb: 139, 110, 42;
+  --glow-rgb: 246, 231, 187;
+  --amb-rgb: 74, 51, 18;
+
+  --gold-hi: #f6e7bb;
+  --gold-deep: #b8912b;
+  --gold-ink: #0a0705;
+}
+
+/* The polarity scalars are restated per theme, not left to :root, because a
+   themed subtree inherits whatever the document is wearing: a dark theme
+   shown inside a light page would otherwise be modelled with a light page's
+   shadows. */
+[data-theme='obsidian'],
+[data-theme='madinah'],
+[data-theme='ottoman'],
+[data-theme='persian'],
+[data-theme='haramain'] {
+  --shadow-k: 1;
+  --spec-k: 1;
+  --amb-a: 1;
+  --grain-a: .05;
+  --moon-a: .16;
+}
+
+/* The polarity scalars. A light theme is not a dark theme with the colours
+   swapped: its speculars are white and have to work harder, and its shadows
+   have to carry far less black or the page turns muddy. */
+[data-theme='warm-cream'],
+[data-theme='crisp-light'],
+[data-theme='andalusian'],
+[data-theme='sheikh-zayed'] {
+  --shadow-k: .34;
+  --spec-k: 3.2;
+  --amb-a: .16;
+  --grain-a: .028;
+  --moon-a: .1;
+}
+
+:root {
+  --rule: rgba(var(--gold-rgb), .16);
+  --rule-soft: rgba(var(--gold-rgb), .09);
 
   --shell: 1180px;
   --gutter: clamp(1.15rem, 4vw, 2.5rem);
@@ -55,6 +329,13 @@
   --lit: 0;
   --sky-y: 0px;
   --sky-drift: 0px;
+}
+
+/* --rule reads --gold-rgb, so a themed subtree has to restate it or it keeps
+   the document's gold in its hairlines. */
+[data-theme] {
+  --rule: rgba(var(--gold-rgb), .16);
+  --rule-soft: rgba(var(--gold-rgb), .09);
 }
 
 *,
@@ -95,7 +376,7 @@ img { max-width: 100%; display: block; height: auto; }
 section[id] { scroll-margin-top: 92px; }
 a { color: inherit; }
 
-::selection { background: rgba(212, 175, 55, .28); color: var(--gold-light); }
+::selection { background: rgba(var(--gold-rgb), .28); color: var(--gold-light); }
 
 :focus-visible {
   outline: 2px solid var(--gold-light);
@@ -111,7 +392,7 @@ a { color: inherit; }
   padding: .8rem 1.1rem;
   border-radius: 10px;
   background: var(--gold);
-  color: #08080a;
+  color: var(--gold-ink);
   font-weight: 700;
   text-decoration: none;
   transition: top 220ms var(--ease-out);
@@ -151,9 +432,9 @@ a { color: inherit; }
   position: absolute;
   inset: -12% -12% -12% -12%;
   background:
-    radial-gradient(52% 44% at 76% 12%, rgba(19, 42, 34, .78) 0%, transparent 62%),
-    radial-gradient(60% 50% at 12% 62%, rgba(19, 42, 34, .42) 0%, transparent 66%),
-    radial-gradient(44% 38% at 50% 108%, rgba(19, 42, 34, .55) 0%, transparent 64%);
+    radial-gradient(52% 44% at 76% 12%, rgba(var(--amb-rgb), calc(.78 * var(--amb-a))) 0%, transparent 62%),
+    radial-gradient(60% 50% at 12% 62%, rgba(var(--amb-rgb), calc(.42 * var(--amb-a))) 0%, transparent 66%),
+    radial-gradient(44% 38% at 50% 108%, rgba(var(--amb-rgb), calc(.55 * var(--amb-a))) 0%, transparent 64%);
   transform: translate3d(0, var(--sky-y), 0);
   will-change: transform;
 }
@@ -167,7 +448,7 @@ a { color: inherit; }
   right: 3vw;
   width: clamp(190px, 21vw, 340px);
   aspect-ratio: 891 / 941;
-  opacity: .16;
+  opacity: var(--moon-a);
   transform: translate3d(0, var(--sky-drift), 0);
   will-change: transform;
 }
@@ -182,8 +463,8 @@ a { color: inherit; }
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle,
-    rgba(212, 175, 55, calc(.10 + var(--lit) * .07)) 0%,
-    rgba(139, 110, 42, .05) 34%,
+    rgba(var(--gold-rgb), calc(.10 + var(--lit) * .07)) 0%,
+    rgba(var(--gold-dark-rgb), .05) 34%,
     transparent 68%);
   transform: translate3d(0, var(--sky-drift), 0);
   will-change: transform;
@@ -193,7 +474,7 @@ a { color: inherit; }
 .sky-grain {
   position: absolute;
   inset: 0;
-  opacity: .05;
+  opacity: var(--grain-a);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -272,43 +553,44 @@ h1, h2, h3, .display {
   cursor: pointer;
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
 }
 
 .btn-primary {
-  color: #07070a;
-  background: linear-gradient(168deg, var(--gold-light) 0%, var(--gold) 44%, #b8912b 100%);
+  color: var(--gold-ink);
+  background: linear-gradient(168deg, var(--gold-hi) 0%, var(--gold) 44%, var(--gold-deep) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .55),
-    inset 0 -1px 0 rgba(0, 0, 0, .22),
-    0 2px 4px rgba(0, 0, 0, .5),
-    0 14px 30px -14px rgba(212, 175, 55, .6);
+    inset 0 -1px 0 rgba(0, 0, 0, calc(.22 * var(--shadow-k))),
+    0 2px 4px rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
+    0 14px 30px -14px rgba(var(--gold-rgb), .6);
 }
 .btn-primary:hover,
 .btn-primary:focus-visible {
   transform: translateY(-2px);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .62),
-    inset 0 -1px 0 rgba(0, 0, 0, .22),
-    0 3px 6px rgba(0, 0, 0, .5),
-    0 20px 40px -14px rgba(212, 175, 55, .74);
+    inset 0 -1px 0 rgba(0, 0, 0, calc(.22 * var(--shadow-k))),
+    0 3px 6px rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
+    0 20px 40px -14px rgba(var(--gold-rgb), .74);
 }
 .btn-primary:active { transform: translateY(0); }
 
 .btn-ghost {
   color: var(--gold-light);
-  background: linear-gradient(180deg, rgba(245, 230, 179, .07), rgba(245, 230, 179, .02));
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.07 * var(--spec-k))), rgba(var(--glow-rgb), calc(.02 * var(--spec-k))));
   box-shadow:
-    inset 0 1px 0 rgba(245, 230, 179, .16),
-    inset 0 0 0 1px rgba(212, 175, 55, .3);
+    inset 0 1px 0 rgba(var(--glow-rgb), calc(.16 * var(--spec-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .3);
 }
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    inset 0 1px 0 rgba(245, 230, 179, .26),
-    inset 0 0 0 1px rgba(212, 175, 55, .5),
-    0 16px 32px -18px rgba(0, 0, 0, .9);
+    inset 0 1px 0 rgba(var(--glow-rgb), calc(.26 * var(--spec-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .5),
+    0 16px 32px -18px rgba(0, 0, 0, calc(.9 * var(--shadow-k)));
 }
 .btn-ghost:active { transform: translateY(0); }
 
@@ -335,7 +617,7 @@ h1, h2, h3, .display {
 .badge-play:hover,
 .badge-play:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 16px 34px -18px rgba(0, 0, 0, .95);
+  box-shadow: 0 16px 34px -18px rgba(0, 0, 0, calc(.95 * var(--shadow-k)));
 }
 .badge-play:active { transform: translateY(0); }
 
@@ -349,15 +631,15 @@ h1, h2, h3, .display {
   padding: clamp(1.35rem, 2.4vw, 1.9rem);
   background:
     linear-gradient(178deg,
-      rgba(245, 230, 179, calc(.030 + var(--lit) * .030)) 0%,
-      rgba(245, 230, 179, .004) 46%,
-      rgba(0, 0, 0, .16) 100%),
+      rgba(var(--glow-rgb), calc((.030 + var(--lit) * .030) * var(--spec-k))) 0%,
+      rgba(var(--glow-rgb), calc(.004 * var(--spec-k))) 46%,
+      rgba(0, 0, 0, calc(.16 * var(--shadow-k))) 100%),
     var(--surface);
   box-shadow:
-    inset 0 1px 0 rgba(245, 230, 179, calc(.09 + var(--lit) * .24)),
-    inset 0 0 0 1px rgba(212, 175, 55, .1),
-    0 1px 2px rgba(0, 0, 0, .55),
-    0 22px 44px -26px rgba(0, 0, 0, .95);
+    inset 0 1px 0 rgba(var(--glow-rgb), calc((.09 + var(--lit) * .24) * var(--spec-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .1),
+    0 1px 2px rgba(0, 0, 0, calc(.55 * var(--shadow-k))),
+    0 22px 44px -26px rgba(0, 0, 0, calc(.95 * var(--shadow-k)));
   transition: box-shadow 400ms var(--ease), transform 400ms var(--ease-out);
 }
 
@@ -369,7 +651,7 @@ h1, h2, h3, .display {
   height: 42%;
   border-radius: 18px 18px 0 0;
   background: linear-gradient(178deg,
-    rgba(245, 230, 179, calc(var(--lit) * .05)) 0%,
+    rgba(var(--glow-rgb), calc((var(--lit) * .05) * var(--spec-k))) 0%,
     transparent 100%);
   pointer-events: none;
 }
@@ -386,7 +668,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(8, 8, 10, .72);
+  background: rgba(var(--ink-rgb), .72);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-bottom: 1px solid transparent;
@@ -394,7 +676,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
 }
 .site-header.is-stuck {
   border-bottom-color: var(--rule);
-  background: rgba(8, 8, 10, .9);
+  background: rgba(var(--ink-rgb), .9);
 }
 
 .nav {
@@ -415,7 +697,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .brand-mark {
   width: 34px; height: 34px;
   flex: none;
-  filter: drop-shadow(0 0 10px rgba(212, 175, 55, .35));
+  filter: drop-shadow(0 0 10px rgba(var(--gold-rgb), .35));
 }
 .brand-mark img { width: 100%; height: 100%; display: block; }
 .brand-name {
@@ -458,6 +740,192 @@ a.panel:focus-visible { transform: translateY(-3px); }
 
 .nav .btn { min-height: 44px; padding: .55rem 1.05rem; font-size: .9rem; }
 
+/* --- the reading line ---------------------------------------------------- */
+
+/* How far through the page you are, drawn on the header's own edge. It reads
+   the same --read the rest of the page is lit by, so it cannot disagree with
+   the light. */
+.site-header::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(var(--read, 0));
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+.site-header.is-stuck::after { opacity: .85; }
+
+/* --- the theme picker ---------------------------------------------------- */
+
+/* Nine themes ship in the app and nine are readable here. The control is
+   hidden in the markup and revealed by app.js, so a reader with no scripting
+   is never shown a switch that cannot throw. */
+.theme-pick { position: relative; display: flex; }
+
+.theme-pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 40px;
+  padding: .35rem .7rem .35rem .45rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.06 * var(--spec-k))), rgba(var(--glow-rgb), calc(.015 * var(--spec-k))));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .2);
+  transition: color 220ms var(--ease), box-shadow 220ms var(--ease);
+}
+.theme-pick-btn:hover,
+.theme-pick-btn:focus-visible,
+.theme-pick-btn[aria-expanded='true'] {
+  color: var(--gold-light);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .45);
+}
+
+/* The button wears the palette it would give you: three chips of the theme
+   currently on. */
+.theme-dot {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .22);
+  flex: none;
+}
+.theme-dot i {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  transition: transform 380ms var(--ease-out);
+}
+.theme-dot i {
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .3);
+}
+.theme-dot i:nth-child(1) { background: var(--surface); }
+.theme-dot i:nth-child(2) { background: var(--gold); }
+.theme-dot i:nth-child(3) { background: var(--emerald); }
+.theme-pick-btn:hover .theme-dot i:nth-child(1) { transform: translateY(-1px) }
+.theme-pick-btn:hover .theme-dot i:nth-child(2) { transform: translateY(1px) }
+.theme-pick-btn:hover .theme-dot i:nth-child(3) { transform: translateY(-1px) }
+
+.theme-pick-btn svg {
+  width: 13px; height: 13px;
+  flex: none;
+  transition: transform 320ms var(--ease-out);
+}
+.theme-pick-btn[aria-expanded='true'] svg { transform: rotate(180deg); }
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 60;
+  width: min(15rem, calc(100vw - 2rem));
+  display: grid;
+  gap: .15rem;
+  padding: .55rem;
+  border-radius: 16px;
+  background: var(--ink-2);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--glow-rgb), calc(.1 * var(--spec-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .22),
+    0 30px 60px -28px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(.98);
+  transform-origin: 100% 0;
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 260ms var(--ease-out),
+    visibility 0s linear 260ms;
+}
+.theme-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.theme-menu-head {
+  margin: .15rem .3rem .3rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.theme-opt {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .5rem .55rem;
+  border: 0;
+  border-radius: 11px;
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color 200ms var(--ease), background 200ms var(--ease);
+}
+.theme-opt:hover,
+.theme-opt:focus-visible { color: var(--text); background: rgba(var(--gold-rgb), .1); }
+.theme-opt[aria-checked='true'] {
+  color: var(--gold-light);
+  background: rgba(var(--gold-rgb), .14);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .32);
+}
+/* The chips are a themed subtree of one element, so the menu shows nine real
+   palettes without a single colour being named twice. */
+.theme-opt .theme-dot { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3); }
+
+/* The change itself. A theme is a light being turned on, so it arrives as a
+   wash across the page rather than as an instant repaint. */
+.theme-sweep {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at var(--sx, 82%) var(--sy, 12%),
+    rgba(var(--glow-rgb), .16) 0%,
+    rgba(var(--gold-rgb), .07) 26%,
+    transparent 62%);
+}
+.theme-sweep.is-running { animation: sweep 720ms var(--ease-out) both; }
+@keyframes sweep {
+  0%   { opacity: 0; transform: scale(.7) }
+  32%  { opacity: 1 }
+  100% { opacity: 0; transform: scale(1.35) }
+}
+
+/* Colour is transitioned only while a theme is actually changing. Leaving it
+   on permanently would make every hover on every surface lag by a frame. */
+.is-theming,
+.is-theming body,
+.is-theming .page *,
+.is-theming .sky * {
+  transition:
+    background-color 480ms var(--ease),
+    background-image 480ms var(--ease),
+    color 480ms var(--ease),
+    border-color 480ms var(--ease),
+    box-shadow 480ms var(--ease),
+    opacity 480ms var(--ease) !important;
+}
+
 /* ==========================================================================
    Hero
    ========================================================================== */
@@ -495,8 +963,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
   color: var(--muted);
   padding: .3rem .7rem .3rem .5rem;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(245, 230, 179, .05), rgba(245, 230, 179, .01));
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .14);
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.05 * var(--spec-k))), rgba(var(--glow-rgb), calc(.01 * var(--spec-k))));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .14);
 }
 .hero-proof svg { width: 14px; height: 14px; color: var(--gold); flex: none; }
 
@@ -517,11 +985,11 @@ a.panel:focus-visible { transform: translateY(-3px); }
   padding: 7px;
   background: linear-gradient(160deg, #23262e 0%, #0b0d11 42%, #191c23 100%);
   box-shadow:
-    inset 0 1px 0 rgba(245, 230, 179, .22),
-    inset 0 0 0 1px rgba(212, 175, 55, .2),
-    0 2px 4px rgba(0, 0, 0, .6),
-    0 40px 70px -30px rgba(0, 0, 0, 1),
-    0 0 90px -30px rgba(212, 175, 55, calc(.18 + var(--lit) * .24));
+    inset 0 1px 0 rgba(var(--glow-rgb), .22),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .2),
+    0 2px 4px rgba(0, 0, 0, calc(.6 * var(--shadow-k))),
+    0 40px 70px -30px rgba(0, 0, 0, calc(1 * var(--shadow-k))),
+    0 0 90px -30px rgba(var(--gold-rgb), calc(.18 + var(--lit) * .24));
   transform: rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg)) translate3d(0, 0, 0);
   transform-style: preserve-3d;
   transition: transform 600ms var(--ease-out), box-shadow 500ms var(--ease);
@@ -554,8 +1022,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
   translate: -50% 0;
   border-radius: 50%;
   background: radial-gradient(ellipse at center,
-    rgba(212, 175, 55, .2) 0%,
-    rgba(19, 42, 34, .18) 38%,
+    rgba(var(--gold-rgb), .2) 0%,
+    rgba(var(--amb-rgb), calc(.18 * var(--amb-a))) 38%,
     transparent 72%);
   filter: blur(20px);
   pointer-events: none;
@@ -589,7 +1057,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   flex: none;
   background: var(--gold);
   transform: rotate(45deg);
-  box-shadow: 0 0 12px rgba(212, 175, 55, .6);
+  box-shadow: 0 0 12px rgba(var(--gold-rgb), .6);
 }
 
 /* --- the numbers band --------------------------------------------------- */
@@ -678,9 +1146,9 @@ a.panel:focus-visible { transform: translateY(-3px); }
   border-radius: 12px;
   scroll-snap-align: center;
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, .6),
-    0 30px 60px -32px rgba(0, 0, 0, 1),
-    0 0 70px -34px rgba(212, 175, 55, calc(.2 + var(--lit) * .3));
+    0 1px 2px rgba(0, 0, 0, calc(.6 * var(--shadow-k))),
+    0 30px 60px -32px rgba(0, 0, 0, calc(1 * var(--shadow-k))),
+    0 0 70px -34px rgba(var(--gold-rgb), calc(.2 + var(--lit) * .3));
 }
 
 /* With JavaScript: one page, switched. */
@@ -716,8 +1184,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  background: linear-gradient(180deg, rgba(245, 230, 179, .05), rgba(245, 230, 179, .01));
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .14);
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.05 * var(--spec-k))), rgba(var(--glow-rgb), calc(.01 * var(--spec-k))));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .14);
   transition: color 240ms var(--ease), box-shadow 240ms var(--ease);
 }
 .script-tabs small {
@@ -729,8 +1197,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .script-tabs button:hover { color: var(--gold-light); }
 .script-tabs button[aria-pressed='true'] {
   color: var(--gold-light);
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .5);
-  background: linear-gradient(180deg, rgba(245, 230, 179, .12), rgba(245, 230, 179, .03));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .5);
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.12 * var(--spec-k))), rgba(var(--glow-rgb), calc(.03 * var(--spec-k))));
 }
 
 /* --- search: the panel that performs the feature ------------------------ */
@@ -749,8 +1217,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
   min-height: 54px;
   padding: 0 1rem;
   border-radius: 13px;
-  background: rgba(8, 8, 10, .66);
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .22);
+  background: rgba(var(--ink-rgb), .66);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .22);
   overflow: hidden;
 }
 .search-field > svg { width: 19px; height: 19px; color: var(--gold); flex: none; }
@@ -782,8 +1250,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
   gap: .75rem;
   padding: .85rem .95rem;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(245, 230, 179, .055), rgba(245, 230, 179, .012));
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .16);
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.055 * var(--spec-k))), rgba(var(--glow-rgb), calc(.012 * var(--spec-k))));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .16);
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
@@ -795,7 +1263,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   margin-top: .55rem;
   background: var(--gold);
   transform: rotate(45deg);
-  box-shadow: 0 0 10px rgba(212, 175, 55, .7);
+  box-shadow: 0 0 10px rgba(var(--gold-rgb), .7);
 }
 .search-hit-text { display: grid; }
 .search-hit b {
@@ -952,31 +1420,24 @@ a.panel:focus-visible { transform: translateY(-3px); }
 
 /* --- themes ------------------------------------------------------------- */
 
-/* The one place the page changes light. Every value below is the Warm Cream
-   theme's own — tokens.py THEMES[1] — so the section is not "a light section",
-   it is that theme, shown by being used. Overriding the tokens flips the whole
-   subtree, because everything in here reads them. */
+/* The one place the page always changes light. The panel does not paint a
+   light section by hand: it carries data-theme, so it *is* the theme, drawn
+   by the same block that dresses the document. Which theme it wears is
+   decided by contrast — a pale theme while the page is dark, a dark one
+   while the page is pale — so the argument the section makes survives the
+   reader having already chosen a theme of their own. */
 .themes-panel {
-  --ink: #faf7f2;
-  --surface: #f2ece1;
-  --gold: #7a4f00;
-  --gold-light: #5f3d00;
-  --gold-dark: #7a4f00;
-  --text: #000000;
-  --muted: #4b453b;
-  --rule: rgba(122, 79, 0, .26);
-  --rule-soft: rgba(122, 79, 0, .14);
-
   color: var(--text);
   background:
-    radial-gradient(90% 120% at 12% 0%, rgba(255, 255, 255, .85) 0%, transparent 60%),
+    radial-gradient(90% 120% at 12% 0%, rgba(var(--glow-rgb), calc(.28 * var(--spec-k))) 0%, transparent 60%),
     var(--ink);
   border-radius: clamp(18px, 2.4vw, 28px);
   padding: clamp(1.6rem, 4.5vw, 3.6rem);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .9),
-    0 2px 4px rgba(0, 0, 0, .5),
-    0 40px 80px -40px rgba(0, 0, 0, 1);
+    inset 0 1px 0 rgba(var(--glow-rgb), calc(.3 * var(--spec-k))),
+    0 2px 4px rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
+    0 40px 80px -40px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
+  transition: background 520ms var(--ease), box-shadow 520ms var(--ease);
 }
 .themes-panel .prose { color: var(--muted); }
 .themes-panel .label { color: var(--gold); }
@@ -990,15 +1451,60 @@ a.panel:focus-visible { transform: translateY(-3px); }
   gap: .7rem;
 }
 .theme {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
   border-radius: 14px;
   padding: .95rem 1rem 1.05rem;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .12),
     inset 0 0 0 1px rgba(255, 255, 255, .07),
-    0 14px 28px -20px rgba(0, 0, 0, .95);
+    0 14px 28px -20px rgba(0, 0, 0, calc(.95 * var(--shadow-k)));
   background: var(--tbg);
   color: var(--ttext);
+  font: inherit;
+  transition:
+    transform 420ms var(--ease-out),
+    box-shadow 420ms var(--ease-out);
 }
+
+/* With JavaScript the cards become buttons that dress the page. Until then
+   they are exactly what they were: nine specimens, shown not offered. */
+button.theme { cursor: pointer; }
+button.theme:hover,
+button.theme:focus-visible {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .2),
+    inset 0 0 0 1px rgba(255, 255, 255, .12),
+    0 22px 38px -22px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
+}
+button.theme:active { transform: translateY(-1px); }
+
+/* The chosen theme is marked on the card itself rather than by a tick
+   floating beside it, so the mark is in the theme's own accent. */
+button.theme[aria-pressed='true'] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .22),
+    inset 0 0 0 2px var(--tmark),
+    0 22px 38px -22px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
+}
+button.theme[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  top: .8rem; right: .85rem;
+  width: 7px; height: 7px;
+  background: var(--tmark);
+  transform: rotate(45deg);
+  animation: mark-in 460ms var(--ease-out) both;
+}
+@keyframes mark-in {
+  from { opacity: 0; transform: rotate(45deg) scale(.2) }
+  to   { opacity: 1; transform: rotate(45deg) scale(1) }
+}
+
 .theme-swatch {
   display: flex;
   gap: 5px;
@@ -1007,8 +1513,17 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .theme-swatch i {
   width: 22px; height: 22px;
   border-radius: 6px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .28);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, calc(.28 * var(--shadow-k)));
+  transition: transform 420ms var(--ease-out), border-radius 420ms var(--ease-out);
 }
+/* The three chips fan apart under the pointer — the palette opening up. */
+button.theme:hover .theme-swatch i:nth-child(1),
+button.theme:focus-visible .theme-swatch i:nth-child(1) { transform: translateX(-2px) rotate(-5deg); }
+button.theme:hover .theme-swatch i:nth-child(2),
+button.theme:focus-visible .theme-swatch i:nth-child(2) { transform: translateY(-3px); }
+button.theme:hover .theme-swatch i:nth-child(3),
+button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(2px) rotate(5deg); }
+
 .theme-name {
   font-family: 'Cinzel', Georgia, serif;
   font-weight: 700;
@@ -1021,6 +1536,18 @@ a.panel:focus-visible { transform: translateY(-3px); }
   margin-top: .2rem;
   line-height: 1.4;
 }
+
+/* Shown only once the cards are live, so a reader without scripting is never
+   invited to press something that cannot be pressed. */
+.themes-hint {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 1.35rem 0 0;
+  font-size: .88rem;
+  color: var(--muted);
+}
+.themes-hint svg { width: 17px; height: 17px; color: var(--gold); flex: none; }
 
 /* --- the promise -------------------------------------------------------- */
 
@@ -1069,12 +1596,12 @@ a.panel:focus-visible { transform: translateY(-3px); }
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(70% 120% at 50% -10%, rgba(212, 175, 55, .13) 0%, transparent 62%),
-    linear-gradient(168deg, rgba(19, 42, 34, .7) 0%, rgba(20, 23, 31, .92) 100%);
+    radial-gradient(70% 120% at 50% -10%, rgba(var(--gold-rgb), .13) 0%, transparent 62%),
+    linear-gradient(168deg, rgba(var(--amb-rgb), calc(.7 * var(--amb-a))) 0%, rgba(var(--surface-rgb), .92) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(245, 230, 179, calc(.14 + var(--lit) * .2)),
-    inset 0 0 0 1px rgba(212, 175, 55, .18),
-    0 30px 70px -40px rgba(0, 0, 0, 1);
+    inset 0 1px 0 rgba(var(--glow-rgb), calc((.14 + var(--lit) * .2) * var(--spec-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .18),
+    0 30px 70px -40px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
 }
 .close-panel .lede { margin-inline: auto; max-width: 44ch; }
 .close-panel .actions { justify-content: center; }
@@ -1084,7 +1611,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   display: block;
   width: 74px;
   margin: 0 auto;
-  filter: drop-shadow(0 0 22px rgba(212, 175, 55, .45));
+  filter: drop-shadow(0 0 22px rgba(var(--gold-rgb), .45));
 }
 .close-mark img { width: 100%; height: auto; display: block; }
 
@@ -1112,7 +1639,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
 }
 .footer-links a { text-decoration: none; transition: color 200ms var(--ease); }
 .footer-links a:hover, .footer-links a:focus-visible { color: var(--gold-light); }
-.footer-note { width: 100%; font-size: .8rem; color: #6b7280; line-height: 1.6; }
+.footer-note { width: 100%; font-size: .8rem; color: var(--muted-2); line-height: 1.6; }
 
 /* ==========================================================================
    Legal and support pages
@@ -1152,8 +1679,8 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .notice {
   padding: 1.1rem 1.25rem;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(212, 175, 55, .09), rgba(212, 175, 55, .03));
-  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .2);
+  background: linear-gradient(180deg, rgba(var(--gold-rgb), .09), rgba(var(--gold-rgb), .03));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .2);
 }
 .notice p { margin: 0; color: var(--text); }
 
@@ -1170,7 +1697,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   vertical-align: top;
   color: var(--muted);
 }
-.doc-body th { color: var(--gold-light); background: rgba(212, 175, 55, .05); font-weight: 600; }
+.doc-body th { color: var(--gold-light); background: rgba(var(--gold-rgb), .05); font-weight: 600; }
 
 .help-grid {
   display: grid;
@@ -1182,6 +1709,130 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .help-card h3 { margin: 0; font-size: 1.15rem; color: var(--text); }
 .help-card p { margin: 0; color: var(--muted); font-size: .95rem; }
 .help-card .btn { margin-top: auto; }
+
+/* ==========================================================================
+   Ambient motion
+
+   Nothing below carries information. Every animation here is slow enough to
+   be felt rather than watched, is either idle or driven by the reader's own
+   scrolling, and is switched off wholesale under prefers-reduced-motion.
+   ========================================================================== */
+
+/* The crescent breathes. It is the page's light source, and a light source
+   that is perfectly still reads as a sticker. */
+.sky-moon img { animation: breathe 16s ease-in-out infinite; }
+@keyframes breathe {
+  0%, 100% { opacity: .82; scale: 1 }
+  50%      { opacity: 1;   scale: 1.035 }
+}
+
+/* Its halo answers on a different period, so the two never pulse in step. */
+.sky-halo { animation: halo 23s ease-in-out infinite; }
+@keyframes halo {
+  0%, 100% { opacity: .82 }
+  50%      { opacity: 1 }
+}
+
+/* The hero device floats. `translate` rather than `transform`, so it composes
+   with the pointer tilt instead of fighting it for the same property. */
+.hero .device { animation: float 9.5s ease-in-out infinite; }
+@keyframes float {
+  0%, 100% { translate: 0 0 }
+  50%      { translate: 0 -11px }
+}
+
+/* Scroll parallax on the devices beside the copy — set from the same rAF
+   pass that lights them, on `translate` for the same reason. */
+.split .device { translate: 0 var(--par, 0px); }
+
+/* The brand mark turns a few degrees to the light on hover. */
+.brand-mark img { transition: rotate 620ms var(--ease-out), filter 620ms var(--ease); }
+.brand:hover .brand-mark img { rotate: -12deg; }
+
+/* A sheen crosses the install button, once, on hover — the same specular
+   language the panels use, put in motion. */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg,
+    transparent 36%,
+    rgba(255, 255, 255, .32) 50%,
+    transparent 64%);
+  pointer-events: none;
+  translate: -140% 0;
+  opacity: 0;
+}
+.btn-primary:hover::after,
+.btn-primary:focus-visible::after { animation: sheen 900ms var(--ease-out); }
+@keyframes sheen {
+  0%   { translate: -140% 0; opacity: 0 }
+  18%  { opacity: 1 }
+  100% { translate: 140% 0; opacity: 0 }
+}
+
+/* The section labels' diamond strikes in with the label rather than arriving
+   with it already there. */
+.is-in .label::before { animation: strike 620ms var(--ease-out) var(--delay, 0ms) both; }
+@keyframes strike {
+  0%   { opacity: 0; transform: rotate(45deg) scale(0) }
+  60%  { opacity: 1; transform: rotate(45deg) scale(1.5) }
+  100% { opacity: 1; transform: rotate(45deg) scale(1) }
+}
+
+.facts-grid[data-reveal] { transform: none; }
+
+/* The numbers band arrives as five beats, not one. app.js counts each figure
+   up from zero; the stagger below is what spaces them. */
+.facts-grid .fact {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 700ms var(--ease-out) var(--d, 0ms),
+    transform 700ms var(--ease-out) var(--d, 0ms);
+}
+.facts-grid.is-in .fact,
+.no-js .facts-grid .fact { opacity: 1; transform: none; }
+.facts-grid .fact:nth-child(1) { --d: 0ms }
+.facts-grid .fact:nth-child(2) { --d: 90ms }
+.facts-grid .fact:nth-child(3) { --d: 180ms }
+.facts-grid .fact:nth-child(4) { --d: 270ms }
+.facts-grid .fact:nth-child(5) { --d: 360ms }
+
+/* The counted figures sit on a hairline that draws itself under them. */
+.fact dt { position: relative; display: inline-block; }
+.fact dt::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms var(--ease-out) calc(var(--d, 0ms) + 260ms);
+}
+.facts-grid.is-in .fact dt::after { transform: scaleX(1); }
+
+/* Cards in the pinned run answer the pointer, so the rail does not read as a
+   filmstrip of flat images. */
+.mode .device { transition: transform 480ms var(--ease-out), box-shadow 480ms var(--ease); }
+.mode:hover .device { transform: translateY(-8px); }
+
+/* The mark that closes the page glows on the same slow period as the moon. */
+.close-mark img { animation: breathe 16s ease-in-out infinite; }
+
+/* The search demo's hit marker lands rather than appears. */
+.search-hit.is-shown .search-hit-mark { animation: strike 520ms var(--ease-out) both; }
+
+/* Directional reveals, for content that reads better arriving from the side
+   it sits on. Plain [data-reveal] keeps the original rise. */
+[data-reveal='left']  { transform: translate3d(-26px, 0, 0); }
+[data-reveal='right'] { transform: translate3d(26px, 0, 0); }
+[data-reveal='scale'] { transform: scale(.96); }
+[data-reveal='left'].is-in,
+[data-reveal='right'].is-in,
+[data-reveal='scale'].is-in { transform: none; }
 
 /* ==========================================================================
    Reveal — the one-shot entrance
@@ -1282,6 +1933,29 @@ a.panel:focus-visible { transform: translateY(-3px); }
   .badge-play img { width: 200px; }
 }
 
+@media (max-width: 560px) {
+  /* No room in the bar for a theme's name, so the chips carry it alone. The
+     button keeps its name through aria-label, which still contains the
+     visible text it replaces. */
+  .theme-pick-btn [data-theme-label] { display: none; }
+  .theme-pick-btn { padding: .35rem .45rem .35rem .35rem; }
+  .theme-pick-btn > svg { display: none; }
+  .nav { gap: .55rem; }
+  .nav-links { gap: .5rem; }
+  .nav .btn { padding: .5rem .8rem; white-space: nowrap; }
+
+  /* Anchored to the picker, the menu would hang off the left edge of a
+     narrow screen, so there it answers to the viewport instead. */
+  .theme-menu {
+    position: fixed;
+    top: 68px;
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    transform-origin: 100% 0;
+  }
+}
+
 @media (max-width: 480px) {
   /* No column for the moon to sit beside on a phone, so it retreats to a
      whisper in the corner rather than crossing the headline. */
@@ -1305,7 +1979,9 @@ a.panel:focus-visible { transform: translateY(-3px); }
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
-  [data-reveal], .word { opacity: 1 !important; transform: none !important; }
+  [data-reveal], .word, .facts-grid .fact { opacity: 1 !important; transform: none !important; }
+  .fact dt::after { transform: scaleX(1) !important; }
+  .hero .device, .split .device { translate: none !important; }
   .sky-ambient, .sky-moon, .sky-halo { transform: none !important; }
   .modes-track { height: auto !important; }
   .modes-pin { position: static; height: auto; overflow: visible; display: block; }

@@ -16,7 +16,9 @@ remain at their original URLs and are served `no-store`.
 ```
 index.html          the landing page
 styles.css          the whole design system, one file
-app.js              scroll, reveals, the search demo, the lighting model
+theme.js            restores the reader's theme before the first paint
+app.js              scroll, reveals, the search demo, the lighting model,
+                    the theme picker
 vendor/lenis.min.js smooth scroll, self-hosted (the CSP forbids CDNs)
 fonts/              Cinzel + Plus Jakarta Sans, subset to latin, with licences
 media/screens/      app screenshots, WebP at 840w and 420w
@@ -45,8 +47,40 @@ Nothing here is a mockup.
   `QuranScriptRegistry.kt` (that registry exists so a face is never paired with
   the wrong text) and the per-face leading comes from the measured policy in
   `ReaderSettings.kt`.
-- **The Warm Cream section** uses that theme's own token values, so the page
-  demonstrates the theme rather than illustrating it.
+- **The nine themes are readable, not just shown.** Each one is a block of
+  tokens in `styles.css` whose background, surface, accent, secondary and text
+  are the app's own values — the same five the swatches display. The rest of a
+  theme (the accent's readable tint, the muted text, the button gradient) is
+  derived from those five rather than picked, so a palette here cannot drift
+  from the palette there.
+
+## The themes
+
+`[data-theme]` is a block of tokens and nothing else, which means it works on
+the document and equally on one subtree. Both are used:
+
+- The header picker puts a theme on `<html>`, so the whole site is read in it.
+  The choice is kept in `localStorage` under `ummahti:theme` and restored by
+  `theme.js`, which is the only render-blocking script on the page — the CSP
+  allows no inline script, and a deferred restore is a flash of the wrong
+  theme. It validates the stored name against the shipped list rather than
+  trusting it.
+- The themes section carries `data-theme` on the panel itself, so it *is* a
+  theme rather than a hand-painted light section. Which one is decided by
+  contrast: a pale theme while the page is dark, a dark one while the page is
+  pale. The argument the section makes therefore survives the reader having
+  already chosen a theme of their own.
+
+Polarity is five scalars, not a second stylesheet. A light theme wants a white
+specular rather than a gold one (`--glow-rgb`), wants it stronger (`--spec-k`)
+because white on cream is invisible at the alphas that model a dark surface,
+and wants far less black in its shadows (`--shadow-k`); `--amb-a`, `--grain-a`
+and `--moon-a` dim the room's own layers. They are restated per theme rather
+than inherited, so a dark theme shown inside a light page is still modelled
+with a dark page's light.
+
+Adding a tenth theme is a token block in `styles.css`, its name in the `THEMES`
+list in `app.js` and `theme.js`, and a card in `index.html`.
 
 ## Two rules worth keeping
 
@@ -55,10 +89,14 @@ appears inside a real app screenshot, drawn by the app's own vetted font
 pipeline. The site ships no Arabic webfont, so it cannot render scripture
 wrongly on a device whose fallback font mishandles the harakat.
 
-**The page must be complete without JavaScript.** Reveals, the pinned run and
-the search demo are enhancements. With scripting off, or under
-`prefers-reduced-motion: reduce`, every section renders in its final state and
-the search demo falls back to the same examples as a list.
+**The page must be complete without JavaScript.** Reveals, the pinned run, the
+search demo, the counted figures and the theme picker are enhancements. With
+scripting off, or under `prefers-reduced-motion: reduce`, every section renders
+in its final state, the search demo falls back to the same examples as a list,
+and the figures are simply the numbers in the markup. Controls that cannot work
+are not shown rather than shown dead: the picker is `hidden` until `app.js`
+reveals it, and the nine theme cards ship as `<div>`s and are replaced with real
+buttons only once there is something to press.
 
 ## Checking a change
 

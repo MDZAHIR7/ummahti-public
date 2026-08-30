@@ -49,7 +49,8 @@
 
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260825b">
+<link rel="stylesheet" href="/styles.css?v=20260828a">
+<script src="/theme.js?v=20260828a"></script>
 </head>
 
 <body>
@@ -62,6 +63,8 @@
   <div class="sky-moon"><img src="/media/brand/crescent.svg" alt="" width="891" height="941" decoding="async"></div>
   <div class="sky-grain"></div>
 </div>
+
+<div class="theme-sweep" data-theme-sweep aria-hidden="true"></div>
 
 <div class="page">
 
@@ -77,6 +80,14 @@
       <a href="#inside">Inside</a>
       <a href="#promise">Our Promise</a>
       <a href="/support">Support</a>
+      <div class="theme-pick" data-theme-pick hidden>
+        <button class="theme-pick-btn" type="button" aria-expanded="false" aria-controls="theme-menu" data-theme-toggle>
+          <span class="theme-dot" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span data-theme-label>Obsidian</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="theme-menu" id="theme-menu" role="menu" aria-label="Reading theme"></div>
+      </div>
       <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.ummahti.quran">Get Ummahti</a>
     </div>
   </nav>
@@ -407,7 +418,7 @@
        real token values. The page argues that you can read in a different
        light, so at this point it changes light. -->
   <section class="bay shell" id="themes">
-    <div class="themes-panel split themes-split" data-reveal>
+    <div class="themes-panel split themes-split" data-theme="warm-cream" data-reveal>
       <div class="split-copy">
         <p class="label" data-reveal>Nine themes</p>
         <h2 class="d2" data-reveal data-split>Read in a light that suits the hour.</h2>
@@ -418,42 +429,46 @@
             and the kiswah of the Haramain.
           </p>
         </div>
+        <p class="themes-hint" data-themes-hint hidden>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7L12 16.7 6.9 19.4l1-5.7-4.1-4 5.6-.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          Choose one and this page will read in it too.
+        </p>
       </div>
 
       <div class="themes-grid" data-reveal style="--delay:120ms">
-      <div class="theme" style="--tbg:#08080A;--ttext:#F0F0F5">
+      <div class="theme" data-theme-id="obsidian" style="--tmark:#D4AF37;--tbg:#08080A;--ttext:#F0F0F5">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#14171F"></i><i style="background:#D4AF37"></i><i style="background:#132A22"></i></div>
         <div class="theme-name">Obsidian Dark</div><div class="theme-sub">The default</div>
       </div>
-      <div class="theme" style="--tbg:#FAF7F2;--ttext:#000000">
+      <div class="theme" data-theme-id="warm-cream" style="--tmark:#7A4F00;--tbg:#FAF7F2;--ttext:#000000">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#F2ECE1"></i><i style="background:#7A4F00"></i><i style="background:#FAF7F2"></i></div>
         <div class="theme-name">Warm Cream</div><div class="theme-sub">Paper, indoors</div>
       </div>
-      <div class="theme" style="--tbg:#FFFFFF;--ttext:#0B0F17">
+      <div class="theme" data-theme-id="crisp-light" style="--tmark:#8A6A16;--tbg:#FFFFFF;--ttext:#0B0F17">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#F6F7F9"></i><i style="background:#8A6A16"></i><i style="background:#64748B"></i></div>
         <div class="theme-name">Crisp Light</div><div class="theme-sub">Full daylight</div>
       </div>
-      <div class="theme" style="--tbg:#06120E;--ttext:#F1F6F2">
+      <div class="theme" data-theme-id="madinah" style="--tmark:#C9A227;--tbg:#06120E;--ttext:#F1F6F2">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#0E2019"></i><i style="background:#C9A227"></i><i style="background:#16402F"></i></div>
         <div class="theme-name">Madinah Mushaf</div><div class="theme-sub">Masjid an-Nabawi</div>
       </div>
-      <div class="theme" style="--tbg:#060A14;--ttext:#F0F3FA">
+      <div class="theme" data-theme-id="ottoman" style="--tmark:#D8B44A;--tbg:#060A14;--ttext:#F0F3FA">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#111A2E"></i><i style="background:#D8B44A"></i><i style="background:#1B3A6B"></i></div>
         <div class="theme-name">Ottoman Manuscript</div><div class="theme-sub">Sultan Ahmed, Istanbul</div>
       </div>
-      <div class="theme" style="--tbg:#FBF4E8;--ttext:#1B1209">
+      <div class="theme" data-theme-id="andalusian" style="--tmark:#8A4B24;--tbg:#FBF4E8;--ttext:#1B1209">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#F3E7D4"></i><i style="background:#8A4B24"></i><i style="background:#B4652F"></i></div>
         <div class="theme-name">Andalusian</div><div class="theme-sub">Alhambra and Cordoba</div>
       </div>
-      <div class="theme" style="--tbg:#050D12;--ttext:#EEF4F7">
+      <div class="theme" data-theme-id="persian" style="--tmark:#E0B94E;--tbg:#050D12;--ttext:#EEF4F7">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#0D1E28"></i><i style="background:#E0B94E"></i><i style="background:#12707A"></i></div>
         <div class="theme-name">Persian Illumination</div><div class="theme-sub">Isfahan</div>
       </div>
-      <div class="theme" style="--tbg:#FDFCF8;--ttext:#0A0B0C">
+      <div class="theme" data-theme-id="sheikh-zayed" style="--tmark:#7A6A34;--tbg:#FDFCF8;--ttext:#0A0B0C">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#EFEFEA"></i><i style="background:#7A6A34"></i><i style="background:#9BA79F"></i></div>
         <div class="theme-name">Sheikh Zayed</div><div class="theme-sub">Abu Dhabi marble</div>
       </div>
-      <div class="theme" style="--tbg:#0A0705;--ttext:#F5EFE2">
+      <div class="theme" data-theme-id="haramain" style="--tmark:#D4AF37;--tbg:#0A0705;--ttext:#F5EFE2">
         <div class="theme-swatch" aria-hidden="true"><i style="background:#171009"></i><i style="background:#D4AF37"></i><i style="background:#4A3312"></i></div>
         <div class="theme-name">Haramain</div><div class="theme-sub">Makkah kiswah and gold</div>
       </div>
@@ -535,7 +550,7 @@
 
 </div>
 
-<script src="/vendor/lenis.min.js?v=20260825b" defer></script>
-<script src="/app.js?v=20260825b" defer></script>
+<script src="/vendor/lenis.min.js?v=20260828a" defer></script>
+<script src="/app.js?v=20260828a" defer></script>
 </body>
 </html>
