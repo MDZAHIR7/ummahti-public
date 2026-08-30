@@ -1177,12 +1177,40 @@ a.panel:focus-visible { transform: translateY(-3px); }
   padding-bottom: 0;
   width: auto;
 }
+/* The page turns rather than dissolving. A mushaf is bound on the right and
+   turns right to left, so the spine here is the right edge and the free edge
+   is the left one — the same way the book in your hands does it.
+
+   Only the leaving page moves. The next one is already lying flat beneath it,
+   which is both what a book looks like and half the work. The turn stops at
+   just past ninety degrees, edge-on, so the reverse of a page of Qur'an is
+   never shown to the reader mirrored. */
+.scripts.is-live .script-stack {
+  perspective: 1700px;
+  perspective-origin: 60% 45%;
+}
 .scripts.is-live .script-page {
   grid-area: 1 / 1;
   opacity: 0;
-  transition: opacity 620ms var(--ease);
+  transform-origin: right center;
+  backface-visibility: hidden;
+  transition: opacity 500ms var(--ease);
 }
-.scripts.is-live .script-page.is-on { opacity: 1; }
+.scripts.is-live .script-page.is-on {
+  opacity: 1;
+  z-index: 1;
+}
+.scripts.is-live .script-page.is-out {
+  opacity: 1;
+  z-index: 2;
+  animation: leaf 760ms var(--ease) forwards;
+}
+
+@keyframes leaf {
+  0%   { transform: rotateY(0deg);   filter: brightness(1) }
+  60%  { filter: brightness(.72) }
+  100% { transform: rotateY(-102deg); filter: brightness(.4); opacity: 0 }
+}
 
 .script-tabs {
   display: flex;
@@ -1802,6 +1830,60 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .help-card .btn { margin-top: auto; }
 
 /* ==========================================================================
+   Between pages, and the first moment of the first one
+   ========================================================================== */
+
+/* Cross-document view transitions. The whole feature is these four rules —
+   the browser does the work, so moving between the landing page and the
+   legal pages costs nothing and never flashes white. Browsers without it
+   navigate the way they always did. */
+@view-transition { navigation: auto; }
+
+::view-transition-old(root) {
+  animation: page-out 220ms var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: page-in 380ms var(--ease-out) both;
+}
+@keyframes page-out { to { opacity: 0; transform: translateY(-8px) } }
+@keyframes page-in { from { opacity: 0; transform: translateY(14px) } }
+
+/* The opening. Once per visit, set by theme.js before the first paint, so a
+   reader who came back to check the privacy policy is not made to sit
+   through it again.
+
+   It never holds the content back. The words and the install button are
+   painted at their final position on the first frame; it is the room that
+   arrives — the crescent rises to its place and its light comes up. A page
+   that hides its own text to make an entrance has mistaken who the entrance
+   is for. */
+.is-first .sky-moon {
+  animation: moon-rise 2200ms var(--ease-out) both;
+}
+.is-first .sky-halo {
+  animation: halo-bloom 2600ms var(--ease-out) both;
+}
+.is-first .sky-gl {
+  animation: sky-in 2200ms var(--ease) 80ms forwards;
+}
+.is-first .brand-mark img {
+  animation: mark-rise 1100ms var(--ease-out) 260ms both;
+}
+
+@keyframes moon-rise {
+  from { opacity: 0; translate: 0 46px; scale: .82 }
+  to   { opacity: var(--moon-a); translate: 0 0; scale: 1 }
+}
+@keyframes halo-bloom {
+  from { opacity: 0; scale: .6 }
+  to   { opacity: 1; scale: 1 }
+}
+@keyframes mark-rise {
+  from { opacity: 0; rotate: -40deg; scale: .6 }
+  to   { opacity: 1; rotate: 0deg; scale: 1 }
+}
+
+/* ==========================================================================
    Ambient motion
 
    Nothing below carries information. Every animation here is slow enough to
@@ -2076,9 +2158,12 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   [data-reveal], .word, .facts-grid .fact { opacity: 1 !important; transform: none !important; }
   .fact dt::after { transform: scaleX(1) !important; }
   .hero .device, .split .device { translate: none !important; }
+  .is-first .sky-moon, .is-first .sky-halo, .is-first .brand-mark img { animation: none !important; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
   .sky-ambient, .sky-moon, .sky-halo { transform: none !important; }
   .modes-track { height: auto !important; }
   .modes-pin { position: static; height: auto; overflow: visible; display: block; }
   .modes-rail { transform: none !important; overflow-x: auto; }
   .mode { width: min(74vw, 290px); }
+  .scripts.is-live .script-page.is-out { animation: none !important; opacity: 0; }
 }

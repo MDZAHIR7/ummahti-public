@@ -28,4 +28,20 @@
   } catch (e) {
     /* Private mode, or storage denied. The page keeps its default theme. */
   }
+
+  /* The opening plays once per visit, not once per page. sessionStorage is
+     the right shelf for that: it is emptied when the tab closes, so the next
+     visit gets it again and this visit does not get it twice. It is set
+     before the first paint or the class would arrive after the frame it is
+     meant to animate. */
+  try {
+    if (!window.sessionStorage.getItem('ummahti:seen')) {
+      window.sessionStorage.setItem('ummahti:seen', '1');
+      document.documentElement.classList.add('is-first');
+    }
+  } catch (e) {
+    /* No storage: every page gets the opening, which is wrong but not broken.
+       Better that than a page that will not render. */
+    document.documentElement.classList.add('is-first');
+  }
 })();

@@ -150,13 +150,33 @@
       scripts.classList.add('is-live');
       tablist.hidden = false;
 
-      let index = 0;
+      let index = -1;             // nothing shown yet, so show(0) is a real change
       let taken = false;          // the reader has chosen; stop cycling
       let visible = false;
       let timer = null;
 
+      let leaving = null;
+
       function show(next) {
+        const from = index;
         index = (next + pages.length) % pages.length;
+        if (from === index) return;
+
+        /* The page being left keeps its place in the stack and turns off it;
+           the arriving one is simply already underneath. Marking the leaver
+           is all the CSS needs to know. */
+        if (leaving) leaving.el.classList.remove('is-out');
+        clearTimeout(leaving && leaving.timer);
+
+        const out = pages[from];
+        if (out && !reduced.matches) {
+          out.classList.add('is-out');
+          leaving = {
+            el: out,
+            timer: setTimeout(() => { out.classList.remove('is-out'); leaving = null; }, 780),
+          };
+        }
+
         pages.forEach((p, i) => p.classList.toggle('is-on', i === index));
         tabs.forEach((t, i) => t.setAttribute('aria-pressed', String(i === index)));
       }

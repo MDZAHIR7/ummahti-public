@@ -95,7 +95,7 @@
 
     float fbm(vec2 p) {
       float v = 0.0, a = 0.5;
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 3; i++) {
         v += a * noise(p);
         p *= 2.02;
         a *= 0.5;
@@ -277,8 +277,10 @@
         lightY = 1 - (r.top + r.height / 2) / window.innerHeight;
       }
     }
-    // half resolution on dense screens: this is a soft field, nobody can tell
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    /* Drawn smaller than the screen and stretched back up. Nothing in this
+       field has an edge, so the missing pixels are pixels nobody can point
+       at, and it is the cheapest four-fold saving available. */
+    dpr = 0.75;
     const nw = Math.round(window.innerWidth * dpr);
     const nh = Math.round(window.innerHeight * dpr);
     if (nw !== w || nh !== h) {
@@ -305,12 +307,66 @@
 
   const start = performance.now();
 
+  /* Asking the device beforehand catches the phones we know about. This
+     catches the ones we do not: if the page cannot hold a reasonable frame
+     rate with the room running, the room is what goes. Measured after a
+     warm-up, because the first frames of any page are the worst ones. */
+  /* The verdict is reached on a stopwatch, not on a frame count. Counting
+     frames meant the worse the device, the longer it was made to struggle
+     before being let off — a machine at six frames a second would have spent
+     twenty seconds proving it. A second and a half of wall clock is the same
+     question asked of every device, and the bad ones answer it first. */
+  let sampleFrom = 0;
+  let last = 0;
+  let sum = 0;
+  let counted = 0;
+  let judged = false;
+
+  function standDown() {
+    judged = true;
+    sky.classList.remove('is-live');     // the gradients come back
+    canvas.remove();
+    delete window.UmmahtiSky;
+  }
+
+  function reset() {
+    sampleFrom = 0;
+    last = 0;
+    sum = 0;
+    counted = 0;
+  }
+
+  function watch(now) {
+    if (judged) return;
+
+    // the first frames of any page are its worst, and say nothing about it
+    if (!sampleFrom) { sampleFrom = now; last = now; return; }
+    if (now - sampleFrom < 700) { last = now; return; }
+
+    sum += now - last;
+    last = now;
+    counted++;
+
+    const elapsed = now - sampleFrom;
+    if (counted >= 90 || (elapsed > 2200 && counted >= 8)) {
+      judged = true;
+      if (sum / counted > 32) standDown();     // under about 30fps
+    }
+  }
+
+  /* rAF stops while the tab is hidden, so the frame either side of that gap
+     says nothing about the device. The sample starts again from nothing. */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) reset();
+  });
+
   /* app.js owns the only rAF on the page, so this hands it a frame to call
      rather than starting a second loop. If app.js never arrives, nothing
      here runs and the CSS room is still correct. */
   window.UmmahtiSky = {
     frame(now, lit) {
       if (lost) return;
+      watch(now);
 
       px += (tx - px) * 0.045;
       py += (ty - py) * 0.045;
