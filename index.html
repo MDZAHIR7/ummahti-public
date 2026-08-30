@@ -49,8 +49,8 @@
 
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260830d">
-<script src="/theme.js?v=20260830d"></script>
+<link rel="stylesheet" href="/styles.css?v=20260830f">
+<script src="/theme.js?v=20260830f"></script>
 </head>
 
 <body>
@@ -137,6 +137,7 @@
       <div class="fact"><dt>114</dt><dd>Surahs, complete</dd></div>
       <div class="fact"><dt>6,236</dt><dd>Ayat</dd></div>
       <div class="fact"><dt>604</dt><dd>Mushaf pages</dd></div>
+      <div class="fact"><dt>27</dt><dd>Reciters</dd></div>
       <div class="fact"><dt>4</dt><dd>Arabic scripts</dd></div>
       <div class="fact"><dt>0</dt><dd>Sign-ins required</dd></div>
     </dl>
@@ -529,7 +530,7 @@
       <article class="kit panel">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 15.5V9.2a7 7 0 0 1 14 0v6.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="3.2" y="13.2" width="4" height="6.4" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="16.8" y="13.2" width="4" height="6.4" rx="1.6" stroke="currentColor" stroke-width="1.7"/></svg>
         <h3>Choose your reciter</h3>
-        <p>Pick the voice you want, with verse-by-verse playback controls.</p>
+        <p>Twenty-seven voices to read with, and verse-by-verse playback controls.</p>
       </article>
 
       <article class="kit panel">
@@ -564,6 +565,132 @@
           <p class="kit-note">Being built now. This page will show it the day it is on Google Play.</p>
         </div>
       </article>
+    </div>
+  </section>
+
+  <!-- ======================================================== reciters -->
+  <!-- The names are the app's own, from app/src/main/res/values/strings.xml
+       in the app repository — the same strings the reciter picker draws. A
+       name is a person, so not one of these is written from memory, shortened
+       to fit, or transliterated a second way to look tidier in a row.
+
+       The two rows are the two ways the app gets audio, not an arbitrary
+       split: the first is per-ayah from AlQuran Cloud, the second whole-surah
+       from MP3Quran, made ayah-addressable by published timings. The eleven
+       marked "soon" are in the next update and are not on Google Play today,
+       which is why they say so rather than being counted in silently.
+
+       The rail is a CSS marquee and nothing else: each row holds its list
+       twice and slides by exactly half its width, so the loop has no seam.
+       The second copy is aria-hidden, or a screen reader would read every
+       name twice. With no scripting it runs exactly as it does here; under
+       reduced motion it stops sliding and simply wraps. -->
+  <section class="bay reciters" id="reciters" aria-labelledby="reciters-title">
+    <div class="shell">
+      <p class="label" data-reveal>Recitation</p>
+      <h2 class="d2" id="reciters-title" data-reveal data-split>Thirty-eight voices to read with.</h2>
+      <div class="prose" data-reveal style="--delay:100ms">
+        <p>
+          Murattal and mujawwad, from the Haramain and beyond it. Choose one and the
+          reading follows you verse by verse, with your place kept exactly where you
+          left it.
+        </p>
+        <p>
+          Twenty-seven are in the app on Google Play today. Eleven more are in the next
+          update, and are marked below.
+        </p>
+      </div>
+    </div>
+
+    <div class="voices" data-reveal style="--delay:160ms">
+      <div class="voice-row">
+        <ul class="voice-track">
+          <li>Mishari Rashid Alafasy</li>
+          <li>Abdul Basit Abdul Samad</li>
+          <li>Abdullah Basfar</li>
+          <li>Abdul Rahman Al-Sudais</li>
+          <li>Saud Al-Shuraim</li>
+          <li>Abu Bakr Al-Shatri</li>
+          <li>Ahmad bin Ali Al-Ajmi</li>
+          <li>Hani Ar-Rifai</li>
+          <li>Mahmoud Khalil Al-Hussary</li>
+          <li>Mahmoud Khalil Al-Hussary <i>(Mujawwad)</i></li>
+          <li>Ali Al-Hudhaify</li>
+          <li>Ibrahim Al-Akhdar</li>
+          <li>Maher Al-Muaiqly</li>
+          <li>Mohamed Siddiq Al-Minshawi <i>(Murattal)</i></li>
+          <li>Mohamed Siddiq Al-Minshawi <i>(Mujawwad)</i></li>
+          <li>Muhammad Ayyoub</li>
+          <li>Muhammad Jibril</li>
+          <li>Ayman Suwaid</li>
+        </ul>
+        <ul class="voice-track" aria-hidden="true">
+          <li>Mishari Rashid Alafasy</li>
+          <li>Abdul Basit Abdul Samad</li>
+          <li>Abdullah Basfar</li>
+          <li>Abdul Rahman Al-Sudais</li>
+          <li>Saud Al-Shuraim</li>
+          <li>Abu Bakr Al-Shatri</li>
+          <li>Ahmad bin Ali Al-Ajmi</li>
+          <li>Hani Ar-Rifai</li>
+          <li>Mahmoud Khalil Al-Hussary</li>
+          <li>Mahmoud Khalil Al-Hussary <i>(Mujawwad)</i></li>
+          <li>Ali Al-Hudhaify</li>
+          <li>Ibrahim Al-Akhdar</li>
+          <li>Maher Al-Muaiqly</li>
+          <li>Mohamed Siddiq Al-Minshawi <i>(Murattal)</i></li>
+          <li>Mohamed Siddiq Al-Minshawi <i>(Mujawwad)</i></li>
+          <li>Muhammad Ayyoub</li>
+          <li>Muhammad Jibril</li>
+          <li>Ayman Suwaid</li>
+        </ul>
+      </div>
+      <div class="voice-row is-back">
+        <ul class="voice-track">
+          <li>Raad Al-Kurdi</li>
+          <li>Yasser Al-Dosari</li>
+          <li>Nasser Al-Qatami</li>
+          <li>Khalid Al-Jalil</li>
+          <li>Idris Abkar</li>
+          <li>Fares Abbad</li>
+          <li>Saad Al-Ghamdi</li>
+          <li>Bandar Balila</li>
+          <li>Mustafa Ismail <i>(Mujawwad)</i></li>
+          <li class="is-soon">Salah Al-Budair<b>soon</b></li>
+          <li class="is-soon">Abdullah Al-Matrood<b>soon</b></li>
+          <li class="is-soon">Salah Bukhatir<b>soon</b></li>
+          <li class="is-soon">Mahmoud Ali Al-Banna <i>(Mujawwad)</i><b>soon</b></li>
+          <li class="is-soon">Ahmed Issa Al-Masarawi<b>soon</b></li>
+          <li class="is-soon">Muhammad Burhaji<b>soon</b></li>
+          <li class="is-soon">Abdullah Al-Buayjan<b>soon</b></li>
+          <li class="is-soon">Ahmad Al-Nufais<b>soon</b></li>
+          <li class="is-soon">Mansour Al-Salemi<b>soon</b></li>
+          <li class="is-soon">Haitham Al-Dukhain<b>soon</b></li>
+          <li class="is-soon">Hasan Saleh<b>soon</b></li>
+        </ul>
+        <ul class="voice-track" aria-hidden="true">
+          <li>Raad Al-Kurdi</li>
+          <li>Yasser Al-Dosari</li>
+          <li>Nasser Al-Qatami</li>
+          <li>Khalid Al-Jalil</li>
+          <li>Idris Abkar</li>
+          <li>Fares Abbad</li>
+          <li>Saad Al-Ghamdi</li>
+          <li>Bandar Balila</li>
+          <li>Mustafa Ismail <i>(Mujawwad)</i></li>
+          <li class="is-soon">Salah Al-Budair<b>soon</b></li>
+          <li class="is-soon">Abdullah Al-Matrood<b>soon</b></li>
+          <li class="is-soon">Salah Bukhatir<b>soon</b></li>
+          <li class="is-soon">Mahmoud Ali Al-Banna <i>(Mujawwad)</i><b>soon</b></li>
+          <li class="is-soon">Ahmed Issa Al-Masarawi<b>soon</b></li>
+          <li class="is-soon">Muhammad Burhaji<b>soon</b></li>
+          <li class="is-soon">Abdullah Al-Buayjan<b>soon</b></li>
+          <li class="is-soon">Ahmad Al-Nufais<b>soon</b></li>
+          <li class="is-soon">Mansour Al-Salemi<b>soon</b></li>
+          <li class="is-soon">Haitham Al-Dukhain<b>soon</b></li>
+          <li class="is-soon">Hasan Saleh<b>soon</b></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -641,8 +768,8 @@
 
 </div>
 
-<script src="/vendor/lenis.min.js?v=20260830d" defer></script>
-<script src="/sky.js?v=20260830d" defer></script>
-<script src="/app.js?v=20260830d" defer></script>
+<script src="/vendor/lenis.min.js?v=20260830f" defer></script>
+<script src="/sky.js?v=20260830f" defer></script>
+<script src="/app.js?v=20260830f" defer></script>
 </body>
 </html>

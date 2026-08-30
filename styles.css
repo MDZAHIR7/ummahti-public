@@ -1674,6 +1674,85 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--gold);
 }
 
+/* --- the reciters ------------------------------------------------------- */
+
+/* Full bleed: the rail runs past the text column on both sides, which is what
+   makes it read as a rail rather than as a wide paragraph. */
+.reciters .shell > * + * { margin-top: 1.1rem; }
+.reciters .prose { margin-top: 1.35rem; }
+
+.voices {
+  margin-top: clamp(2rem, 4.5vw, 3.2rem);
+  display: grid;
+  gap: .6rem;
+  overflow: hidden;
+
+  /* The rows fade out rather than being cut off at the edge of the screen,
+     so the loop never shows its join. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.voice-row {
+  display: flex;
+  width: max-content;
+  animation: drift 78s linear infinite;
+}
+.voice-row.is-back { animation-direction: reverse; }
+
+/* Half the row is a duplicate of the other half, so moving it exactly half
+   its width returns it to where it started with nothing to see. */
+@keyframes drift { to { transform: translate3d(-50%, 0, 0) } }
+
+/* A reader who wants to read a name can stop the row by putting the pointer
+   on it. A rail that will not be stopped is a rail that cannot be read. */
+.voices:hover .voice-row,
+.voices:focus-within .voice-row { animation-play-state: paused; }
+
+.voice-track {
+  display: flex;
+  gap: .55rem;
+  margin: 0;
+  padding: 0 .275rem;
+  list-style: none;
+  flex: none;
+}
+.voice-track li {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  white-space: nowrap;
+  padding: .55rem 1rem;
+  border-radius: 999px;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.055 * var(--spec-k))), rgba(var(--glow-rgb), calc(.012 * var(--spec-k))));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .18);
+}
+.voice-track i {
+  font-style: normal;
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* Not on Google Play yet, and drawn as an outline so it cannot be mistaken
+   for one that is. */
+.voice-track li.is-soon {
+  background: transparent;
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .3);
+}
+.voice-track li.is-soon b {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-left: .1rem;
+}
+
 /* --- the promise -------------------------------------------------------- */
 
 .promise {
@@ -1978,6 +2057,7 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .facts-grid .fact:nth-child(3) { --d: 180ms }
 .facts-grid .fact:nth-child(4) { --d: 270ms }
 .facts-grid .fact:nth-child(5) { --d: 360ms }
+.facts-grid .fact:nth-child(6) { --d: 450ms }
 
 /* The counted figures sit on a hairline that draws itself under them. */
 .fact dt { position: relative; display: inline-block; }
@@ -2173,4 +2253,27 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .modes-rail { transform: none !important; overflow-x: auto; }
   .mode { width: min(74vw, 290px); }
   .scripts.is-live .script-page.is-out { animation: none !important; opacity: 0; }
+
+  /* A row frozen mid-slide would sit half off the screen, so it stops being
+     a row: it wraps into the text column, and the duplicate copy that made
+     the loop seamless has nothing left to do. The track has to be allowed to
+     shrink as well as wrap — left at `flex: none` it keeps its max-content
+     width and wraps nothing. */
+  .voices {
+    -webkit-mask-image: none;
+    mask-image: none;
+    overflow: visible;
+    width: min(100% - (var(--gutter) * 2), var(--shell));
+    margin-inline: auto;
+    gap: .55rem;
+  }
+  .voice-row { width: auto; display: block; }
+  .voice-row .voice-track[aria-hidden='true'] { display: none; }
+  .voice-track {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: wrap;
+    row-gap: .55rem;
+    padding: 0;
+  }
 }
