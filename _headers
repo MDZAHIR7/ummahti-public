@@ -33,3 +33,5 @@
 
 /youtube/*
   Cache-Control: no-store
+/sky.js
+  Cache-Control: public, max-age=600, must-revalidate

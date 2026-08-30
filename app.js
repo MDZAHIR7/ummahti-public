@@ -565,6 +565,8 @@
 
     pinned = !narrow.matches && !reduced.matches;
 
+    if (window.UmmahtiSky) window.UmmahtiSky.remeasure();
+
     if (track && rail) {
       railOverflow = Math.max(0, rail.scrollWidth - vw);
       // Pinning the viewport to move the rail 40px is worse than not pinning
@@ -609,6 +611,10 @@
 
     root.style.setProperty('--lit', progress.toFixed(3));
     root.style.setProperty('--read', progress.toFixed(4));
+
+    // The GPU room, if the device took it. It draws from this loop rather
+    // than starting a second one.
+    if (window.UmmahtiSky) window.UmmahtiSky.frame(time, progress);
 
     if (ambient) ambient.style.setProperty('--sky-y', `${y * -0.05}px`);
     const drift = `${y * -0.11}px`;

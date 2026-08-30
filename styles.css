@@ -470,6 +470,24 @@ a { color: inherit; }
   will-change: transform;
 }
 
+/* Layer 0, only when the device could take it: the same room, drawn on the
+   GPU. It replaces the two gradient layers rather than sitting on top of
+   them — see sky.js. Everything else in .sky stays exactly where it was. */
+.sky-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  animation: sky-in 1400ms var(--ease) 120ms forwards;
+}
+@keyframes sky-in { to { opacity: 1 } }
+
+.sky.is-live .sky-ambient,
+.sky.is-live .sky-halo { display: none; }
+.sky.is-live .sky-grain { opacity: calc(var(--grain-a) * .5); }
+
 /* Layer 3: grain, so the large dark fields do not band on cheap panels. */
 .sky-grain {
   position: absolute;
