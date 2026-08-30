@@ -16,7 +16,9 @@ remain at their original URLs and are served `no-store`.
 ```
 index.html          the landing page
 styles.css          the whole design system, one file
-theme.js            restores the reader's theme before the first paint
+theme.js            restores the reader's theme, and marks the first page of
+                    a visit, both before the first paint
+sky.js              the room, drawn on the GPU when the device can take it
 app.js              scroll, reveals, the search demo, the lighting model,
                     the theme picker
 vendor/lenis.min.js smooth scroll, self-hosted (the CSP forbids CDNs)
@@ -82,12 +84,46 @@ with a dark page's light.
 Adding a tenth theme is a token block in `styles.css`, its name in the `THEMES`
 list in `app.js` and `theme.js`, and a card in `index.html`.
 
+## The room
+
+`styles.css` builds the room behind the page out of three radial gradients.
+When the device can take it, `sky.js` draws the same room in a fragment
+shader instead — one fullscreen triangle, written by hand, no library, about
+5 KB gzipped against the 170 KB a 3D library would have cost for the same
+picture. The light has volume because the glow is sampled through noise on
+the way out from its source rather than being a clean radial; dust hangs in
+the beam and is only drawn where there is light to catch it. Its colours are
+read back off the document, so the room changes light with the theme.
+
+It draws from `app.js`'s loop rather than starting a second one, so the page
+still has exactly one rAF.
+
+It declines to run, and the gradients simply stay, when: the reader asked for
+less motion, the connection is metered or slow, the device reports few cores
+or little memory, WebGL is missing, the context is lost, or — the case none
+of those catch — the page cannot hold about thirty frames a second with it
+running. That last verdict is reached on a stopwatch rather than a frame
+count, so a slow device is not made to struggle for twenty seconds before
+being let off.
+
+The canvas lives inside `.sky`, which is already `aria-hidden`, and touches
+no content, so there is never anything for a fallback to restore but the
+gradients.
+
 ## Two rules worth keeping
 
 **Qur'anic text is never re-rendered in browser type.** Every ayah on the site
 appears inside a real app screenshot, drawn by the app's own vetted font
 pipeline. The site ships no Arabic webfont, so it cannot render scripture
 wrongly on a device whose fallback font mishandles the harakat.
+
+**Motion is never load-bearing.** The page turn in the mushaf section, the
+opening, the counted figures, the lean on the buttons and the whole GPU room
+are all things the page does *as well as* saying what it says. Every one of
+them is off under `prefers-reduced-motion: reduce`, and the section still
+reads. The opening in particular never holds the content back: the words and
+the install button are painted at their final position on the first frame,
+and it is the room that arrives.
 
 **The page must be complete without JavaScript.** Reveals, the pinned run, the
 search demo, the counted figures and the theme picker are enhancements. With

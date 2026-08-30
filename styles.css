@@ -614,6 +614,12 @@ h1, h2, h3, .display {
 
 .btn svg { width: 19px; height: 19px; flex: none; }
 
+/* The lean settles back on its own when the pointer leaves; without a
+   transition it would snap. `translate` is transitioned separately from
+   `transform` so the hover lift keeps its own timing. */
+.btn, .badge-play, .theme-pick-btn { transition: translate 420ms var(--ease-out); }
+.btn:hover, .badge-play:hover, .theme-pick-btn:hover { transition: translate 90ms linear; }
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -2158,6 +2164,7 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   [data-reveal], .word, .facts-grid .fact { opacity: 1 !important; transform: none !important; }
   .fact dt::after { transform: scaleX(1) !important; }
   .hero .device, .split .device { translate: none !important; }
+  .btn, .badge-play, .theme-pick-btn { translate: none !important; }
   .is-first .sky-moon, .is-first .sky-halo, .is-first .brand-mark img { animation: none !important; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
   .sky-ambient, .sky-moon, .sky-halo { transform: none !important; }

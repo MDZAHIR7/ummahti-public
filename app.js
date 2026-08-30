@@ -133,6 +133,29 @@
     });
   }
 
+  /* ------------------------------------------------------------- magnets */
+
+  /* The call to action leans towards the pointer. It uses `translate` rather
+     than `transform`, which the hover lift already owns, so the two compose
+     instead of one cancelling the other. Pointer devices only: on a phone
+     there is nothing to lean towards, and a stuck offset from a stray tap
+     would just be a crooked button. */
+  if (!coarse.matches && !reduced.matches) {
+    document.querySelectorAll('.btn, .badge-play, .theme-pick-btn').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.translate = `${(x * 9).toFixed(2)}px ${(y * 5).toFixed(2)}px`;
+      });
+
+      const rest = () => { el.style.translate = ''; };
+      el.addEventListener('pointerleave', rest);
+      el.addEventListener('blur', rest);
+      window.addEventListener('blur', rest);
+    });
+  }
+
   /* ------------------------------------------------------- the four scripts */
 
   /* One page set four ways. It cycles while on screen so the difference is
