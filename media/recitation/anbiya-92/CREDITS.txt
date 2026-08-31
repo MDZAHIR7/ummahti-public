@@ -1,0 +1,45 @@
+Recitation clips — Surah Al-Anbiya 21:92
+
+One ayah, ayah 2575 of the Book, in each reciter the app ships.
+Fetched by tools/fetch_recitation.py using the app's own SUPPORTED_RECITERS
+coordinates, so each clip is the audio the app plays, from the source the
+app plays it from:
+
+  ayah       https://cdn.islamic.network/quran/audio/<bitrate>/<edition>/2575.mp3 (AlQuran Cloud)
+  surah cut  <mp3quran folder>/021.mp3, cut to the published
+             ayat_timing boundaries for 21:92 (MP3Quran)
+
+The recitations are the reciters' own, reproduced here for the same reason
+the app plays them: so that the Qur'an can be heard. See the app's
+docs/CONTENT_LICENCES.md for the per-reciter permission record. If a
+reciter or a rights holder asks for a clip to be removed, delete the file
+and the <li> in index.html that names it, and re-run the script.
+
+id                    source
+alafasy               ar.alafasy @ 128kbps
+abdulbaset            ar.abdulbasitmurattal @ 192kbps
+abdullah_basfar       ar.abdullahbasfar @ 192kbps
+sudais                ar.abdurrahmaansudais @ 192kbps
+shuraym               ar.saoodshuraym @ 64kbps
+shatri                ar.shaatree @ 128kbps
+ajamy                 ar.ahmedajamy @ 128kbps
+hani_rifai            ar.hanirifai @ 192kbps
+husary                ar.husary @ 128kbps
+husary_mujawwad       ar.husarymujawwad @ 128kbps
+hudhaify              ar.hudhaify @ 128kbps
+akhdar                ar.ibrahimakhbar @ 32kbps
+maher_muaiqly         ar.mahermuaiqly @ 128kbps
+minshawy_murattal     ar.minshawi @ 128kbps
+minshawy_mujawwad     ar.minshawimujawwad @ 64kbps
+muhammad_ayyoub       ar.muhammadayyoub @ 128kbps
+jibreel               ar.muhammadjibreel @ 128kbps
+sowaid                ar.aymanswoaid @ 64kbps
+raad_kurdi            https://server6.mp3quran.net/kurdi/ read 221
+yasser_dosari         https://server11.mp3quran.net/yasser/ read 92
+nasser_qatami         https://server6.mp3quran.net/qtm/ read 86
+khalid_jalil          https://server10.mp3quran.net/jleel/ read 20
+idris_abkar           https://server6.mp3quran.net/abkr/ read 12
+fares_abbad           https://server8.mp3quran.net/frs_a/ read 81
+saad_ghamdi           https://server7.mp3quran.net/s_gmd/ read 30
+bandar_balila         https://server6.mp3quran.net/balilah/ read 217
+mustafa_ismail        https://server8.mp3quran.net/mustafa/Almusshaf-Al-Mojawwad/ read 288
