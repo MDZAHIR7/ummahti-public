@@ -698,9 +698,18 @@
   <!-- The rail above names the voices. This lets you hear one, and it is
        locked to a single ayah: Al-Anbiya 21:92, the verse the app is named
        out of — inna hadhihi ummatukum ummatan wahidah, "this ummah of yours
-       is one ummah". One verse, twenty-seven readings of it. Nothing here
+       is one ummah". One verse, thirty-eight readings of it. Nothing here
        chooses a surah or a page, because that is the app's job, not a
        landing page's.
+
+       The drum is the same list as the rail, in the same order, and it is
+       the app's list: every row's data-clip is that reciter's own id in
+       SUPPORTED_RECITERS (AudioPlayerManager.kt), so a row cannot drift from
+       the reciter it names, and tools/fetch_recitation.py fetches each clip
+       by the app's own coordinates rather than by matching a name. The
+       eleven marked soon are the eleven the rail marks: they are in the next
+       update, so they have no audio here either, and the transport says so
+       rather than pretending.
 
        The Arabic is the imlaei text with full diacritics rather than the
        Uthmani text the app draws. The page ships two latin faces and no
@@ -754,33 +763,44 @@
                 role="listbox" tabindex="0"
                 aria-label="Reciter"
                 aria-activedescendant="voice-alafasy">
-          <li role="option" id="voice-alafasy" data-clip="alafasy" aria-selected="true">Mishari Rashid Alafasy</li>
-          <li role="option" id="voice-abdulbasit" data-clip="abdulbasit">Abdul Basit Abdul Samad</li>
-          <li role="option" id="voice-basfar" data-clip="basfar">Abdullah Basfar</li>
-          <li role="option" id="voice-sudais" data-clip="sudais">Abdul Rahman Al-Sudais</li>
-          <li role="option" id="voice-shuraim" data-clip="shuraim">Saud Al-Shuraim</li>
-          <li role="option" id="voice-shatri" data-clip="shatri">Abu Bakr Al-Shatri</li>
-          <li role="option" id="voice-ajmi" data-clip="ajmi">Ahmad bin Ali Al-Ajmi</li>
-          <li role="option" id="voice-rifai" data-clip="rifai">Hani Ar-Rifai</li>
-          <li role="option" id="voice-hussary" data-clip="hussary">Mahmoud Khalil Al-Hussary</li>
-          <li role="option" id="voice-hussary-mujawwad" data-clip="hussary-mujawwad">Mahmoud Khalil Al-Hussary <i>(Mujawwad)</i></li>
-          <li role="option" id="voice-hudhaify" data-clip="hudhaify">Ali Al-Hudhaify</li>
-          <li role="option" id="voice-akhdar" data-clip="akhdar">Ibrahim Al-Akhdar</li>
-          <li role="option" id="voice-muaiqly" data-clip="muaiqly">Maher Al-Muaiqly</li>
-          <li role="option" id="voice-minshawi" data-clip="minshawi">Mohamed Siddiq Al-Minshawi <i>(Murattal)</i></li>
-          <li role="option" id="voice-minshawi-mujawwad" data-clip="minshawi-mujawwad">Mohamed Siddiq Al-Minshawi <i>(Mujawwad)</i></li>
-          <li role="option" id="voice-ayyoub" data-clip="ayyoub">Muhammad Ayyoub</li>
-          <li role="option" id="voice-jibril" data-clip="jibril">Muhammad Jibril</li>
-          <li role="option" id="voice-suwaid" data-clip="suwaid">Ayman Suwaid</li>
-          <li role="option" id="voice-kurdi" data-clip="kurdi">Raad Al-Kurdi</li>
-          <li role="option" id="voice-dosari" data-clip="dosari">Yasser Al-Dosari</li>
-          <li role="option" id="voice-qatami" data-clip="qatami">Nasser Al-Qatami</li>
-          <li role="option" id="voice-jalil" data-clip="jalil">Khalid Al-Jalil</li>
-          <li role="option" id="voice-abkar" data-clip="abkar">Idris Abkar</li>
-          <li role="option" id="voice-abbad" data-clip="abbad">Fares Abbad</li>
-          <li role="option" id="voice-ghamdi" data-clip="ghamdi">Saad Al-Ghamdi</li>
-          <li role="option" id="voice-balila" data-clip="balila">Bandar Balila</li>
-          <li role="option" id="voice-mustafa-ismail" data-clip="mustafa-ismail">Mustafa Ismail <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-alafasy" data-clip="alafasy" aria-selected="true">Mishari Rashid Alafasy</li>
+            <li role="option" id="voice-abdulbaset" data-clip="abdulbaset">Abdul Basit Abdul Samad</li>
+            <li role="option" id="voice-abdullah_basfar" data-clip="abdullah_basfar">Abdullah Basfar</li>
+            <li role="option" id="voice-sudais" data-clip="sudais">Abdul Rahman Al-Sudais</li>
+            <li role="option" id="voice-shuraym" data-clip="shuraym">Saud Al-Shuraim</li>
+            <li role="option" id="voice-shatri" data-clip="shatri">Abu Bakr Al-Shatri</li>
+            <li role="option" id="voice-ajamy" data-clip="ajamy">Ahmad bin Ali Al-Ajmi</li>
+            <li role="option" id="voice-hani_rifai" data-clip="hani_rifai">Hani Ar-Rifai</li>
+            <li role="option" id="voice-husary" data-clip="husary">Mahmoud Khalil Al-Hussary</li>
+            <li role="option" id="voice-husary_mujawwad" data-clip="husary_mujawwad">Mahmoud Khalil Al-Hussary <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-hudhaify" data-clip="hudhaify">Ali Al-Hudhaify</li>
+            <li role="option" id="voice-akhdar" data-clip="akhdar">Ibrahim Al-Akhdar</li>
+            <li role="option" id="voice-maher_muaiqly" data-clip="maher_muaiqly">Maher Al-Muaiqly</li>
+            <li role="option" id="voice-minshawy_murattal" data-clip="minshawy_murattal">Mohamed Siddiq Al-Minshawi <i>(Murattal)</i></li>
+            <li role="option" id="voice-minshawy_mujawwad" data-clip="minshawy_mujawwad">Mohamed Siddiq Al-Minshawi <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-muhammad_ayyoub" data-clip="muhammad_ayyoub">Muhammad Ayyoub</li>
+            <li role="option" id="voice-jibreel" data-clip="jibreel">Muhammad Jibril</li>
+            <li role="option" id="voice-sowaid" data-clip="sowaid">Ayman Suwaid</li>
+            <li role="option" id="voice-raad_kurdi" data-clip="raad_kurdi">Raad Al-Kurdi</li>
+            <li role="option" id="voice-yasser_dosari" data-clip="yasser_dosari">Yasser Al-Dosari</li>
+            <li role="option" id="voice-nasser_qatami" data-clip="nasser_qatami">Nasser Al-Qatami</li>
+            <li role="option" id="voice-khalid_jalil" data-clip="khalid_jalil">Khalid Al-Jalil</li>
+            <li role="option" id="voice-idris_abkar" data-clip="idris_abkar">Idris Abkar</li>
+            <li role="option" id="voice-fares_abbad" data-clip="fares_abbad">Fares Abbad</li>
+            <li role="option" id="voice-saad_ghamdi" data-clip="saad_ghamdi">Saad Al-Ghamdi</li>
+            <li role="option" id="voice-bandar_balila" data-clip="bandar_balila">Bandar Balila</li>
+            <li role="option" id="voice-mustafa_ismail" data-clip="mustafa_ismail">Mustafa Ismail <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-salah_budair" data-clip="salah_budair" data-soon class="is-soon">Salah Al-Budair</li>
+            <li role="option" id="voice-abdullah_matrood" data-clip="abdullah_matrood" data-soon class="is-soon">Abdullah Al-Matrood</li>
+            <li role="option" id="voice-salah_bukhatir" data-clip="salah_bukhatir" data-soon class="is-soon">Salah Bukhatir</li>
+            <li role="option" id="voice-banna_mujawwad" data-clip="banna_mujawwad" data-soon class="is-soon">Mahmoud Ali Al-Banna <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-masarawi" data-clip="masarawi" data-soon class="is-soon">Ahmed Issa Al-Masarawi</li>
+            <li role="option" id="voice-burhaji" data-clip="burhaji" data-soon class="is-soon">Muhammad Burhaji</li>
+            <li role="option" id="voice-buayjan" data-clip="buayjan" data-soon class="is-soon">Abdullah Al-Buayjan</li>
+            <li role="option" id="voice-nufais" data-clip="nufais" data-soon class="is-soon">Ahmad Al-Nufais</li>
+            <li role="option" id="voice-salemi" data-clip="salemi" data-soon class="is-soon">Mansour Al-Salemi</li>
+            <li role="option" id="voice-dukhain" data-clip="dukhain" data-soon class="is-soon">Haitham Al-Dukhain</li>
+            <li role="option" id="voice-hasan_saleh" data-clip="hasan_saleh" data-soon class="is-soon">Hasan Saleh</li>
             </ul>
           </div>
 

@@ -58,10 +58,14 @@ Nothing here is a mockup.
   the app plays it from, fetched by `tools/fetch_recitation.py`. The script
   does not carry a table of edition identifiers: it asks the API what it has
   and matches names against the drum in `index.html`, so the mapping is
-  derived at fetch time rather than guessed once. It will not guess between
-  two candidates — a slug it cannot resolve is reported, never filled in with
-  a near miss, because attributing one man's recitation to another is worse
-  than a missing clip.
+  the coordinates the app plays them by — `AYAH_SOURCES` and `SURAH_SOURCES`
+  in the script are `SUPPORTED_RECITERS` transcribed field for field, so no
+  name is ever matched approximately. Eighteen reciters are per-ayah files
+  from AlQuran Cloud and download as-is; nine are whole-surah files from
+  MP3Quran, cut to that recording's own published `ayat_timing` boundaries
+  for 21:92 with ffmpeg, which is what the app does at playback time. No
+  boundary is interpolated: a reciter with no published timing is reported
+  and skipped.
 - **The nine themes are readable, not just shown.** Each one is a block of
   tokens in `styles.css` whose background, surface, accent, secondary and text
   are the app's own values — the same five the swatches display. The rest of a
@@ -76,16 +80,33 @@ The player under the reciter rail is locked to a single ayah — Al-Anbiya
 ummah" — which is the verse the app's name comes out of. It plays that one
 ayah and nothing else. Choosing a surah or a page is the app's job.
 
+The drum holds all thirty-eight voices the rail names, in the rail's order,
+and each row's `data-clip` is that reciter's own id in the app's
+`SUPPORTED_RECITERS` (`AudioPlayerManager.kt`). The eleven the rail marks
+"soon" are marked the same way here: they are in the next update of the app,
+so they have no clip on the site either, and the transport says which it is
+rather than failing quietly.
+
 Three things about it are load-bearing.
 
 **The drum is a scroll container.** `scroll-snap-type: y mandatory`, rows at
 `scroll-snap-align: center`, and that is the whole mechanism. The flick, the
 momentum, the rubber band and the settle are the reader's own platform, which
 is why it feels like the picker they already know, and why there is no physics
-in `verse.js`. The script leans the rows away from the reader, ticks
-`navigator.vibrate` as each name crosses the band, and tells the player which
-name is under it. Turning the drum mid-verse swaps the voice and starts the
-ayah again.
+in `verse.js`. The script leans the rows away from the reader, ticks the
+detent as each name crosses the band, and tells the player which name is under
+it. Turning the drum mid-verse swaps the voice and starts the ayah again.
+
+**The detent is three things.** Android gets `navigator.vibrate`, which needs
+sticky user activation — a touch-drag does not grant that until the finger
+lifts, so the first spin of the page would otherwise be silent; `prime()`
+spends the first activation-granting event on a zero-length pulse to arm it.
+iOS Safari has no Vibration API at all, but since 17.4 a switch control fires
+the system haptic when it toggles, so the tick there is a one-pixel
+`<input type="checkbox" switch>` in the corner of the drum, clicked once per
+detent — it has to stay in the layout, since `display:none` takes the haptic
+with it. Everything else has no motor and gets the band lighting for a frame,
+which runs on all three.
 
 **The markup is the manifest.** The CSP has `connect-src 'none'`, so the page
 cannot fetch a JSON file of reciters even if it wanted one. The list is the

@@ -1938,16 +1938,35 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .wheel-list li[aria-selected='true'] { color: var(--gold-light); }
 .wheel-list li[aria-selected='true'] i { color: var(--gold); }
 
-/* A voice whose clip did not load. It stays in the drum — it is in the app,
-   which is what the drum is a list of — but it says why it will not play. */
+/* Two rows that will not play, for two different reasons, and the drum keeps
+   both: it is the list of voices, and a voice that is coming is still a
+   voice. The rail above marks the same eleven the same way. */
+.wheel-list li.is-soon,
 .wheel-list li.is-missing { color: var(--muted-2); }
+.wheel-list li.is-soon::after,
 .wheel-list li.is-missing::after {
-  content: 'no clip';
   font-size: .58rem;
   font-weight: 700;
   letter-spacing: .13em;
   text-transform: uppercase;
-  color: var(--muted-2);
+}
+.wheel-list li.is-soon::after { content: 'soon'; color: var(--gold); }
+.wheel-list li.is-missing::after { content: 'no clip'; color: var(--muted-2); }
+.wheel-list li.is-soon[aria-selected='true'] { color: var(--muted); }
+
+/* The iOS haptic, which has to stay in the layout to keep its haptic —
+   display:none takes it away. One pixel in the corner, under the band, and
+   unreachable by pointer or keyboard. See tick() in verse.js. */
+.wheel-haptic {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Under reduced motion the drum stops being a drum: the rows lie flat, the

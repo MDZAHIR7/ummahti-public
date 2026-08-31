@@ -7,46 +7,55 @@ The player on the landing page is locked to a single ayah — Al-Anbiya 21:92,
 ships.  The site's Content-Security-Policy has connect-src 'none' and no
 media-src, so media falls back to default-src 'self': a clip that is not on
 this origin cannot be played from anywhere else, and no reader's IP reaches a
-third party to hear a verse.  Hence this script.  It is the only thing on the
-site that talks to another host, and it runs on your machine, never in a
-browser.
+third party in order to hear a verse.  Hence this script.  It is the only
+thing in this repository that talks to another host, and it runs on your
+machine, never in a browser.
 
-    python3 tools/fetch_recitation.py                  # download what is missing
-    python3 tools/fetch_recitation.py --check          # report, download nothing
-    python3 tools/fetch_recitation.py --force          # re-download everything
-    python3 tools/fetch_recitation.py --list-editions  # what the API offers
-    python3 tools/fetch_recitation.py --prune          # drop rows with no clip
+    python3 tools/fetch_recitation.py            # download what is missing
+    python3 tools/fetch_recitation.py --check    # report, download nothing
+    python3 tools/fetch_recitation.py --force    # re-download everything
+    python3 tools/fetch_recitation.py --prune    # drop rows it cannot fill
 
-A voice AlQuran Cloud does not serve per-ayah cannot be played from this
-origin at all.  Either pin a per-ayah URL for it in MANUAL, or run --prune to
-take its row out of the drum; the rail higher up the page goes on naming every
-reciter the app ships either way.
+Needs ffmpeg on PATH for the nine whole-surah reciters; the eighteen per-ayah
+ones need nothing but this file.
 
 Where the audio comes from
 --------------------------
-AlQuran Cloud serves per-ayah MP3s at
+RECITERS below is SUPPORTED_RECITERS from the app's AudioPlayerManager.kt,
+transcribed field for field: the same ids, the same edition identifiers, the
+same bitrates, the same MP3Quran folders and the same `ayat_timing` read ids.
+It is not a mapping invented for this site and it is not matched by name — a
+clip fetched here is byte-for-byte the audio the app plays, from the source
+the app plays it from, because it is fetched by the same coordinates.
 
-    https://cdn.islamic.network/quran/audio/128/<edition>/<n>.mp3
+That matters more than convenience.  These are named men's recitations, and a
+name matched approximately is a name attributed wrongly.
 
-where <n> is the ayah's number in the whole Book, 1..6236, not its number in
-its surah.  That is the same per-ayah source the app itself uses for its first
-group of reciters, which is why a clip fetched here is the clip the app plays.
+Two granularities, exactly as in the app:
 
-This script does not carry a hand-written table of edition identifiers.  It
-asks the API for every audio edition and matches them against the names in
-index.html, so the mapping is derived at fetch time rather than guessed once
-and left to rot.  Names that no edition matches are reported, not silently
-skipped, and can be pinned in MANUAL below.
+  AYAH   eighteen reciters, one file per verse from AlQuran Cloud —
+         cdn.islamic.network/quran/audio/<bitrate>/<edition>/<n>.mp3, where
+         <n> is the ayah's number in the whole Book.  Downloaded as-is.
+
+  SURAH  nine reciters, one file per surah from MP3Quran, made ayah-
+         addressable by MP3Quran's own published `ayat_timing` boundaries —
+         which is precisely how the app plays them.  This fetches surah 21,
+         asks the timing endpoint where ayah 92 starts and ends, and cuts
+         exactly that span with ffmpeg.  Nothing here interpolates a
+         boundary; if the endpoint does not publish one for 21:92, the
+         reciter is reported and skipped.
+
+The eleven reciters marked "soon" in the drum are in neither list, because
+they are not in the app yet.  They are skipped by name, not by accident.
 
 The markup is the source of truth
 ---------------------------------
-The list of voices lives in index.html, in the drum, one <li> per reciter
-carrying data-clip="<slug>".  This script reads that list; it never invents
-one.  Add a reciter to the page and the next run fetches their clip.
-
-When every clip named in the markup is on disk, the script flips the section's
-data-clips="pending" to "ready", which is what makes the player appear at all.
-Until then the section stays hidden and the page is exactly as it was.
+The drum in index.html is the list, one <li> per reciter carrying
+data-clip="<id>" — the app's own reciter id.  This script reads that list and
+never invents one.  When every clip a row can have is on disk, it flips the
+section's data-clips="pending" to "ready", which is what makes the player
+appear at all.  Until then the section stays hidden and the page is exactly
+as it was.
 """
 
 from __future__ import annotations
@@ -55,8 +64,10 @@ import argparse
 import json
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
-import unicodedata
+import tempfile
 import urllib.error
 import urllib.request
 
@@ -66,102 +77,80 @@ OUT = ROOT / "media" / "recitation" / "anbiya-92"
 
 SURAH, AYAH = 21, 92
 
-# Ayah counts for surahs 1..20, so the running total below is arithmetic
-# rather than a magic number.  The API is asked to confirm it before a single
-# byte is downloaded.
+# Ayah counts for surahs 1..20, so the running total is arithmetic rather than
+# a magic number.  Confirmed against the API before anything is downloaded.
 AYAH_COUNTS = [7, 286, 200, 176, 120, 165, 206, 75, 129, 109,
                123, 111, 43, 52, 99, 128, 111, 110, 98, 135]
 GLOBAL_AYAH = sum(AYAH_COUNTS) + AYAH          # 2483 + 92 = 2575
 
 API = "https://api.alquran.cloud/v1"
-CDN = "https://cdn.islamic.network/quran/audio/128"
-BITRATE = 128
+CDN = "https://cdn.islamic.network/quran/audio"
+TIMINGS = "https://mp3quran.net/api/v3/ayat_timing"
 UA = "ummahti-public/fetch_recitation (+https://ummahtiofficial.com/)"
 
-# Pin a slug to an edition identifier, or to a whole URL, when the name match
-# cannot find it.  A --check run tells you which slugs need an entry here.
-MANUAL: dict[str, str] = {}
+# --- SUPPORTED_RECITERS, from the app -------------------------------------
+# id: (edition, bitrate) for per-ayah, or (folder, read_id) for whole-surah.
+AYAH_SOURCES = {
+    "alafasy":           ("ar.alafasy", 128),
+    "abdulbaset":        ("ar.abdulbasitmurattal", 192),
+    "abdullah_basfar":   ("ar.abdullahbasfar", 192),
+    "sudais":            ("ar.abdurrahmaansudais", 192),
+    "shuraym":           ("ar.saoodshuraym", 64),
+    "shatri":            ("ar.shaatree", 128),
+    "ajamy":             ("ar.ahmedajamy", 128),
+    "hani_rifai":        ("ar.hanirifai", 192),
+    "husary":            ("ar.husary", 128),
+    "husary_mujawwad":   ("ar.husarymujawwad", 128),
+    "hudhaify":          ("ar.hudhaify", 128),
+    "akhdar":            ("ar.ibrahimakhbar", 32),
+    "maher_muaiqly":     ("ar.mahermuaiqly", 128),
+    "minshawy_murattal": ("ar.minshawi", 128),
+    "minshawy_mujawwad": ("ar.minshawimujawwad", 64),
+    "muhammad_ayyoub":   ("ar.muhammadayyoub", 128),
+    "jibreel":           ("ar.muhammadjibreel", 128),
+    "sowaid":            ("ar.aymanswoaid", 64),
+}
+
+SURAH_SOURCES = {
+    "raad_kurdi":     ("https://server6.mp3quran.net/kurdi/", 221),
+    "yasser_dosari":  ("https://server11.mp3quran.net/yasser/", 92),
+    "nasser_qatami":  ("https://server6.mp3quran.net/qtm/", 86),
+    "khalid_jalil":   ("https://server10.mp3quran.net/jleel/", 20),
+    "idris_abkar":    ("https://server6.mp3quran.net/abkr/", 12),
+    "fares_abbad":    ("https://server8.mp3quran.net/frs_a/", 81),
+    "saad_ghamdi":    ("https://server7.mp3quran.net/s_gmd/", 30),
+    "bandar_balila":  ("https://server6.mp3quran.net/balilah/", 217),
+    "mustafa_ismail": ("https://server8.mp3quran.net/mustafa/Almusshaf-Al-Mojawwad/", 288),
+}
 
 
-# --------------------------------------------------------------------- utils
+# --------------------------------------------------------------------- fetch
 
 def get(url: str, binary: bool = False):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=120) as r:
         data = r.read()
     return data if binary else json.loads(data.decode("utf-8"))
 
 
-STYLES = ("mujawwad", "murattal")
-
-# Dropped before two names are compared: the article and its spellings, the
-# words that mean "son of" or "servant of", and the honorifics.  What is left
-# is the part of a name that identifies the man.
-NOISE = re.compile(
-    r"\b(al|el|ar|as|ash|ad|at|az|bin|ben|ibn|abu|abo|abd|abdu|abdul|abdel|abdur|"
-    r"abdal|sheikh|shaikh|shaykh|the|mujawwad|murattal|muallim|warsh|qaloon)\b"
-)
-
-
-def fold(name: str) -> list[str]:
-    """A name reduced to what two spellings of it have in common.
-
-    Reciters' names reach the latin alphabet by several routes — al-/Al /
-    nothing, Abdul/Abdel/Abdur, -i/-y, doubled letters, and vowels chosen by
-    ear — so comparing the exact strings matches almost nothing.  Folding
-    drops accents, case, punctuation, the article and the honorifics, then
-    the vowels the routes disagree about, then doubled letters, then the
-    trailing -y that is the other half of the -i/-y ending.  What survives is
-    a consonant skeleton: Hussary and Husary both become hsr, Shatri and
-    Shaatree both shtr, Ajmi and Ajamy both jm, Shuraim and Shuraym shrm.
-
-    Order is kept, because the last token is the one that does the work —
-    see match().  The reading, Mujawwad or Murattal, is not part of a name
-    and is compared separately.
-    """
-    s = unicodedata.normalize("NFKD", name)
-    s = "".join(c for c in s if not unicodedata.combining(c)).lower()
-    s = re.sub(r"[^a-z ]+", " ", s)
-    s = NOISE.sub(" ", s)
-
-    out = []
-    for tok in s.split():
-        tok = re.sub(r"[aeiou]", "", tok)
-        tok = re.sub(r"(.)\1+", r"\1", tok)
-        tok = re.sub(r"y$", "", tok)
-        # y is a vowel in Shuraym and a consonant in Ayyoub, so it goes only
-        # when what is left is still a skeleton: shrym -> shrm, but yb stays.
-        thin = tok.replace("y", "")
-        if len(thin) > 1:
-            tok = thin
-        if len(tok) > 1 and tok not in out:
-            out.append(tok)
-    return out
-
-
-def style_of(*parts: str) -> str:
-    low = " ".join(parts).lower()
-    for s in STYLES:
-        if s in low:
-            return s
-    return ""
-
-
 # ------------------------------------------------------------------ the page
 
-def read_page() -> list[tuple[str, str]]:
-    """(slug, display name) for every voice in the drum, in page order."""
+def read_page() -> list[tuple[str, str, bool]]:
+    """(id, display name, soon) for every voice in the drum, in page order."""
     html = INDEX.read_text(encoding="utf-8")
     block = re.search(r'<ul class="wheel-list".*?</ul>', html, re.S)
     if not block:
         sys.exit("index.html: no wheel-list found — has the player been removed?")
 
     voices = []
-    for li in re.finditer(r'<li\b[^>]*data-clip="([^"]+)"[^>]*>(.*?)</li>', block.group(0), re.S):
-        slug = li.group(1)
-        name = re.sub(r"<[^>]+>", " ", li.group(2))
+    for li in re.finditer(r"<li\b([^>]*)>(.*?)</li>", block.group(0), re.S):
+        attrs, inner = li.group(1), li.group(2)
+        m = re.search(r'data-clip="([^"]+)"', attrs)
+        if not m:
+            continue
+        name = re.sub(r"<[^>]+>", " ", inner)
         name = re.sub(r"\s+", " ", name).replace(" )", ")").replace("( ", "(").strip()
-        voices.append((slug, name))
+        voices.append((m.group(1), name, "data-soon" in attrs))
     if not voices:
         sys.exit("index.html: the drum is empty")
     return voices
@@ -176,25 +165,22 @@ def set_ready(ready: bool) -> None:
         print(f'index.html: data-clips="{want}"')
 
 
-def prune(keep: list[str]) -> None:
-    """Drop the drum rows we could not get a clip for, and fix up the head.
+def prune(drop: set[str]) -> None:
+    """Take out rows this script could not fill and does not expect to.
 
-    A voice AlQuran Cloud does not carry per-ayah cannot be played from this
-    origin, and a row that cannot play is not worth a row.  The rail higher
-    up the page still names every reciter the app ships, which is the claim
-    that matters; the drum only claims to be a thing you can turn.
+    Only ever called for a reciter whose audio genuinely could not be had —
+    never for one marked soon, which is meant to sit in the drum unplayable.
     """
     html = INDEX.read_text(encoding="utf-8")
     block = re.search(r'(<ul class="wheel-list".*?>)(.*?)(</ul>)', html, re.S)
-    if not block:
+    if not block or not drop:
         return
 
-    rows = re.findall(r'[ \t]*<li\b[^>]*data-clip="[^"]+"[^>]*>.*?</li>\n?', block.group(2), re.S)
-    kept = [r for r in rows if re.search(r'data-clip="([^"]+)"', r).group(1) in keep]
-    if len(kept) == len(rows):
+    rows = re.findall(r"[ \t]*<li\b[^>]*data-clip=\"[^\"]+\"[^>]*>.*?</li>\n?", block.group(2), re.S)
+    kept = [r for r in rows if re.search(r'data-clip="([^"]+)"', r).group(1) not in drop]
+    if len(kept) == len(rows) or not kept:
         return
 
-    # The first surviving row is the one the drum opens on.
     kept = [re.sub(r'\s+aria-selected="true"', "", r) for r in kept]
     first = re.search(r'data-clip="([^"]+)"', kept[0]).group(1)
     kept[0] = kept[0].replace(f'data-clip="{first}"', f'data-clip="{first}" aria-selected="true"')
@@ -203,65 +189,53 @@ def prune(keep: list[str]) -> None:
 
     html = html.replace(block.group(0), block.group(1) + "".join(kept) + block.group(3))
     html = re.sub(r'aria-activedescendant="[^"]*"', f'aria-activedescendant="voice-{first}"', html, count=1)
-    html = re.sub(r'(<p class="lock-now" data-now>)[^<]*(</p>)', lambda mm: mm.group(1) + name + mm.group(2), html, count=1)
+    html = re.sub(r'(<p class="lock-now" data-now>)[^<]*(</p>)',
+                  lambda mm: mm.group(1) + name + mm.group(2), html, count=1)
     INDEX.write_text(html, encoding="utf-8")
-    print(f"index.html: dropped {len(rows) - len(kept)} row(s) with no clip; the drum opens on {name}")
+    print(f"index.html: dropped {len(rows) - len(kept)} row(s); the drum opens on {name}")
 
 
-# --------------------------------------------------------------------- match
+# ------------------------------------------------------------ the two sources
 
-def editions() -> list[dict]:
-    data = get(f"{API}/edition/format/audio")["data"]
-    return [e for e in data if e.get("language") == "ar" and e.get("type") == "versebyverse"] or data
+def fetch_ayah(rid: str) -> bytes:
+    edition, bitrate = AYAH_SOURCES[rid]
+    return get(f"{CDN}/{bitrate}/{edition}/{GLOBAL_AYAH}.mp3", binary=True)
 
 
-def match(name: str, pool: list[dict]) -> str | None:
-    """The one edition that is this reciter, or None if that is not obvious.
+def fetch_surah_cut(rid: str) -> bytes:
+    """The one ayah, cut out of the whole surah on its published boundaries.
 
-    The gate is the family name — the last token of the fold — and only the
-    family name.  Given names do not identify anyone here: Muhammad, Mahmoud
-    and Mohamed all fold to mhmd, and three quarters of this list carries
-    one of them, so a matcher that scores shared tokens will happily hand
-    Muhammad Ayyoub's edition to Mahmoud Al-Hussary.  Al-Hussary is the man.
-    Everything else in the score only breaks ties between editions that
-    already agree on it.
-
-    Deliberately unwilling to guess: if two editions score the same this
-    returns None and the run reports the slug for MANUAL.  Attributing one
-    man's recitation to another is a worse outcome than a missing clip.
+    This is what the app does at playback time, done once here instead.  The
+    boundaries come from MP3Quran's own `ayat_timing` endpoint for this exact
+    recording — never from a guess, and never interpolated: a missing or
+    malformed boundary raises rather than producing a clip that starts in the
+    middle of a word.
     """
-    want = fold(name)
-    if not want:
-        return None
-    surname, wset, style = want[-1], set(want), style_of(name)
-    scored = []
+    folder, read_id = SURAH_SOURCES[rid]
 
-    for e in pool:
-        ident = e.get("identifier", "")
-        est = style_of(e.get("englishName", ""), ident)
+    data = get(f"{TIMINGS}?surah={SURAH}&read={read_id}")
+    rows = data.get("ayat_timing") or data.get("data") or []
+    hit = next((r for r in rows if int(r.get("ayah", -1)) == AYAH), None)
+    if not hit:
+        raise ValueError(f"no published timing for {SURAH}:{AYAH} on read {read_id}")
 
-        # Mujawwad is never the default reading, so it only ever answers a
-        # name that asks for it, and never one that does not.  Murattal is
-        # the default, so a plain edition answers for it.
-        if (est == "mujawwad") != (style == "mujawwad"):
-            continue
+    start, end = int(hit["start_time"]), int(hit["end_time"])
+    if end <= start:
+        raise ValueError(f"timing for {SURAH}:{AYAH} is {start}..{end} ms")
 
-        best = 0
-        for label in (e.get("englishName", ""), e.get("name", ""), ident.split(".")[-1]):
-            have = fold(label)
-            if not have or have[-1] != surname:
-                continue
-            hset = set(have)
-            best = max(best, 3 + len(hset & wset) + (1 if hset <= wset or wset <= hset else 0))
-        if best:
-            scored.append((best, ident))
+    audio = get(f"{folder}{SURAH:03d}.mp3", binary=True)
 
-    if not scored:
-        return None
-    scored.sort(reverse=True)
-    if len(scored) > 1 and scored[0][0] == scored[1][0]:
-        return None                       # ambiguous: say so rather than pick
-    return scored[0][1]
+    with tempfile.TemporaryDirectory() as tmp:
+        src = pathlib.Path(tmp) / "surah.mp3"
+        dst = pathlib.Path(tmp) / "ayah.mp3"
+        src.write_bytes(audio)
+        subprocess.run(
+            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+             "-ss", f"{start / 1000:.3f}", "-to", f"{end / 1000:.3f}",
+             "-i", str(src), "-c", "copy", str(dst)],
+            check=True,
+        )
+        return dst.read_bytes()
 
 
 # ---------------------------------------------------------------------- main
@@ -270,19 +244,25 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--check", action="store_true", help="report only, download nothing")
     ap.add_argument("--force", action="store_true", help="re-download clips already on disk")
-    ap.add_argument("--prune", action="store_true",
-                    help="remove drum rows whose clip could not be fetched")
-    ap.add_argument("--list-editions", action="store_true",
-                    help="print every audio edition the API offers, for MANUAL")
+    ap.add_argument("--prune", action="store_true", help="remove rows whose clip could not be fetched")
     args = ap.parse_args()
 
-    if args.list_editions:
-        for e in sorted(editions(), key=lambda x: x.get("identifier", "")):
-            print(f'  {e.get("identifier",""):32} {e.get("englishName","")}')
-        return 0
-
     voices = read_page()
-    print(f"{len(voices)} voices in index.html\n")
+    soon = [v for v in voices if v[2]]
+    want = [v for v in voices if not v[2]]
+    print(f"{len(voices)} voices in the drum: {len(want)} with a source, "
+          f"{len(soon)} marked soon and skipped\n")
+
+    unknown = [rid for rid, _, _ in want if rid not in AYAH_SOURCES and rid not in SURAH_SOURCES]
+    if unknown:
+        return fail("no source for " + ", ".join(unknown) +
+                    " — add them to AYAH_SOURCES or SURAH_SOURCES from the app's "
+                    "AudioPlayerManager.kt, or mark the rows data-soon")
+
+    needs_ffmpeg = any(rid in SURAH_SOURCES for rid, _, _ in want)
+    if needs_ffmpeg and not shutil.which("ffmpeg") and not args.check:
+        return fail("ffmpeg is not on PATH, and nine reciters need it to cut "
+                    "their ayah out of a whole surah")
 
     # Confirm the arithmetic before trusting it with 27 downloads.
     try:
@@ -292,106 +272,93 @@ def main() -> int:
 
     got = (ref["surah"]["number"], ref["numberInSurah"])
     if got != (SURAH, AYAH):
-        return fail(f"ayah {GLOBAL_AYAH} is {got[0]}:{got[1]}, not {SURAH}:{AYAH} — AYAH_COUNTS is wrong")
+        return fail(f"ayah {GLOBAL_AYAH} is {got[0]}:{got[1]}, not {SURAH}:{AYAH} "
+                    "— AYAH_COUNTS is wrong")
     print(f"ayah {GLOBAL_AYAH} confirmed as {SURAH}:{AYAH}")
     print(f"  {ref['text']}\n")
 
-    pool = editions()
-    print(f"{len(pool)} audio editions offered\n")
-
     OUT.mkdir(parents=True, exist_ok=True)
-    have, fetched, unmatched, failed = [], [], [], []
+    have, fetched, failed = [], [], []
 
-    for slug, name in voices:
-        dest = OUT / f"{slug}.mp3"
+    for rid, name, _ in want:
+        dest = OUT / f"{rid}.mp3"
         if dest.exists() and dest.stat().st_size > 0 and not args.force:
-            have.append(slug)
-            print(f"  have      {slug:22} {name}")
+            have.append(rid)
+            print(f"  have      {rid:20} {name}")
             continue
 
-        pin = MANUAL.get(slug)
-        url = pin if (pin or "").startswith("http") else None
-        edition = None if url else (pin or match(name, pool))
-
-        if not url and not edition:
-            unmatched.append((slug, name))
-            print(f"  NO MATCH  {slug:22} {name}")
-            continue
-
-        url = url or f"{CDN}/{edition}/{GLOBAL_AYAH}.mp3"
+        kind = "ayah" if rid in AYAH_SOURCES else "surah cut"
         if args.check:
-            print(f"  would get {slug:22} {edition or url}")
+            print(f"  would get {rid:20} {kind:9}  {name}")
             continue
 
         try:
-            blob = get(url, binary=True)
-        except urllib.error.HTTPError as e:
-            failed.append((slug, f"HTTP {e.code}"))
-            print(f"  FAILED    {slug:22} HTTP {e.code}  {url}")
-            continue
-        except urllib.error.URLError as e:
-            failed.append((slug, str(e)))
-            print(f"  FAILED    {slug:22} {e}")
+            blob = fetch_ayah(rid) if rid in AYAH_SOURCES else fetch_surah_cut(rid)
+        except (urllib.error.URLError, ValueError, subprocess.CalledProcessError, KeyError) as e:
+            failed.append((rid, str(e)))
+            print(f"  FAILED    {rid:20} {e}")
             continue
 
         if len(blob) < 2048:
-            failed.append((slug, f"{len(blob)} bytes"))
-            print(f"  FAILED    {slug:22} {len(blob)} bytes — not audio")
+            failed.append((rid, f"{len(blob)} bytes"))
+            print(f"  FAILED    {rid:20} {len(blob)} bytes — not audio")
             continue
 
         dest.write_bytes(blob)
-        fetched.append((slug, edition or url, len(blob)))
-        print(f"  fetched   {slug:22} {len(blob) // 1024} KB  {edition or url}")
+        fetched.append((rid, kind, len(blob)))
+        print(f"  fetched   {rid:20} {kind:9}  {len(blob) // 1024:>4} KB  {name}")
 
-    if fetched or (have and not args.check):
-        write_credits(voices, fetched)
+    if not args.check and (fetched or have):
+        write_credits(fetched, have)
 
     print()
-    print(f"on disk {len(have) + len(fetched)}/{len(voices)}"
-          f"  fetched {len(fetched)}  unmatched {len(unmatched)}  failed {len(failed)}")
+    print(f"on disk {len(have) + len(fetched)}/{len(want)}"
+          f"  fetched {len(fetched)}  failed {len(failed)}")
 
-    if unmatched:
-        print("\nNo edition matched these. Pin them in MANUAL at the top of this file —")
-        print("an identifier from the editions list, or a whole URL:\n")
-        for slug, name in unmatched:
-            print(f'    "{slug}": "ar.…",   # {name}')
-
-    complete = len(have) + len(fetched) == len(voices)
-    if args.prune and not args.check and not complete:
-        prune(have + [f[0] for f in fetched])
+    complete = len(have) + len(fetched) == len(want)
+    if args.prune and not args.check and failed:
+        prune({rid for rid, _ in failed})
         complete = bool(have or fetched)
     if not args.check:
         set_ready(complete)
+
     if complete:
-        print("\nEvery clip is present. The player is live on the next deploy.")
+        print("\nEvery voice that has a source has its clip. The player is live "
+              "on the next deploy.")
     else:
-        print("\nClips are missing, so the section stays hidden. Nothing else on the page changes.")
+        print("\nClips are missing, so the section stays hidden and nothing else "
+              "on the page changes. Re-run to retry, or --prune to drop those rows.")
     return 0 if complete else 1
 
 
-def write_credits(voices, fetched) -> None:
-    """What is in this directory, where each file came from, and under what.
-
-    The site documents the provenance of everything it ships; recorded
-    recitation is not the one asset that gets to arrive unattributed.
-    """
+def write_credits(fetched, have) -> None:
+    """What is in this directory, where each file came from, and under what."""
     lines = [
         "Recitation clips — Surah Al-Anbiya 21:92",
         "",
         f"One ayah, ayah {GLOBAL_AYAH} of the Book, in each reciter the app ships.",
-        "Fetched by tools/fetch_recitation.py from AlQuran Cloud's per-ayah audio",
-        f"({CDN}/<edition>/{GLOBAL_AYAH}.mp3, {BITRATE}kbps), which is the same",
-        "per-ayah source the app itself plays from.",
+        "Fetched by tools/fetch_recitation.py using the app's own SUPPORTED_RECITERS",
+        "coordinates, so each clip is the audio the app plays, from the source the",
+        "app plays it from:",
         "",
-        "The recitations are the reciters' own. They are reproduced here for the",
-        "same reason the app plays them: so that the Qur'an can be heard. If a",
-        "reciter or a rights holder asks for a clip to be removed, remove the file",
+        f"  ayah       {CDN}/<bitrate>/<edition>/{GLOBAL_AYAH}.mp3 (AlQuran Cloud)",
+        f"  surah cut  <mp3quran folder>/{SURAH:03d}.mp3, cut to the published",
+        f"             ayat_timing boundaries for {SURAH}:{AYAH} (MP3Quran)",
+        "",
+        "The recitations are the reciters' own, reproduced here for the same reason",
+        "the app plays them: so that the Qur'an can be heard. See the app's",
+        "docs/CONTENT_LICENCES.md for the per-reciter permission record. If a",
+        "reciter or a rights holder asks for a clip to be removed, delete the file",
         "and the <li> in index.html that names it, and re-run the script.",
         "",
-        "slug                    source",
+        "id                    source",
     ]
-    for slug, src, _ in fetched:
-        lines.append(f"{slug:22}  {src}")
+    for rid, kind, _ in fetched:
+        src = (f"{AYAH_SOURCES[rid][0]} @ {AYAH_SOURCES[rid][1]}kbps"
+               if rid in AYAH_SOURCES else f"{SURAH_SOURCES[rid][0]} read {SURAH_SOURCES[rid][1]}")
+        lines.append(f"{rid:20}  {src}")
+    for rid in have:
+        lines.append(f"{rid:20}  (already on disk)")
     (OUT / "CREDITS.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

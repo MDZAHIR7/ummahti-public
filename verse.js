@@ -41,6 +41,7 @@
 
   const CLIPS = '/media/recitation/anbiya-92/';
   const GONE = 'That recitation is not on the site yet.';
+  const SOON = 'In the next update of the app.';
   const SPIN = 'Spin the drum to change the voice.';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -91,16 +92,65 @@
     }
   }
 
-  /* The detent. A phone can buzz; everything else gets the band lighting up
-     for a frame instead, which is the same information in the sense the
-     device has. Nothing fires until the reader has actually touched the
-     drum, or the page would tick itself on load. */
+  /* The detent, which is three different things on three platforms.
+
+     Android has the Vibration API. It also requires sticky user activation,
+     and a touch-drag does not grant that until the finger lifts — so without
+     priming, the very first spin of the page is silent and the reader
+     reasonably concludes it does not buzz. prime() below spends the first
+     activation-granting event it sees on a zero-length pulse, which arms the
+     motor for every tick after it.
+
+     iOS Safari has no Vibration API and never has had one. What it has had
+     since 17.4 is a switch control that fires the system haptic when it
+     toggles, so that is the tick there: a real checkbox with the switch
+     attribute, parked in the corner of the drum at one pixel and clicked once
+     per detent. It has to stay in the layout — display:none takes the haptic
+     with it — which is why it is positioned out of the way rather than
+     hidden. It is a hack, and it is the only haptic a web page can ask that
+     platform for.
+
+     Everything else has no motor, so the band lights for a frame. That runs
+     on all three: a detent you can see is worth having even where you can
+     also feel it. */
+
+  const canVibrate = typeof navigator.vibrate === 'function';
+
+  let haptic = null;
+  if (!canVibrate && 'switch' in document.createElement('input')) {
+    haptic = document.createElement('input');
+    haptic.type = 'checkbox';
+    haptic.setAttribute('switch', '');
+    haptic.className = 'wheel-haptic';
+    haptic.tabIndex = -1;
+    haptic.setAttribute('aria-hidden', 'true');
+    wheel.append(haptic);
+  }
+
+  let primed = false;
+  function prime() {
+    gestured = true;
+    if (primed || !canVibrate) return;
+    primed = true;
+    try { navigator.vibrate(0); } catch (e) { /* denied, or no motor */ }
+  }
+
+  function pulse() {
+    if (canVibrate) {
+      try { navigator.vibrate(8); } catch (e) { /* denied mid-gesture */ }
+      return;
+    }
+    if (haptic) {
+      try { haptic.click(); } catch (e) { /* no system haptic */ }
+    }
+  }
+
   let tickTimer = 0;
   function tick() {
+    // Nothing fires until the reader has touched the drum, or the page would
+    // tick itself while laying out.
     if (!gestured) return;
-    if (navigator.vibrate) {
-      try { navigator.vibrate(8); } catch (e) { /* denied, or no motor */ }
-    }
+    pulse();
     wheel.classList.add('is-tick');
     clearTimeout(tickTimer);
     tickTimer = setTimeout(() => wheel.classList.remove('is-tick'), 90);
@@ -148,6 +198,17 @@
     nowEl.textContent = nameOf(li);
 
     const wasPlaying = !audio.paused && !audio.ended;
+
+    /* On the rail above, in the next update, and so not on this page's audio
+       either. The row stays in the drum — it is a voice that is coming, and
+       the drum is the list of voices — and it says which it is. */
+    if ('soon' in li.dataset) {
+      audio.pause();
+      audio.removeAttribute('src');
+      fail(SOON);
+      return;
+    }
+
     audio.src = CLIPS + li.dataset.clip + '.mp3';
 
     if (missing.has(li.dataset.clip)) {
@@ -242,14 +303,17 @@
 
   /* ------------------------------------------------------------- the input */
 
-  const gesture = () => { gestured = true; };
-  wheel.addEventListener('pointerdown', gesture, { passive: true });
-  wheel.addEventListener('wheel', gesture, { passive: true });
-  wheel.addEventListener('keydown', gesture);
+  /* pointerdown and touchend are the two the platforms actually grant
+     activation on, and a wheel event is a trackpad that never will — it only
+     needs to arm the visual tick. */
+  wheel.addEventListener('pointerdown', prime, { passive: true });
+  wheel.addEventListener('touchend', prime, { passive: true });
+  wheel.addEventListener('keydown', prime);
+  wheel.addEventListener('wheel', () => { gestured = true; }, { passive: true });
 
   // A row you can see is a row you can point at.
   rows.forEach((li, i) => {
-    li.addEventListener('click', () => { gestured = true; goTo(i, true); });
+    li.addEventListener('click', () => { prime(); goTo(i, true); });
   });
 
   list.addEventListener('keydown', (e) => {
