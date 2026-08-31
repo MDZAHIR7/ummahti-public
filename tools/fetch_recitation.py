@@ -15,6 +15,7 @@ machine, never in a browser.
     python3 tools/fetch_recitation.py --check    # report, download nothing
     python3 tools/fetch_recitation.py --force    # re-download everything
     python3 tools/fetch_recitation.py --prune    # drop rows it cannot fill
+    python3 tools/fetch_recitation.py --selftest # check the parsing offline
 
 Needs ffmpeg on PATH for the nine whole-surah reciters; the eighteen per-ayah
 ones need nothing but this file.
@@ -202,40 +203,212 @@ def fetch_ayah(rid: str) -> bytes:
     return get(f"{CDN}/{bitrate}/{edition}/{GLOBAL_AYAH}.mp3", binary=True)
 
 
+# MPEG-1/2/2.5 Layer III frame tables, enough to walk a file and add up its
+# frames.  ffprobe would do this, but ffprobe is not guaranteed to be beside
+# ffmpeg on every machine, and the check below is not worth a second
+# dependency.
+_BITRATES_V1_L3 = [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0]
+_BITRATES_V2_L3 = [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0]
+_RATES = {0: [44100, 48000, 32000], 2: [22050, 24000, 16000], 3: [11025, 12000, 8000]}
+
+
+def mp3_duration_ms(data: bytes) -> int:
+    """Length of an MPEG audio stream, by walking its frame headers.
+
+    Returns 0 when nothing parses, which the caller treats as "cannot tell"
+    rather than as "zero length".
+    """
+    i, total = 0, 0.0
+    n = len(data)
+    # Skip an ID3v2 tag if one is present.
+    if data[:3] == b"ID3" and n > 10:
+        i = 10 + ((data[6] & 0x7F) << 21 | (data[7] & 0x7F) << 14 |
+                  (data[8] & 0x7F) << 7 | (data[9] & 0x7F))
+
+    while i + 4 <= n:
+        if data[i] != 0xFF or (data[i + 1] & 0xE0) != 0xE0:
+            i += 1
+            continue
+        ver = (data[i + 1] >> 3) & 0x03          # 3 = MPEG1, 2 = MPEG2, 0 = 2.5
+        layer = (data[i + 1] >> 1) & 0x03        # 1 = Layer III
+        bi = (data[i + 2] >> 4) & 0x0F
+        si = (data[i + 2] >> 2) & 0x03
+        pad = (data[i + 2] >> 1) & 0x01
+        if layer != 1 or ver == 1 or bi in (0, 15) or si == 3:
+            i += 1
+            continue
+        rate = _RATES[0 if ver == 3 else (2 if ver == 2 else 3)][si]
+        kbps = (_BITRATES_V1_L3 if ver == 3 else _BITRATES_V2_L3)[bi]
+        samples = 1152 if ver == 3 else 576
+        size = (samples // 8 * kbps * 1000) // rate + pad
+        if size < 4:
+            i += 1
+            continue
+        total += samples * 1000 / rate
+        i += size
+
+    return int(total)
+
+
+def parse_timings(payload) -> dict[int, tuple[int, int]]:
+    """{ayah: (start_ms, end_ms)} from an ayat_timing response.
+
+    The endpoint answers with a bare JSON array of objects carrying `ayah`,
+    `start_time` and `end_time` in milliseconds — the shape AyahTiming.kt's
+    parser reads, and the reason this does not go looking for a wrapper first.
+    The two wrapped shapes below are tolerated in case the API grows one; they
+    are not what it returns today.
+
+    The app's rules apply here too, and for the same reason: there is no ayah 0
+    in any of these responses, a boundary must run forward, and anything else
+    means the response cannot be trusted.  Nothing is interpolated.  A verse
+    with no published boundary is an error, never an estimate.
+    """
+    rows = payload
+    if isinstance(payload, dict):
+        rows = payload.get("ayat_timing") or payload.get("data") or []
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("ayat_timing did not return a list of boundaries")
+
+    out = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if not {"ayah", "start_time", "end_time"} <= row.keys():
+            continue
+        try:
+            n, start, end = int(row["ayah"]), int(row["start_time"]), int(row["end_time"])
+        except (TypeError, ValueError):
+            continue
+        if n < 1 or end <= start:
+            continue
+        out[n] = (start, end)
+
+    if not out:
+        raise ValueError("ayat_timing carried no usable boundary")
+    return out
+
+
 def fetch_surah_cut(rid: str) -> bytes:
     """The one ayah, cut out of the whole surah on its published boundaries.
 
     This is what the app does at playback time, done once here instead.  The
-    boundaries come from MP3Quran's own `ayat_timing` endpoint for this exact
-    recording — never from a guess, and never interpolated: a missing or
-    malformed boundary raises rather than producing a clip that starts in the
-    middle of a word.
+    boundaries come from MP3Quran's own ayat_timing endpoint for this exact
+    recording, by the same read id the app uses — never from a guess, and never
+    interpolated: a missing or malformed boundary raises rather than producing
+    a clip that starts in the middle of a word.
     """
     folder, read_id = SURAH_SOURCES[rid]
 
-    data = get(f"{TIMINGS}?surah={SURAH}&read={read_id}")
-    rows = data.get("ayat_timing") or data.get("data") or []
-    hit = next((r for r in rows if int(r.get("ayah", -1)) == AYAH), None)
-    if not hit:
-        raise ValueError(f"no published timing for {SURAH}:{AYAH} on read {read_id}")
+    timings = parse_timings(get(f"{TIMINGS}?surah={SURAH}&read={read_id}"))
+    if AYAH not in timings:
+        raise ValueError(f"no published boundary for {SURAH}:{AYAH} on read {read_id}")
+    start, end = timings[AYAH]
 
-    start, end = int(hit["start_time"]), int(hit["end_time"])
-    if end <= start:
-        raise ValueError(f"timing for {SURAH}:{AYAH} is {start}..{end} ms")
-
-    audio = get(f"{folder}{SURAH:03d}.mp3", binary=True)
+    url = f"{folder}{SURAH:03d}.mp3"          # MP3Quran's 3-digit convention
+    audio = get(url, binary=True)
 
     with tempfile.TemporaryDirectory() as tmp:
         src = pathlib.Path(tmp) / "surah.mp3"
         dst = pathlib.Path(tmp) / "ayah.mp3"
         src.write_bytes(audio)
+        # -ss before -i seeks the input, -t after it bounds the copy. Stream
+        # copy, so the ayah is the reciter's own bytes and is not re-encoded.
         subprocess.run(
             ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-             "-ss", f"{start / 1000:.3f}", "-to", f"{end / 1000:.3f}",
-             "-i", str(src), "-c", "copy", str(dst)],
+             "-ss", f"{start / 1000:.3f}", "-i", str(src),
+             "-t", f"{(end - start) / 1000:.3f}", "-c", "copy", str(dst)],
             check=True,
         )
-        return dst.read_bytes()
+        cut = dst.read_bytes()
+
+    if len(cut) < 2048:
+        raise ValueError(f"the cut came out at {len(cut)} bytes — "
+                         f"boundary {start}..{end}ms of {url}")
+
+    want = end - start
+    got = mp3_duration_ms(cut)
+    # A stream copy snaps to frame boundaries, so a little over is expected and
+    # a little under is not alarming; an order of magnitude out means the seek
+    # or the boundary was wrong, and that clip must not be committed.
+    if got and not (want * 0.5 <= got <= want * 1.5 + 1000):
+        raise ValueError(f"the cut is {got}ms but {SURAH}:{AYAH} is {want}ms "
+                         f"({start}..{end} of {url}) — not writing it")
+    return cut
+
+
+def selftest() -> int:
+    """Prove the parsing offline, before anything is downloaded on a machine
+    that can reach these hosts."""
+    cases = [
+        ("bare array, as the endpoint answers",
+         [{"ayah": 91, "start_time": 1000, "end_time": 2000},
+          {"ayah": 92, "start_time": 2000, "end_time": 9500}], (2000, 9500)),
+        ("string numbers",
+         [{"ayah": "92", "start_time": "2000", "end_time": "9500"}], (2000, 9500)),
+        ("wrapped in ayat_timing",
+         {"ayat_timing": [{"ayah": 92, "start_time": 5, "end_time": 10}]}, (5, 10)),
+        ("wrapped in data",
+         {"data": [{"ayah": 92, "start_time": 5, "end_time": 10}]}, (5, 10)),
+    ]
+    bad = 0
+    for name, payload, want in cases:
+        try:
+            got = parse_timings(payload).get(AYAH)
+        except ValueError as e:
+            got = f"raised {e}"
+        ok = got == want
+        bad += not ok
+        print(f"  {'ok  ' if ok else 'FAIL'} {name}: {got}")
+
+    rejects = [
+        ("empty", []),
+        ("a boundary that runs backwards", [{"ayah": 92, "start_time": 9, "end_time": 9}]),
+        ("ayah 0 only", [{"ayah": 0, "start_time": 0, "end_time": 9}]),
+        ("missing end_time", [{"ayah": 92, "start_time": 0}]),
+        ("not a list", {"ayat_timing": "nope"}),
+    ]
+    for name, payload in rejects:
+        try:
+            parse_timings(payload)
+            print(f"  FAIL {name}: accepted, should have raised")
+            bad += 1
+        except ValueError:
+            print(f"  ok   {name}: rejected")
+
+    # And the coordinates, which must not drift from the app's.
+    urls = [
+        f"{CDN}/{AYAH_SOURCES['alafasy'][1]}/{AYAH_SOURCES['alafasy'][0]}/{GLOBAL_AYAH}.mp3",
+        f"{SURAH_SOURCES['raad_kurdi'][0]}{SURAH:03d}.mp3",
+    ]
+    want = [
+        f"https://cdn.islamic.network/quran/audio/128/ar.alafasy/2575.mp3",
+        "https://server6.mp3quran.net/kurdi/021.mp3",
+    ]
+    for got, exp in zip(urls, want):
+        ok = got == exp
+        bad += not ok
+        print(f"  {'ok  ' if ok else 'FAIL'} url: {got}")
+
+    # The duration reader, against streams built to a known length.
+    for kbps, hdr2, secs in [(128, 0x90, 7.5), (64, 0x50, 3.0)]:
+        rate, samples = 44100, 1152
+        size = (samples // 8 * kbps * 1000) // rate
+        frames = int(secs * rate / samples)
+        stream = (bytes([0xFF, 0xFB, hdr2, 0xC0]) + b"\x00" * (size - 4)) * frames
+        got = mp3_duration_ms(stream)
+        want = int(frames * samples * 1000 / rate)
+        ok = abs(got - want) <= 30
+        bad += not ok
+        print(f"  {'ok  ' if ok else 'FAIL'} duration of a {secs}s {kbps}kbps stream: "
+              f"{got}ms (want {want}ms)")
+
+    ok = mp3_duration_ms(b"not audio at all") == 0
+    bad += not ok
+    print(f"  {'ok  ' if ok else 'FAIL'} garbage reads as 0ms, not as a length")
+
+    print("\nselftest:", "all green" if not bad else f"{bad} FAILING")
+    return 0 if not bad else 1
 
 
 # ---------------------------------------------------------------------- main
@@ -245,7 +418,12 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="report only, download nothing")
     ap.add_argument("--force", action="store_true", help="re-download clips already on disk")
     ap.add_argument("--prune", action="store_true", help="remove rows whose clip could not be fetched")
+    ap.add_argument("--selftest", action="store_true",
+                    help="check the parsing and the URLs offline, then exit")
     args = ap.parse_args()
+
+    if args.selftest:
+        return selftest()
 
     voices = read_page()
     soon = [v for v in voices if v[2]]
