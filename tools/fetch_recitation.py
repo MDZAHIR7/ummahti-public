@@ -546,4 +546,12 @@ def fail(msg: str) -> int:
 
 
 if __name__ == "__main__":
+    # The ayah is printed as Arabic, and a Windows console still defaults to
+    # a legacy codepage that cannot encode it.  Say utf-8 rather than die
+    # halfway through a report.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     raise SystemExit(main())
