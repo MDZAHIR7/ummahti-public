@@ -49,8 +49,8 @@
 
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260830f">
-<script src="/theme.js?v=20260830f"></script>
+<link rel="stylesheet" href="/styles.css?v=20260831a">
+<script src="/theme.js?v=20260831a"></script>
 </head>
 
 <body>
@@ -694,6 +694,134 @@
     </div>
   </section>
 
+  <!-- ====================================================== the one verse -->
+  <!-- The rail above names the voices. This lets you hear one, and it is
+       locked to a single ayah: Al-Anbiya 21:92, the verse the app is named
+       out of — inna hadhihi ummatukum ummatan wahidah, "this ummah of yours
+       is one ummah". One verse, thirty-eight readings of it. Nothing here
+       chooses a surah or a page, because that is the app's job, not a
+       landing page's.
+
+       The drum is the same list as the rail, in the same order, and it is
+       the app's list: every row's data-clip is that reciter's own id in
+       SUPPORTED_RECITERS (AudioPlayerManager.kt), so a row cannot drift from
+       the reciter it names, and tools/fetch_recitation.py fetches each clip
+       by the app's own coordinates rather than by matching a name. The
+       eleven marked soon are the eleven the rail marks: they are in the next
+       update, so they have no audio here either, and the transport says so
+       rather than pretending.
+
+       The Arabic is the imlaei text with full diacritics rather than the
+       Uthmani text the app draws. The page ships two latin faces and no
+       Arabic one, so this line is set in whatever Arabic face the reader's
+       system has, and the Uthmani orthography (the superscript alef, the
+       wasla, the small high seen) is exactly what a system face is likely to
+       drop. The app renders Uthmani because the app carries the font for it.
+       If a subset of the app's own Uthmani face is ever added to /fonts, this
+       line becomes the Uthmani text and the note goes away.
+
+       Audio is served from this origin. Nothing here calls a third party:
+       the Content-Security-Policy in _headers has connect-src 'none', and
+       media falls back to default-src 'self', so a clip that is not in
+       /media/recitation cannot be fetched from anywhere else. Which is also
+       why the manifest is the markup — a script on this page cannot fetch a
+       JSON file — and why data-clips below is the gate: it stays "pending"
+       until the clips are actually committed, and while it is pending the
+       whole section never appears. tools/fetch_recitation.py flips it.
+
+       With no scripting the section stays hidden. A drum you cannot spin and
+       a button that cannot play are worse than no player at all, and the
+       rail above has already named every reciter without a line of JS. -->
+  <section class="bay verse-lock" id="one-verse" aria-labelledby="one-verse-title"
+           data-verse data-clips="pending" hidden>
+    <div class="shell">
+      <p class="label" data-reveal>One verse</p>
+      <h2 class="d2" id="one-verse-title" data-reveal data-split>Hear the ayah our name comes from.</h2>
+
+      <div class="lock panel" data-reveal style="--delay:120ms">
+        <figure class="lock-verse">
+          <p class="ayah" lang="ar" dir="rtl">&#1573;&#1616;&#1606;&#1617;&#1614; &#1607;&#1614;&#1648;&#1584;&#1616;&#1607;&#1616; &#1571;&#1615;&#1605;&#1617;&#1614;&#1578;&#1615;&#1603;&#1615;&#1605;&#1618; &#1571;&#1615;&#1605;&#1617;&#1614;&#1577;&#1611; &#1608;&#1614;&#1575;&#1581;&#1616;&#1583;&#1614;&#1577;&#1611; &#1608;&#1614;&#1571;&#1614;&#1606;&#1614;&#1575; &#1585;&#1614;&#1576;&#1617;&#1615;&#1603;&#1615;&#1605;&#1618; &#1601;&#1614;&#1575;&#1593;&#1618;&#1576;&#1615;&#1583;&#1615;&#1608;&#1606;&#1616;</p>
+          <p class="ayah-lat">Inna h&#257;dhihi ummatukum ummatan w&#257;&#7717;idatan wa-ana rabbukum fa&rsquo;bud&#363;n</p>
+          <blockquote class="ayah-gloss">
+            <p>&ldquo;Indeed this ummah of yours is one ummah, and I am your Lord, so worship Me.&rdquo;</p>
+          </blockquote>
+          <figcaption>
+            <cite>S&#363;rah Al-Anbiy&#257;&rsquo; 21:92</cite>
+            <span>A plain rendering of the meaning, not a named translation.</span>
+          </figcaption>
+        </figure>
+
+        <!-- The drum. It is a real scroll container with scroll snapping, so
+             the flick, the momentum and the settle are the platform's own and
+             feel right on a phone without a line of physics here. The script
+             only leans the rows away from the reader and ticks the haptic as
+             each name crosses the band. -->
+        <div class="lock-deck">
+          <div class="wheel" data-wheel>
+            <div class="wheel-band" aria-hidden="true"></div>
+            <ul class="wheel-list" data-wheel-list
+                role="listbox" tabindex="0"
+                aria-label="Reciter"
+                aria-activedescendant="voice-alafasy">
+            <li role="option" id="voice-alafasy" data-clip="alafasy" aria-selected="true">Mishari Rashid Alafasy</li>
+            <li role="option" id="voice-abdulbaset" data-clip="abdulbaset">Abdul Basit Abdul Samad</li>
+            <li role="option" id="voice-abdullah_basfar" data-clip="abdullah_basfar">Abdullah Basfar</li>
+            <li role="option" id="voice-sudais" data-clip="sudais">Abdul Rahman Al-Sudais</li>
+            <li role="option" id="voice-shuraym" data-clip="shuraym">Saud Al-Shuraim</li>
+            <li role="option" id="voice-shatri" data-clip="shatri">Abu Bakr Al-Shatri</li>
+            <li role="option" id="voice-ajamy" data-clip="ajamy">Ahmad bin Ali Al-Ajmi</li>
+            <li role="option" id="voice-hani_rifai" data-clip="hani_rifai">Hani Ar-Rifai</li>
+            <li role="option" id="voice-husary" data-clip="husary">Mahmoud Khalil Al-Hussary</li>
+            <li role="option" id="voice-husary_mujawwad" data-clip="husary_mujawwad">Mahmoud Khalil Al-Hussary <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-hudhaify" data-clip="hudhaify">Ali Al-Hudhaify</li>
+            <li role="option" id="voice-akhdar" data-clip="akhdar">Ibrahim Al-Akhdar</li>
+            <li role="option" id="voice-maher_muaiqly" data-clip="maher_muaiqly">Maher Al-Muaiqly</li>
+            <li role="option" id="voice-minshawy_murattal" data-clip="minshawy_murattal">Mohamed Siddiq Al-Minshawi <i>(Murattal)</i></li>
+            <li role="option" id="voice-minshawy_mujawwad" data-clip="minshawy_mujawwad">Mohamed Siddiq Al-Minshawi <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-muhammad_ayyoub" data-clip="muhammad_ayyoub">Muhammad Ayyoub</li>
+            <li role="option" id="voice-jibreel" data-clip="jibreel">Muhammad Jibril</li>
+            <li role="option" id="voice-sowaid" data-clip="sowaid">Ayman Suwaid</li>
+            <li role="option" id="voice-raad_kurdi" data-clip="raad_kurdi">Raad Al-Kurdi</li>
+            <li role="option" id="voice-yasser_dosari" data-clip="yasser_dosari">Yasser Al-Dosari</li>
+            <li role="option" id="voice-nasser_qatami" data-clip="nasser_qatami">Nasser Al-Qatami</li>
+            <li role="option" id="voice-khalid_jalil" data-clip="khalid_jalil">Khalid Al-Jalil</li>
+            <li role="option" id="voice-idris_abkar" data-clip="idris_abkar">Idris Abkar</li>
+            <li role="option" id="voice-fares_abbad" data-clip="fares_abbad">Fares Abbad</li>
+            <li role="option" id="voice-saad_ghamdi" data-clip="saad_ghamdi">Saad Al-Ghamdi</li>
+            <li role="option" id="voice-bandar_balila" data-clip="bandar_balila">Bandar Balila</li>
+            <li role="option" id="voice-mustafa_ismail" data-clip="mustafa_ismail">Mustafa Ismail <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-salah_budair" data-clip="salah_budair" data-soon class="is-soon">Salah Al-Budair</li>
+            <li role="option" id="voice-abdullah_matrood" data-clip="abdullah_matrood" data-soon class="is-soon">Abdullah Al-Matrood</li>
+            <li role="option" id="voice-salah_bukhatir" data-clip="salah_bukhatir" data-soon class="is-soon">Salah Bukhatir</li>
+            <li role="option" id="voice-banna_mujawwad" data-clip="banna_mujawwad" data-soon class="is-soon">Mahmoud Ali Al-Banna <i>(Mujawwad)</i></li>
+            <li role="option" id="voice-masarawi" data-clip="masarawi" data-soon class="is-soon">Ahmed Issa Al-Masarawi</li>
+            <li role="option" id="voice-burhaji" data-clip="burhaji" data-soon class="is-soon">Muhammad Burhaji</li>
+            <li role="option" id="voice-buayjan" data-clip="buayjan" data-soon class="is-soon">Abdullah Al-Buayjan</li>
+            <li role="option" id="voice-nufais" data-clip="nufais" data-soon class="is-soon">Ahmad Al-Nufais</li>
+            <li role="option" id="voice-salemi" data-clip="salemi" data-soon class="is-soon">Mansour Al-Salemi</li>
+            <li role="option" id="voice-dukhain" data-clip="dukhain" data-soon class="is-soon">Haitham Al-Dukhain</li>
+            <li role="option" id="voice-hasan_saleh" data-clip="hasan_saleh" data-soon class="is-soon">Hasan Saleh</li>
+            </ul>
+          </div>
+
+          <div class="lock-controls">
+            <button class="lock-play" type="button" data-play aria-label="Play this verse">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.6l10 6.4-10 6.4z" fill="currentColor"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 5.4h3v13.2h-3zM12.6 5.4h3v13.2h-3z" fill="currentColor"/></svg>
+            </button>
+            <div class="lock-meta">
+              <p class="lock-now" data-now>Mishari Rashid Alafasy</p>
+              <div class="lock-bar" aria-hidden="true"><i data-bar></i></div>
+              <p class="lock-hint" data-hint>Spin the drum to change the voice.</p>
+            </div>
+          </div>
+        </div>
+
+        <audio data-audio preload="none"></audio>
+      </div>
+    </div>
+  </section>
+
   <!-- ========================================================= promise -->
   <section class="bay shell" id="promise">
     <div class="promise">
@@ -768,8 +896,9 @@
 
 </div>
 
-<script src="/vendor/lenis.min.js?v=20260830f" defer></script>
-<script src="/sky.js?v=20260830f" defer></script>
-<script src="/app.js?v=20260830f" defer></script>
+<script src="/vendor/lenis.min.js?v=20260831a" defer></script>
+<script src="/sky.js?v=20260831a" defer></script>
+<script src="/verse.js?v=20260831a" defer></script>
+<script src="/app.js?v=20260831a" defer></script>
 </body>
 </html>

@@ -19,6 +19,8 @@ styles.css          the whole design system, one file
 theme.js            restores the reader's theme, and marks the first page of
                     a visit, both before the first paint
 sky.js              the room, drawn on the GPU when the device can take it
+verse.js            the one-verse player: the reciter drum, its haptics, and
+                    playback of the single locked ayah
 app.js              scroll, reveals, the search demo, the lighting model,
                     the theme picker
 vendor/lenis.min.js smooth scroll, self-hosted (the CSP forbids CDNs)
@@ -26,6 +28,9 @@ fonts/              Cinzel + Plus Jakarta Sans, subset to latin, with licences
 media/screens/      app screenshots, WebP at 840w and 420w
 media/scripts/      Al-Faatiha set once per Arabic script, WebP at 720w and 420w
 media/brand/        crescent mark, favicons, social card
+media/recitation/   the locked ayah, one clip per reciter, fetched not
+                    committed by hand — see the file there
+tools/              what fetches the recitation clips; nothing the site serves
 ```
 
 ## Where the assets come from
@@ -49,12 +54,79 @@ Nothing here is a mockup.
   `QuranScriptRegistry.kt` (that registry exists so a face is never paired with
   the wrong text) and the per-face leading comes from the measured policy in
   `ReaderSettings.kt`.
+- **Recitation clips** are the ayah the app plays, from the per-ayah source
+  the app plays it from, fetched by `tools/fetch_recitation.py`. The script
+  does not carry a table of edition identifiers: it asks the API what it has
+  and matches names against the drum in `index.html`, so the mapping is
+  the coordinates the app plays them by — `AYAH_SOURCES` and `SURAH_SOURCES`
+  in the script are `SUPPORTED_RECITERS` transcribed field for field, so no
+  name is ever matched approximately. Eighteen reciters are per-ayah files
+  from AlQuran Cloud and download as-is; nine are whole-surah files from
+  MP3Quran, cut to that recording's own published `ayat_timing` boundaries
+  for 21:92 with ffmpeg, which is what the app does at playback time. No
+  boundary is interpolated: a reciter with no published timing is reported
+  and skipped.
 - **The nine themes are readable, not just shown.** Each one is a block of
   tokens in `styles.css` whose background, surface, accent, secondary and text
   are the app's own values — the same five the swatches display. The rest of a
   theme (the accent's readable tint, the muted text, the button gradient) is
   derived from those five rather than picked, so a palette here cannot drift
   from the palette there.
+
+## The one verse
+
+The player under the reciter rail is locked to a single ayah — Al-Anbiya
+21:92, *inna hadhihi ummatukum ummatan wahidah*, "this ummah of yours is one
+ummah" — which is the verse the app's name comes out of. It plays that one
+ayah and nothing else. Choosing a surah or a page is the app's job.
+
+The drum holds all thirty-eight voices the rail names, in the rail's order,
+and each row's `data-clip` is that reciter's own id in the app's
+`SUPPORTED_RECITERS` (`AudioPlayerManager.kt`). The eleven the rail marks
+"soon" are marked the same way here: they are in the next update of the app,
+so they have no clip on the site either, and the transport says which it is
+rather than failing quietly.
+
+Three things about it are load-bearing.
+
+**The drum is a scroll container.** `scroll-snap-type: y mandatory`, rows at
+`scroll-snap-align: center`, and that is the whole mechanism. The flick, the
+momentum, the rubber band and the settle are the reader's own platform, which
+is why it feels like the picker they already know, and why there is no physics
+in `verse.js`. The script leans the rows away from the reader, ticks the
+detent as each name crosses the band, and tells the player which name is under
+it. Turning the drum mid-verse swaps the voice and starts the ayah again.
+
+**The detent is three things.** Android gets `navigator.vibrate`, which needs
+sticky user activation — a touch-drag does not grant that until the finger
+lifts, so the first spin of the page would otherwise be silent; `prime()`
+spends the first activation-granting event on a zero-length pulse to arm it.
+iOS Safari has no Vibration API at all, but since 17.4 a switch control fires
+the system haptic when it toggles, so the tick there is a one-pixel
+`<input type="checkbox" switch>` in the corner of the drum, clicked once per
+detent — it has to stay in the layout, since `display:none` takes the haptic
+with it. Everything else has no motor and gets the band lighting for a frame,
+which runs on all three.
+
+**The markup is the manifest.** The CSP has `connect-src 'none'`, so the page
+cannot fetch a JSON file of reciters even if it wanted one. The list is the
+`<li>`s, each carrying the slug of its clip, and `tools/fetch_recitation.py`
+reads that list rather than keeping a second copy of it.
+
+**It hides itself rather than half-work.** The section ships `hidden` with
+`data-clips="pending"`, and `verse.js` returns without touching it unless that
+says `"ready"` — which the fetch script sets once every voice in the drum has
+a clip on disk. A deploy without the audio shows nothing at all, which is the
+right outcome: the rail above has already named every reciter the app ships,
+without a line of script, and a button that cannot play is worse than no
+button. A single clip that goes missing later is handled at runtime instead —
+its row says so and the transport disables.
+
+The Arabic is the imlaei text with full diacritics, not the Uthmani text the
+app draws. The page ships two latin faces and no Arabic one, so the line is
+set in whatever Arabic face the reader's system has, and Uthmani orthography
+is exactly what a borrowed face tends to drop. If a subset of the app's own
+Uthmani face is ever added to `fonts/`, the line becomes the Uthmani text.
 
 ## The themes
 

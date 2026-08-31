@@ -1753,6 +1753,310 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   padding-left: .1rem;
 }
 
+/* --- the one verse ------------------------------------------------------ */
+
+/* Hidden until the clips exist. index.html carries data-clips="pending" and
+   the script only lifts [hidden] when it reads "ready", so a deploy without
+   the audio shows nothing rather than showing a dead button. */
+.verse-lock[hidden] { display: none; }
+
+.verse-lock .shell > * + * { margin-top: 1.1rem; }
+
+.lock {
+  margin-top: clamp(2rem, 4.5vw, 3.2rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(1.6rem, 4vw, 3.2rem);
+  align-items: center;
+  padding: clamp(1.6rem, 3.4vw, 2.6rem);
+}
+
+.lock-verse { margin: 0; grid-column: 1; }
+
+/* Set in whatever Arabic face the reader's system has — see the note in
+   index.html. The size is generous because a borrowed face is rarely as
+   well-fitted as the app's own, and because it is the only Arabic on the
+   page that is meant to be read rather than looked at. */
+.ayah {
+  margin: 0;
+  font-family: 'Noto Naskh Arabic', 'Geeza Pro', 'Traditional Arabic', 'Times New Roman', serif;
+  font-size: clamp(1.5rem, 1.05rem + 2vw, 2.4rem);
+  line-height: 2.05;
+  color: var(--gold-light);
+  text-wrap: balance;
+}
+.ayah-lat {
+  margin: .9rem 0 0;
+  font-size: .93rem;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: .01em;
+}
+.ayah-gloss {
+  margin: 1.15rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(var(--gold-rgb), .32);
+}
+.ayah-gloss p {
+  margin: 0;
+  font-size: clamp(1rem, .95rem + .3vw, 1.15rem);
+  line-height: 1.62;
+  color: var(--text);
+}
+.lock-verse figcaption {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .3rem .7rem;
+}
+.lock-verse cite {
+  font-style: normal;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.lock-verse figcaption span { font-size: .8rem; color: var(--muted-2); }
+
+.lock-deck {
+  grid-column: 2;
+  display: grid;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+/* --- the drum ----------------------------------------------------------- */
+
+/* The wheel is a scroll container and nothing more clever than that. Snapping
+   is the browser's, so the flick, the momentum and the settle are the ones
+   the reader's own platform ships — which is the whole reason it feels like
+   the picker they already know. The script's only job is the lean, the
+   haptic tick and telling the player which name is under the band. */
+.wheel {
+  position: relative;
+  --wheel-item: 42px;
+  --wheel-rows: 5;
+  height: calc(var(--wheel-item) * var(--wheel-rows));
+  perspective: 560px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg,
+      rgba(0, 0, 0, calc(.28 * var(--shadow-k))),
+      rgba(0, 0, 0, calc(.1 * var(--shadow-k))) 46%,
+      rgba(0, 0, 0, calc(.28 * var(--shadow-k)))),
+    var(--ink-2);
+  box-shadow:
+    inset 0 1px 0 rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .13);
+  overflow: hidden;
+}
+
+/* The band the selected name sits in — two hairlines and a faint wash, which
+   is all a picker has ever needed to say "this one". */
+.wheel-band {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: var(--wheel-item);
+  translate: 0 -50%;
+  border-radius: 9px;
+  border-block: 1px solid rgba(var(--gold-rgb), .42);
+  background: rgba(var(--gold-rgb), .07);
+  pointer-events: none;
+  z-index: 2;
+  transition: background 160ms linear, border-color 160ms linear;
+}
+/* One frame of light as a name crosses the band, so the detent is visible as
+   well as felt — a phone can buzz, a laptop cannot. */
+.wheel.is-tick .wheel-band {
+  background: rgba(var(--gold-rgb), .15);
+  border-color: rgba(var(--gold-rgb), .7);
+  transition: none;
+}
+
+.wheel-list {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: calc((var(--wheel-item) * (var(--wheel-rows) - 1)) / 2) 0;
+  list-style: none;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  transform-style: preserve-3d;
+
+  /* The rows do not stop at the edge, they fall away over it. */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 13%, #000 87%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 13%, #000 87%, transparent);
+}
+.wheel-list::-webkit-scrollbar { display: none; }
+.wheel-list:focus { outline: none; }
+.wheel:has(.wheel-list:focus-visible) {
+  box-shadow:
+    inset 0 1px 0 rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .13),
+    0 0 0 2px var(--gold);
+}
+
+.wheel-list li {
+  height: var(--wheel-item);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding-inline: 1rem;
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
+  white-space: nowrap;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+
+  /* --t is the row's distance from the band, -1 above to 1 below, written
+     by the script, and --a is that distance without its sign. The script
+     writes both rather than letting the stylesheet take abs(), which is
+     newer than this page's floor. Everything a row does about being
+     off-centre it does from those two numbers. */
+  --t: 0;
+  --a: 0;
+  transform: rotateX(calc(var(--t) * -64deg)) scale(calc(1 - var(--a) * .14));
+  opacity: calc(1 - var(--a) * .72);
+  transition: color 160ms linear;
+}
+.wheel-list li i {
+  font-style: normal;
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.wheel-list li[aria-selected='true'] { color: var(--gold-light); }
+.wheel-list li[aria-selected='true'] i { color: var(--gold); }
+
+/* Two rows that will not play, for two different reasons, and the drum keeps
+   both: it is the list of voices, and a voice that is coming is still a
+   voice. The rail above marks the same eleven the same way. */
+.wheel-list li.is-soon,
+.wheel-list li.is-missing { color: var(--muted-2); }
+.wheel-list li.is-soon::after,
+.wheel-list li.is-missing::after {
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.wheel-list li.is-soon::after { content: 'soon'; color: var(--gold); }
+.wheel-list li.is-missing::after { content: 'no clip'; color: var(--muted-2); }
+.wheel-list li.is-soon[aria-selected='true'] { color: var(--muted); }
+
+/* The iOS haptic, which has to stay in the layout to keep its haptic —
+   display:none takes it away. One pixel in the corner, under the band, and
+   unreachable by pointer or keyboard. See tick() in verse.js. */
+.wheel-haptic {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Under reduced motion the drum stops being a drum: the rows lie flat, the
+   selection is a change of colour, and snapping still holds the list where
+   the reader leaves it. */
+@media (prefers-reduced-motion: reduce) {
+  .wheel { perspective: none; }
+  .wheel-list li { transform: none; opacity: calc(1 - var(--a) * .55); }
+  .wheel.is-tick .wheel-band { background: rgba(var(--gold-rgb), .07); }
+}
+
+/* --- the transport ------------------------------------------------------ */
+
+.lock-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lock-play {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--gold-ink);
+  background: linear-gradient(180deg, var(--gold-hi), var(--gold-deep));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .45),
+    0 8px 20px -10px rgba(var(--gold-rgb), .9);
+  transition: translate 420ms var(--ease-out), filter 200ms linear;
+}
+.lock-play:hover { translate: 0 -2px; transition: translate 90ms linear; }
+.lock-play:active { translate: 0 0; }
+.lock-play[disabled] { filter: grayscale(1) opacity(.42); cursor: not-allowed; }
+.lock-play svg { width: 22px; height: 22px; }
+.lock-play .i-pause { display: none; }
+.lock-play[aria-pressed='true'] .i-play { display: none; }
+.lock-play[aria-pressed='true'] .i-pause { display: block; }
+
+.lock-meta { min-width: 0; flex: 1; }
+.lock-now {
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lock-bar {
+  margin-top: .55rem;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--rule-soft);
+  overflow: hidden;
+}
+.lock-bar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-hi));
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+}
+.lock-hint {
+  margin: .5rem 0 0;
+  font-size: .78rem;
+  color: var(--muted-2);
+}
+
+@media (max-width: 900px) {
+  .lock { grid-template-columns: minmax(0, 1fr); }
+  .lock-verse, .lock-deck { grid-column: 1; }
+  .ayah { text-align: center; }
+  .lock-verse figcaption { justify-content: center; text-align: center; }
+  .ayah-lat { text-align: center; }
+  .ayah-gloss {
+    padding-left: 0;
+    padding-top: .9rem;
+    border-left: 0;
+    border-top: 2px solid rgba(var(--gold-rgb), .32);
+    text-align: center;
+  }
+}
+
 /* --- the promise -------------------------------------------------------- */
 
 .promise {
