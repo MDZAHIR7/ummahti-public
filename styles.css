@@ -320,7 +320,7 @@
 
   --shell: 1180px;
   --gutter: clamp(1.15rem, 4vw, 2.5rem);
-  --bay: clamp(4.25rem, 8.5vw, 7.5rem);
+  --bay: clamp(4rem, 7.4vw, 6.5rem);
 
   --ease: cubic-bezier(.22, .61, .36, 1);
   --ease-out: cubic-bezier(.16, 1, .3, 1);
@@ -356,11 +356,43 @@ body {
   color: var(--text);
   font-family: 'Jakarta', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: clamp(1rem, .96rem + .18vw, 1.09rem);
-  line-height: 1.72;
+  line-height: 1.65;
   font-weight: 400;
   overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+
+  /* Plus Jakarta Sans draws its word space at 170/1000 em -- narrow enough
+     that a line of it reads as one long word at body size. The face is the
+     one the app draws with and is not going to be swapped, so the space is
+     paid back here rather than lived with. Measured, not guessed: 170 + 62
+     lands on the 0.23em the rest of the page is spaced for. Cinzel already
+     draws 250 and is exempt below, as is every tracked uppercase line, where
+     the letter-spacing has opened the words far enough on its own. */
+  word-spacing: .062em;
+}
+
+h1, h2, h3, .display,
+.brand-name, .fact dt,
+.label, .fact dd, .kit-flag, .theme-menu-head { word-spacing: normal; }
+
+/* Form controls do not inherit word-spacing -- the UA stylesheet sets it on
+   them -- so every button on the page would have kept the cramped default
+   while the prose beside it did not. */
+button, input, select, textarea { word-spacing: inherit; }
+
+/* Every pressable thing on the page draws its own press now, so the platform
+   grey flash is a second, slower answer to the same tap and is turned off.
+   `touch-action: manipulation` goes with it: it drops the browser's wait for
+   a possible double-tap, which is the last few hundred milliseconds of lag
+   between the finger and the feedback. */
+a, button, [role='button'], summary, label {
+  -webkit-tap-highlight-color: transparent;
+}
+.btn, .badge-play, .theme-pick-btn, .theme-opt, .lock-play,
+.script-tabs button, button.theme, .nav-links a, .footer-links a {
+  touch-action: manipulation;
 }
 
 /* Lenis owns the scroll position when it is running; without it the browser
@@ -378,11 +410,20 @@ a { color: inherit; }
 
 ::selection { background: rgba(var(--gold-rgb), .28); color: var(--gold-light); }
 
+/* The ring never changes the shape it is drawn around. A blanket
+   `border-radius` here squares off every pill and card the moment it takes
+   focus, so the rounding is given only to the bare text links that have
+   none of their own. */
 :focus-visible {
   outline: 2px solid var(--gold-light);
   outline-offset: 3px;
-  border-radius: 4px;
 }
+a:focus-visible:not([class]),
+.nav-links a:not(.btn):focus-visible,
+.footer-links a:focus-visible,
+.prose a:focus-visible,
+.doc-body a:focus-visible { border-radius: 4px; }
+.brand:focus-visible { border-radius: 9px; }
 
 .skip-link {
   position: fixed;
@@ -511,9 +552,13 @@ h1, h2, h3, .display {
   text-wrap: balance;
 }
 
-.d1 { font-size: clamp(2.6rem, 1.5rem + 4.9vw, 5.4rem); }
-.d2 { font-size: clamp(2rem, 1.3rem + 3vw, 3.7rem); }
-.d3 { font-size: clamp(1.22rem, 1.05rem + .7vw, 1.6rem); letter-spacing: 0; }
+/* Tracking is a function of size, never one value for the whole scale: the
+   larger a Cinzel line is set, the further apart its letters read, so the
+   display sizes are pulled in and the small ones left alone. Leading moves
+   the other way -- tight at the top of the scale, open at the bottom. */
+.d1 { font-size: clamp(2.6rem, 1.5rem + 4.9vw, 5.4rem); letter-spacing: -.028em; line-height: 1.02; }
+.d2 { font-size: clamp(2rem, 1.3rem + 3vw, 3.7rem);    letter-spacing: -.02em;  line-height: 1.06; }
+.d3 { font-size: clamp(1.22rem, 1.05rem + .7vw, 1.6rem); letter-spacing: -.004em; line-height: 1.24; }
 
 .gold { color: var(--gold-light); }
 
@@ -546,7 +591,7 @@ h1, h2, h3, .display {
 }
 
 .prose { color: var(--muted); max-width: 62ch; }
-.prose p { margin: 0 0 1.1rem; }
+.prose p { margin: 0 0 1.1rem; text-wrap: pretty; }
 .prose strong { color: var(--text); font-weight: 600; }
 .prose a { color: var(--gold-light); text-underline-offset: 3px; }
 
@@ -572,8 +617,21 @@ h1, h2, h3, .display {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
+
+/* The press is the one piece of feedback that has to arrive before anything
+   else does: it is what tells the reader the page heard them. It is scale
+   rather than a colour change because scale reads on any theme, and it is
+   fast in and slower out -- the hand is quicker than the eye going down and
+   the other way coming back. */
+.btn:active,
+.badge-play:active,
+.theme-pick-btn:active {
+  transform: scale(.973);
+  transition-duration: 110ms;
+}
+.theme-opt:active { transform: scale(.99); transition-duration: 110ms; }
 
 .btn-primary {
   color: var(--gold-ink);
@@ -586,14 +644,12 @@ h1, h2, h3, .display {
 }
 .btn-primary:hover,
 .btn-primary:focus-visible {
-  transform: translateY(-2px);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .62),
     inset 0 -1px 0 rgba(0, 0, 0, calc(.22 * var(--shadow-k))),
     0 3px 6px rgba(0, 0, 0, calc(.5 * var(--shadow-k))),
     0 20px 40px -14px rgba(var(--gold-rgb), .74);
 }
-.btn-primary:active { transform: translateY(0); }
 
 .btn-ghost {
   color: var(--gold-light);
@@ -604,21 +660,50 @@ h1, h2, h3, .display {
 }
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
-  transform: translateY(-2px);
   box-shadow:
     inset 0 1px 0 rgba(var(--glow-rgb), calc(.26 * var(--spec-k))),
     inset 0 0 0 1px rgba(var(--gold-rgb), .5),
     0 16px 32px -18px rgba(0, 0, 0, calc(.9 * var(--shadow-k)));
 }
-.btn-ghost:active { transform: translateY(0); }
+
+/* The lift is a pointer affordance and nothing else. On a touch screen a tap
+   leaves the element stuck in :hover, which is a raised button that never
+   comes back down, so it is given only to devices that can actually hover. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.973); }
+  .badge-play:hover { transform: translateY(-2px); }
+  .badge-play:active { transform: translateY(0) scale(.973); }
+}
 
 .btn svg { width: 19px; height: 19px; flex: none; }
 
 /* The lean settles back on its own when the pointer leaves; without a
-   transition it would snap. `translate` is transitioned separately from
-   `transform` so the hover lift keeps its own timing. */
-.btn, .badge-play, .theme-pick-btn { transition: translate 420ms var(--ease-out); }
-.btn:hover, .badge-play:hover, .theme-pick-btn:hover { transition: translate 90ms linear; }
+   transition it would snap. `translate` is the lean and `transform` is the
+   lift and the press, so the two carry different timings -- but they have to
+   be named in one declaration, because the shorthand replaces whatever came
+   before it rather than adding to it, and split across two rules the second
+   silently threw the first away. */
+.btn, .badge-play, .theme-pick-btn {
+  transition:
+    translate 420ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    color 200ms var(--ease);
+}
+.btn:hover, .badge-play:hover, .theme-pick-btn:hover {
+  transition:
+    translate 90ms linear,
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    color 200ms var(--ease);
+}
+.btn:active, .badge-play:active, .theme-pick-btn:active {
+  transition:
+    translate 90ms linear,
+    transform 110ms var(--ease-out),
+    box-shadow 110ms var(--ease-out);
+}
 
 .actions {
   display: flex;
@@ -635,15 +720,13 @@ h1, h2, h3, .display {
   display: inline-block;
   line-height: 0;
   border-radius: 12px;
-  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+  transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
 .badge-play img { width: 218px; height: auto; }
 .badge-play:hover,
 .badge-play:focus-visible {
-  transform: translateY(-2px);
   box-shadow: 0 16px 34px -18px rgba(0, 0, 0, calc(.95 * var(--shadow-k)));
 }
-.badge-play:active { transform: translateY(0); }
 
 /* ==========================================================================
    Lit surfaces — the depth system
@@ -681,8 +764,11 @@ h1, h2, h3, .display {
 }
 
 a.panel { text-decoration: none; display: block; }
-a.panel:hover,
 a.panel:focus-visible { transform: translateY(-3px); }
+@media (hover: hover) and (pointer: fine) {
+  a.panel:hover { transform: translateY(-3px); }
+}
+a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120ms; }
 
 /* ==========================================================================
    Header
@@ -806,7 +892,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   cursor: pointer;
   background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.06 * var(--spec-k))), rgba(var(--glow-rgb), calc(.015 * var(--spec-k))));
   box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .2);
-  transition: color 220ms var(--ease), box-shadow 220ms var(--ease);
+  transition: color 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease-out);
 }
 .theme-pick-btn:hover,
 .theme-pick-btn:focus-visible,
@@ -867,16 +953,21 @@ a.panel:focus-visible { transform: translateY(-3px); }
   visibility: hidden;
   transform: translateY(-8px) scale(.98);
   transform-origin: 100% 0;
+  /* Closing is the system responding to a decision already made, so it is
+     quicker than opening, which is the reader still looking. */
   transition:
-    opacity 260ms var(--ease-out),
-    transform 260ms var(--ease-out),
-    visibility 0s linear 260ms;
+    opacity 170ms var(--ease-out),
+    transform 170ms var(--ease-out),
+    visibility 0s linear 170ms;
 }
 .theme-menu.is-open {
   opacity: 1;
   visibility: visible;
   transform: none;
-  transition-delay: 0s;
+  transition:
+    opacity 230ms var(--ease-out),
+    transform 230ms var(--ease-out),
+    visibility 0s;
 }
 .theme-menu-head {
   margin: .15rem .3rem .3rem;
@@ -902,7 +993,7 @@ a.panel:focus-visible { transform: translateY(-3px); }
   color: var(--muted);
   background: transparent;
   cursor: pointer;
-  transition: color 200ms var(--ease), background 200ms var(--ease);
+  transition: color 180ms var(--ease), background 180ms var(--ease), transform 180ms var(--ease-out);
 }
 .theme-opt:hover,
 .theme-opt:focus-visible { color: var(--text); background: rgba(var(--gold-rgb), .1); }
@@ -969,28 +1060,28 @@ a.panel:focus-visible { transform: translateY(-3px); }
 .hero-copy > * + * { margin-top: 1.5rem; }
 .hero-copy .label + .d1 { margin-top: 1.1rem; }
 
-.hero h1 { letter-spacing: -.022em; }
-
+/* Four facts, not four buttons. As pills they wrapped into ragged rows of
+   two and one and read as controls the reader could press; set as a plain
+   two-column list they read as what they are and stop competing with the
+   install badge directly above them. */
 .hero-proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .55rem .9rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  gap: .5rem 2rem;
   padding: 0;
   margin: 0;
   list-style: none;
 }
 .hero-proof li {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 15px 1fr;
   align-items: center;
-  gap: .45rem;
-  font-size: .85rem;
+  gap: .5rem;
+  font-size: .86rem;
+  line-height: 1.4;
   color: var(--muted);
-  padding: .3rem .7rem .3rem .5rem;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.05 * var(--spec-k))), rgba(var(--glow-rgb), calc(.01 * var(--spec-k))));
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .14);
 }
-.hero-proof svg { width: 14px; height: 14px; color: var(--gold); flex: none; }
+.hero-proof svg { width: 15px; height: 15px; color: var(--gold); flex: none; }
 
 /* --- the device --------------------------------------------------------- */
 
@@ -1016,9 +1107,14 @@ a.panel:focus-visible { transform: translateY(-3px); }
     0 0 90px -30px rgba(var(--gold-rgb), calc(.18 + var(--lit) * .24));
   transform: rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg)) translate3d(0, 0, 0);
   transform-style: preserve-3d;
-  transition: transform 600ms var(--ease-out), box-shadow 500ms var(--ease);
+  /* The rest is slow because it is a settle; the chase is fast because it is
+     tracking. One duration for both made the device lag the pointer far
+     enough to read as weight the picture does not have. */
+  transition: transform 520ms var(--ease-out), box-shadow 500ms var(--ease);
   will-change: transform;
 }
+.stage:hover .device,
+.split-media:hover .device { transition: transform 200ms var(--ease-out), box-shadow 500ms var(--ease); }
 .device img {
   border-radius: 27px;
   width: 100%;
@@ -1238,8 +1334,9 @@ a.panel:focus-visible { transform: translateY(-3px); }
   cursor: pointer;
   background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.05 * var(--spec-k))), rgba(var(--glow-rgb), calc(.01 * var(--spec-k))));
   box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .14);
-  transition: color 240ms var(--ease), box-shadow 240ms var(--ease);
+  transition: color 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease-out);
 }
+.script-tabs button:active { transform: scale(.968); transition-duration: 110ms; }
 .script-tabs small {
   font-size: .68rem;
   font-weight: 500;
@@ -1525,15 +1622,23 @@ a.panel:focus-visible { transform: translateY(-3px); }
 /* With JavaScript the cards become buttons that dress the page. Until then
    they are exactly what they were: nine specimens, shown not offered. */
 button.theme { cursor: pointer; }
-button.theme:hover,
-button.theme:focus-visible {
-  transform: translateY(-4px);
+button.theme:focus-visible,
+button.theme:hover {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .2),
     inset 0 0 0 1px rgba(255, 255, 255, .12),
     0 22px 38px -22px rgba(0, 0, 0, calc(1 * var(--shadow-k)));
 }
-button.theme:active { transform: translateY(-1px); }
+button.theme:focus-visible { transform: translateY(-4px); }
+@media (hover: hover) and (pointer: fine) {
+  button.theme:hover { transform: translateY(-4px); }
+}
+/* Nine of these sit in a grid and every one of them is pressed at some point,
+   so the press is the fast half of the pair: 420ms up, 120ms down. */
+button.theme:active {
+  transform: translateY(0) scale(.975);
+  transition-duration: 120ms;
+}
 
 /* The chosen theme is marked on the card itself rather than by a tick
    floating beside it, so the mark is in the theme's own accent. */
@@ -1603,39 +1708,55 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 
 /* --- everything else ----------------------------------------------------- */
 
-/* The features the page asserts in passing, given a place of their own. They
-   are .panel, so they are lit by the same light as every other raised surface
-   rather than being a flat list bolted on the end. */
+/* The features the page asserts in passing, given a place of their own.
+
+   These were ten raised, rounded, bordered surfaces in a row -- which is the
+   look every landing page arrives at by default, and which said nothing about
+   any of the ten. They are a specimen sheet now: no cards, no fills, no
+   shadows, just the type on hairlines, with the space between the columns
+   doing the separating that ten borders were doing before. Depth is spent on
+   the surfaces that are actually raised -- the screenshots, the panels that
+   hold a control -- and nowhere else. */
 .kit-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .8rem;
-  margin-top: clamp(1.8rem, 4vw, 2.8rem);
+  column-gap: clamp(1.5rem, 3.4vw, 3rem);
+  row-gap: 0;
+  margin-top: clamp(2rem, 4.5vw, 3.2rem);
 }
 .kit {
   display: grid;
-  gap: .55rem;
+  gap: .5rem;
   align-content: start;
-  padding: clamp(1.15rem, 2vw, 1.5rem);
+  padding-block: clamp(1.4rem, 2.6vw, 1.9rem);
+  border-top: 1px solid var(--rule-soft);
+  transition: transform 200ms var(--ease-out);
 }
 .kit > svg {
-  width: 24px; height: 24px;
+  width: 22px; height: 22px;
   color: var(--gold);
-  transition: transform 520ms var(--ease-out);
+  transition: transform 380ms var(--ease-out), opacity 200ms var(--ease);
+  opacity: .85;
 }
 .kit h3 {
   margin: 0;
-  font-size: 1.04rem;
-  line-height: 1.3;
+  font-size: 1.02rem;
+  line-height: 1.32;
+  letter-spacing: 0;
   color: var(--text);
+  transition: color 200ms var(--ease);
 }
 .kit p {
   margin: 0;
   font-size: .91rem;
-  line-height: 1.55;
+  line-height: 1.58;
   color: var(--muted);
+  text-wrap: pretty;
 }
-.kit:hover > svg { transform: translateY(-3px) scale(1.06); }
+@media (hover: hover) and (pointer: fine) {
+  .kit:hover > svg { transform: translateY(-2px); opacity: 1; }
+  .kit:hover h3 { color: var(--gold-light); }
+}
 
 /* The one card describing something you cannot download yet says so on its
    face, and is drawn as an outline rather than as a solid surface, so it does
@@ -1645,10 +1766,12 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
   align-items: start;
   gap: clamp(1.1rem, 3vw, 2.6rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.4rem, 2.8vw, 2rem);
+  border-top: 0;
+  border-radius: 16px;
   background: transparent;
-  box-shadow:
-    inset 0 1px 0 rgba(var(--glow-rgb), calc(.05 * var(--spec-k))),
-    inset 0 0 0 1px rgba(var(--gold-rgb), .26);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .22);
 }
 .kit-soon-head { display: grid; gap: .45rem; justify-items: start; }
 .kit-soon-head > svg { width: 26px; height: 26px; color: var(--gold); }
@@ -2000,10 +2123,10 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .45),
     0 8px 20px -10px rgba(var(--gold-rgb), .9);
-  transition: translate 420ms var(--ease-out), filter 200ms linear;
+  transition: translate 420ms var(--ease-out), filter 200ms linear, transform 200ms var(--ease-out);
 }
-.lock-play:hover { translate: 0 -2px; transition: translate 90ms linear; }
-.lock-play:active { translate: 0 0; }
+.lock-play:hover { translate: 0 -2px; transition: translate 90ms linear, filter 200ms linear, transform 200ms var(--ease-out); }
+.lock-play:active:not([disabled]) { translate: 0 0; transform: scale(.94); transition-duration: 100ms; }
 .lock-play[disabled] { filter: grayscale(1) opacity(.42); cursor: not-allowed; }
 .lock-play svg { width: 22px; height: 22px; }
 .lock-play .i-pause { display: none; }
@@ -2127,27 +2250,65 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
    Footer
    ========================================================================== */
 
+/* The footer signs the page. It was a single line of five links and a
+   licence note, which is a sitemap rather than an ending; it now closes with
+   the mark and the words the whole site is built around, and keeps the
+   machinery -- the copyright, the font licence -- below a hairline where it
+   belongs and where nobody has to read past it. */
 .site-footer {
   border-top: 1px solid var(--rule-soft);
-  padding-block: clamp(2.2rem, 5vw, 3.4rem);
+  padding-block: clamp(2.6rem, 5.5vw, 4rem) clamp(1.6rem, 3vw, 2.2rem);
   color: var(--muted);
   font-size: .9rem;
 }
-.footer-row {
+.footer-inner {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
-  gap: 1.2rem;
+  align-items: flex-start;
+  gap: 2rem 3rem;
 }
+.footer-brand {
+  display: grid;
+  grid-template-columns: 30px auto;
+  align-items: center;
+  gap: .1rem .7rem;
+}
+.footer-brand .brand-mark { width: 30px; height: 30px; grid-row: 1; }
+.footer-brand .brand-name { grid-row: 1; font-size: 1rem; color: var(--text); }
+.footer-tag {
+  grid-column: 1 / -1;
+  margin: .55rem 0 0;
+  font-size: .87rem;
+  color: var(--muted);
+}
+
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.4rem;
+  gap: .35rem 1.6rem;
+  padding-top: .3rem;
 }
-.footer-links a { text-decoration: none; transition: color 200ms var(--ease); }
+.footer-links a {
+  text-decoration: none;
+  padding-block: .2rem;
+  transition: color 200ms var(--ease);
+}
 .footer-links a:hover, .footer-links a:focus-visible { color: var(--gold-light); }
-.footer-note { width: 100%; font-size: .8rem; color: var(--muted-2); line-height: 1.6; }
+
+.footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .6rem 2rem;
+  margin-top: clamp(2rem, 4vw, 2.8rem);
+  padding-top: clamp(1.1rem, 2.4vw, 1.5rem);
+  border-top: 1px solid var(--rule-soft);
+  font-size: .8rem;
+  color: var(--muted-2);
+}
+.footer-note { margin: 0; max-width: 62ch; font-size: .8rem; color: var(--muted-2); line-height: 1.6; }
 
 /* ==========================================================================
    Legal and support pages
@@ -2308,8 +2469,10 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .split .device { translate: 0 var(--par, 0px); }
 
 /* The brand mark turns a few degrees to the light on hover. */
-.brand-mark img { transition: rotate 620ms var(--ease-out), filter 620ms var(--ease); }
-.brand:hover .brand-mark img { rotate: -12deg; }
+.brand-mark img { transition: rotate 420ms var(--ease-out), filter 420ms var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover .brand-mark img { rotate: -12deg; }
+}
 
 /* A sheen crosses the install button, once, on hover — the same specular
    language the panels use, put in motion. */
@@ -2320,14 +2483,14 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   border-radius: inherit;
   background: linear-gradient(100deg,
     transparent 36%,
-    rgba(255, 255, 255, .32) 50%,
+    rgba(255, 255, 255, .24) 50%,
     transparent 64%);
   pointer-events: none;
   translate: -140% 0;
   opacity: 0;
 }
 .btn-primary:hover::after,
-.btn-primary:focus-visible::after { animation: sheen 900ms var(--ease-out); }
+.btn-primary:focus-visible::after { animation: sheen 720ms var(--ease-out); }
 @keyframes sheen {
   0%   { translate: -140% 0; opacity: 0 }
   18%  { opacity: 1 }
@@ -2336,10 +2499,10 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 
 /* The section labels' diamond strikes in with the label rather than arriving
    with it already there. */
-.is-in .label::before { animation: strike 620ms var(--ease-out) var(--delay, 0ms) both; }
+.is-in .label::before { animation: strike 480ms var(--ease-out) var(--delay, 0ms) both; }
 @keyframes strike {
-  0%   { opacity: 0; transform: rotate(45deg) scale(0) }
-  60%  { opacity: 1; transform: rotate(45deg) scale(1.5) }
+  0%   { opacity: 0; transform: rotate(45deg) scale(.45) }
+  58%  { opacity: 1; transform: rotate(45deg) scale(1.22) }
   100% { opacity: 1; transform: rotate(45deg) scale(1) }
 }
 
@@ -2351,17 +2514,17 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   opacity: 0;
   transform: translate3d(0, 14px, 0);
   transition:
-    opacity 700ms var(--ease-out) var(--d, 0ms),
-    transform 700ms var(--ease-out) var(--d, 0ms);
+    opacity 560ms var(--ease-out) var(--d, 0ms),
+    transform 560ms var(--ease-out) var(--d, 0ms);
 }
 .facts-grid.is-in .fact,
 .no-js .facts-grid .fact { opacity: 1; transform: none; }
 .facts-grid .fact:nth-child(1) { --d: 0ms }
-.facts-grid .fact:nth-child(2) { --d: 90ms }
-.facts-grid .fact:nth-child(3) { --d: 180ms }
-.facts-grid .fact:nth-child(4) { --d: 270ms }
-.facts-grid .fact:nth-child(5) { --d: 360ms }
-.facts-grid .fact:nth-child(6) { --d: 450ms }
+.facts-grid .fact:nth-child(2) { --d: 60ms }
+.facts-grid .fact:nth-child(3) { --d: 120ms }
+.facts-grid .fact:nth-child(4) { --d: 180ms }
+.facts-grid .fact:nth-child(5) { --d: 240ms }
+.facts-grid .fact:nth-child(6) { --d: 300ms }
 
 /* The counted figures sit on a hairline that draws itself under them. */
 .fact dt { position: relative; display: inline-block; }
@@ -2373,14 +2536,16 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   background: linear-gradient(90deg, var(--gold), transparent);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 900ms var(--ease-out) calc(var(--d, 0ms) + 260ms);
+  transition: transform 640ms var(--ease-out) calc(var(--d, 0ms) + 200ms);
 }
 .facts-grid.is-in .fact dt::after { transform: scaleX(1); }
 
 /* Cards in the pinned run answer the pointer, so the rail does not read as a
    filmstrip of flat images. */
-.mode .device { transition: transform 480ms var(--ease-out), box-shadow 480ms var(--ease); }
-.mode:hover .device { transform: translateY(-8px); }
+.mode .device { transition: transform 320ms var(--ease-out), box-shadow 320ms var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .mode:hover .device { transform: translateY(-8px); }
+}
 
 /* The mark that closes the page glows on the same slow period as the moon. */
 .close-mark img { animation: breathe 16s ease-in-out infinite; }
@@ -2401,12 +2566,16 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
    Reveal — the one-shot entrance
    ========================================================================== */
 
+/* A reveal is a section arriving, not a section performing. It travels a
+   short distance quickly and is over before the reader has finished looking
+   at it -- the old 900ms over 22px was long enough to be watched, which is
+   the one thing an entrance should never be. */
 [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 22px, 0);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 900ms var(--ease-out) var(--delay, 0ms),
-    transform 900ms var(--ease-out) var(--delay, 0ms);
+    opacity 620ms var(--ease-out) var(--delay, 0ms),
+    transform 620ms var(--ease-out) var(--delay, 0ms);
 }
 [data-reveal].is-in {
   opacity: 1;
@@ -2418,10 +2587,10 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .word {
   display: inline-block;
   opacity: 0;
-  transform: translate3d(0, .5em, 0);
+  transform: translate3d(0, .34em, 0);
   transition:
-    opacity 760ms var(--ease-out) var(--delay, 0ms),
-    transform 760ms var(--ease-out) var(--delay, 0ms);
+    opacity 560ms var(--ease-out) var(--delay, 0ms),
+    transform 560ms var(--ease-out) var(--delay, 0ms);
 }
 .is-in .word { opacity: 1; transform: none; }
 
@@ -2488,16 +2657,23 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .modes-head { flex-direction: column; align-items: flex-start; gap: .9rem; }
 
   .promise-list li { grid-template-columns: 22px 1fr; gap: .8rem; }
-  .actions .btn { width: 100%; }
-  .close-panel .actions .btn { width: 100%; }
-  /* The badge is never stretched to fit -- distorting it breaks Google's
-     brand guidelines -- so it centres at its own size instead. */
-  .actions { justify-content: center; }
+
+  /* The install badge is the primary action on every one of these rows, and
+     it cannot be stretched -- distorting it breaks Google's brand guidelines.
+     So the secondary button is not stretched either: a full-width ghost beside
+     a 200px badge made the lesser action the louder one. Both sit at their own
+     size, and the badge leads. */
+  .actions { justify-content: center; row-gap: .9rem; }
   .hero .actions { justify-content: flex-start; }
+  .actions .btn { width: auto; min-width: 11rem; }
   .badge-play img { width: 200px; }
 }
 
 @media (max-width: 560px) {
+  /* Two equal columns rather than two content-width ones, so the long fourth
+     line has somewhere to wrap to and the pair stays a pair. */
+  .hero-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem 1.1rem; }
+
   /* No room in the bar for a theme's name, so the chips carry it alone. The
      button keeps its name through aria-label, which still contains the
      visible text it replaces. */
@@ -2536,6 +2712,37 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
    frozen transform from a stray hover. */
 @media (hover: none) {
   .device { transform: none; }
+}
+
+/* Translucency is a material here, not a style: the header floats over the
+   page and the theme menu floats over the header. A reader who has asked for
+   less of it gets the same layers made solid rather than the layering
+   removed, so nothing moves and nothing is lost. */
+@media (prefers-reduced-transparency: reduce) {
+  .site-header,
+  .site-header.is-stuck {
+    background: var(--ink);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom-color: var(--rule);
+  }
+  .theme-menu { background: var(--ink); }
+  .sky-grain { display: none; }
+}
+
+/* More contrast means the hairlines that carry the structure have to become
+   visible edges, and the light grey that carries the prose has to stop being
+   grey. */
+@media (prefers-contrast: more) {
+  :root, [data-theme] {
+    --rule: rgba(var(--gold-rgb), .5);
+    --rule-soft: rgba(var(--gold-rgb), .34);
+  }
+  body { color: var(--text); }
+  .prose, .lede, .notes li, .kit p, .doc-body p, .doc-body li { color: var(--text); }
+  .btn-ghost { box-shadow: inset 0 0 0 1.5px var(--gold); }
+  .site-header { background: var(--ink); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :focus-visible { outline-width: 3px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

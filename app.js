@@ -29,7 +29,7 @@
   function startLenis() {
     if (lenis || reduced.matches || typeof window.Lenis !== 'function') return;
     lenis = new window.Lenis({
-      duration: 1.05,
+      duration: .9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,          // let phones keep their native momentum
@@ -101,7 +101,10 @@
       const span = document.createElement('span');
       span.className = 'word';
       span.setAttribute('aria-hidden', 'true');
-      span.style.setProperty('--delay', `${i * 55}ms`);
+      /* The stagger is capped rather than run to the end of the line: on a
+         nine-word headline a flat 55ms each put the last word half a second
+         behind the first, which reads as a headline being typed out. */
+      span.style.setProperty('--delay', `${Math.min(i * 38, 300)}ms`);
       span.textContent = word;
       frag.append(span, document.createTextNode(' '));
     });
