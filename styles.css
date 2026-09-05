@@ -2238,6 +2238,47 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .close-panel .actions { justify-content: center; }
 .close-panel > * + * { margin-top: 1.5rem; }
 
+/* Where the app speaks from, under the two things to do. It is set as links
+   on a hairline rather than as two more buttons, because the badge and the
+   community button are the actions and these are not -- and four controls of
+   equal weight in one panel is four ways of saying nothing is the point. */
+.close-follow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem 1.6rem;
+  margin-top: clamp(1.8rem, 3.6vw, 2.6rem);
+  padding-top: clamp(1.3rem, 2.6vw, 1.8rem);
+  border-top: 1px solid var(--rule-soft);
+  font-size: .88rem;
+}
+.close-follow > span {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  word-spacing: normal;
+  color: var(--muted-2);
+}
+.close-follow a {
+  display: inline-flex;
+  align-items: center;
+  gap: .48rem;
+  padding-block: .25rem;
+  color: var(--muted);
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: color 200ms var(--ease), transform 200ms var(--ease-out);
+}
+.close-follow a:focus-visible { border-radius: 5px; }
+.close-follow a:active { transform: scale(.97); transition-duration: 110ms; }
+.close-follow svg { width: 17px; height: 17px; color: var(--gold); flex: none; transition: color 200ms var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .close-follow a:hover { color: var(--gold-light); }
+  .close-follow a:hover svg { color: var(--gold-light); }
+}
+
 .close-mark {
   display: block;
   width: 74px;
@@ -2673,6 +2714,12 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   /* Two equal columns rather than two content-width ones, so the long fourth
      line has somewhere to wrap to and the pair stays a pair. */
   .hero-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem 1.1rem; }
+
+  /* The row is too long for a phone, and left to wrap on its own it broke
+     between the two channels rather than after the label. The label takes its
+     own line so the pair stays a pair here too. */
+  .close-follow { gap: .85rem 1.8rem; }
+  .close-follow > span { flex-basis: 100%; text-align: center; }
 
   /* No room in the bar for a theme's name, so the chips carry it alone. The
      button keeps its name through aria-label, which still contains the
