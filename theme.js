@@ -16,8 +16,9 @@
   'use strict';
 
   var THEMES = [
-    'obsidian', 'warm-cream', 'crisp-light', 'madinah', 'ottoman',
-    'andalusian', 'persian', 'sheikh-zayed', 'haramain'
+    'obsidian', 'warm-cream', 'crisp-light', 'classic-ink',
+    'madinah', 'ottoman', 'andalusian', 'persian', 'sheikh-zayed',
+    'haramain', 'shiraz-dawn', 'jali-moon'
   ];
 
   try {

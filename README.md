@@ -6,7 +6,25 @@ Framework-free static site deployed with Cloudflare Pages. The repository root
 is the Pages output directory; there is no build command and no dependency
 install. Editing a file and pushing is the whole deploy.
 
-Public routes: `/`, `/privacy`, `/terms`, `/support`.
+Public routes: `/`, `/whats-new`, `/privacy`, `/terms`, `/support`.
+
+> ## Branch `v1.4-public-copy` is a hold, not a deploy
+>
+> That branch carries the site as it should read **once V1.4 is live for
+> readers**, and it must not reach `main` before then: pushing `main` deploys,
+> and the branch describes Guide, Classic Ink, Shiraz Dawn, Jali Moon, Mushaf
+> al-Madinah and thirty-eight reciters as available. Until the release is out,
+> nine themes and twenty-seven reciters is what is true.
+>
+> Two screenshots on that branch are also stale, and are marked `STALE FOR 1.4`
+> in `index.html` where they are used. Both must be regenerated before it is
+> merged:
+>
+> - `media/screens/themes-840.webp` and `-420.webp`, which show nine themes and
+>   two accents that were deepened for contrast in 1.4.
+> - `media/screens/unlock-840.webp` and `-420.webp`, which predate the redrawn
+>   Ayah on Unlock card: larger Arabic, a juz and page line, and a paper coin
+>   in the header.
 
 The `updates/`, `ops/`, `emergency/` and `youtube/` machine-readable paths
 remain at their original URLs and are served `no-store`.
@@ -15,6 +33,8 @@ remain at their original URLs and are served `no-store`.
 
 ```
 index.html          the landing page
+whats-new/          the public release history, derived from the app's own
+                    ReleaseNotes
 styles.css          the whole design system, one file
 theme.js            restores the reader's theme, and marks the first page of
                     a visit, both before the first paint
@@ -37,23 +57,33 @@ tools/              what fetches the recitation clips; nothing the site serves
 
 Nothing here is a mockup.
 
-- **Screenshots** are rendered by `release/play-listing/build/` in the app
-  repository — the same generator that produces the Play Store listing, from
-  the app's own tokens and strings. Rebuild with `make_web_screens.py` then
-  `render_web_screens.mjs`, and convert to WebP at 840w and 420w.
+- **Screenshots** are rendered by the same generator that produces the Play
+  Store listing, from the app's own tokens and strings. That generator now
+  lives at `release/Play Store/build/` in the app repository (`screens.py`,
+  `tokens.py`, `render.mjs`). **The web-specific entry points named in earlier
+  revisions of this file, `make_web_screens.py` and `render_web_screens.mjs`,
+  no longer exist under any name.** Rebuilding a screen for this site
+  currently means adding a web target back to that generator. There is no
+  documented one-command path, and pretending otherwise is how a stale image
+  ships.
 - **Typefaces** are the binaries the app itself draws with, taken from
   `app/src/main/res/font` and subset to latin. Both are SIL OFL 1.1; the
   licence text travels with them in `fonts/`.
-- **Colours** are the Obsidian theme's own hex values, and the nine theme
-  swatches are that theme list verbatim.
+- **Colours** are the Obsidian theme's own hex values, and the twelve theme
+  swatches are that theme list verbatim, including the two accents deepened
+  for contrast in 1.4 (`crisp-light` `#7a5e13`, `sheikh-zayed` `#6e5f2f`).
 - **The crescent** is the launcher mark from `docs/design_provenance/`.
 - **Search examples** are documented behaviours of the real search engine.
   Surah names use the spellings in `app/src/main/assets/quran_data.json`.
-- **The four script pages** are rendered by `make_script_pages.py`. It does not
-  choose its own pairings: which font goes with which orthography comes from
-  `QuranScriptRegistry.kt` (that registry exists so a face is never paired with
-  the wrong text) and the per-face leading comes from the measured policy in
-  `ReaderSettings.kt`.
+- **The four script pages** were rendered by `make_script_pages.py`, which no
+  longer exists in the app repository. It did not choose its own pairings:
+  which font goes with which orthography comes from `QuranScriptRegistry.kt`
+  (that registry exists so a face is never paired with the wrong text) and the
+  per-face leading comes from the measured policy in `ReaderSettings.kt`.
+  **The registry now holds seven entries and this strip shows four**, which is
+  why the section says so in as many words rather than implying the four are
+  the whole set. The three not shown are Amiri Quran, Mushaf al-Madinah and
+  DigitalKhatt Madina.
 - **Recitation clips** are the ayah the app plays, from the per-ayah source
   the app plays it from, fetched by `tools/fetch_recitation.py`. The script
   does not carry a table of edition identifiers: it asks the API what it has
@@ -66,12 +96,30 @@ Nothing here is a mockup.
   for 21:92 with ffmpeg, which is what the app does at playback time. No
   boundary is interpolated: a reciter with no published timing is reported
   and skipped.
-- **The nine themes are readable, not just shown.** Each one is a block of
+- **The twelve themes are readable, not just shown.** Each one is a block of
   tokens in `styles.css` whose background, surface, accent, secondary and text
-  are the app's own values — the same five the swatches display. The rest of a
+  are the app's own values, the same five the swatches display. The rest of a
   theme (the accent's readable tint, the muted text, the button gradient) is
   derived from those five rather than picked, so a palette here cannot drift
-  from the palette there.
+  from the palette there. Two of the twelve carry a documented departure, each
+  because the app does the same thing. Classic Ink sets `--amb-a` to nought,
+  because its ambient tint is its page colour and the wash resolves to
+  nothing, and draws its hairline at 28% rather than 16%, because in a theme
+  with no colour and no wash the rule is what carries the structure. Jali Moon
+  dims the room a little, because spending less light is the theme.
+- **Guide has no screenshot and does not fake one.** The panel in `#guide`
+  shows what Guide returns rather than what it looks like: a topic, and its
+  sources named with their exact references. The topic, the references, the
+  captions and the practical step are the app's own strings for
+  `anxiety_and_worry` in `GuideCatalog.kt`. No Qur'anic Arabic appears in it,
+  by the same rule that keeps every ayah on this site inside a real app
+  screenshot.
+- **The narration in `#name`** is the app's own reviewed wording for the
+  *Why "Ummahti"?* page. Four things about it are not stylistic: the
+  qualification is never trimmed, Sahih Muslim 199a and Sahih al-Bukhari 6304
+  are named as two reports and never merged, nothing claims the Prophet asked
+  Allah to save everyone, and Ummahti's own reflection sits outside the
+  quotation.
 
 ## The one verse
 
@@ -82,10 +130,13 @@ ayah and nothing else. Choosing a surah or a page is the app's job.
 
 The drum holds all thirty-eight voices the rail names, in the rail's order,
 and each row's `data-clip` is that reciter's own id in the app's
-`SUPPORTED_RECITERS` (`AudioPlayerManager.kt`). The eleven the rail marks
-"soon" are marked the same way here: they are in the next update of the app,
-so they have no clip on the site either, and the transport says which it is
-rather than failing quietly.
+`SUPPORTED_RECITERS` (`AudioPlayerManager.kt`). Eleven of them carry
+`data-nosite` and read "no clip". Every one of those is in the app; what they
+have no source for is *this page*, because MP3Quran publishes no ayah timings
+for those recordings and 21:92 cannot be cut out of them without guessing
+where it starts. `tools/fetch_recitation.py` reports and skips them rather
+than interpolating a boundary, and the transport says which it is rather than
+failing quietly.
 
 Three things about it are load-bearing.
 
@@ -153,7 +204,7 @@ and `--moon-a` dim the room's own layers. They are restated per theme rather
 than inherited, so a dark theme shown inside a light page is still modelled
 with a dark page's light.
 
-Adding a tenth theme is a token block in `styles.css`, its name in the `THEMES`
+Adding a thirteenth theme is a token block in `styles.css`, its name in the `THEMES`
 list in `app.js` and `theme.js`, and a card in `index.html`.
 
 ## The room
@@ -203,19 +254,22 @@ scripting off, or under `prefers-reduced-motion: reduce`, every section renders
 in its final state, the search demo falls back to the same examples as a list,
 and the figures are simply the numbers in the markup. Controls that cannot work
 are not shown rather than shown dead: the picker is `hidden` until `app.js`
-reveals it, and the nine theme cards ship as `<div>`s and are replaced with real
+reveals it, and the twelve theme cards ship as `<div>`s and are replaced with real
 buttons only once there is something to press.
 
 ## Checking a change
 
-Serve the directory and run the two scripts in the app repository's
-`release/play-listing/build/`:
+Serve the directory:
 
 ```bash
 python -m http.server 4173
 ```
 
-`shoot_site.mjs` captures desktop, laptop and phone widths and reports console
-errors and failed requests. `verify_site.mjs` checks the no-JS and
-reduced-motion states, keyboard focus, alt text, heading structure and first
-load weight.
+**The two checkers this section used to name, `shoot_site.mjs` and
+`verify_site.mjs`, no longer exist in the app repository.** Until they are
+restored, a change is checked by hand at 1440, 1024 and 375 wide, against the
+same list they covered: no horizontal scroll at any width, one `h1` and no
+skipped heading level, an `alt` on every image, every internal link and
+same-page anchor resolving, the no-JS state (`.no-js [data-reveal]` renders
+everything in its final position), the reduced-motion state, and the contrast
+of every text token against its own ground in all twelve themes.

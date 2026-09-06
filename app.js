@@ -255,7 +255,7 @@
     { q: 'ayat al kursi', hit: 'Al-Baqara 255', sub: 'The Throne Verse',
       why: 'The name people use, not the number.' },
     { q: 'sadaqah', hit: 'Charity', sub: 'Verses on spending in the way of Allah',
-      why: 'A topic, under any of its names — zakat, giving, صدقة.' },
+      why: 'A topic, under any of its names: zakat, giving, صدقة.' },
     { q: 'الرحمن', ar: true, hit: 'Ar-Rahmaan · Surah 55', sub: 'The Beneficent',
       why: 'Arabic, with or without the harakat.' },
   ];
@@ -328,26 +328,31 @@
 
   /* ---------------------------------------------------------------- themes */
 
-  /* The app ships nine reading themes and the site wears the same nine. A
-     theme is a block of tokens in the stylesheet, so everything here is
+  /* The app ships twelve reading themes and the site wears the same twelve.
+     A theme is a block of tokens in the stylesheet, so everything here is
      names: which one is on, where it is remembered, and what to light up.
-     No colour is written in this file — the picker's chips are themed
-     subtrees, and the address bar's colour is read back off the document —
-     so a palette can never drift from the stylesheet that defines it.
+     No colour is written in this file. The picker's chips are themed
+     subtrees, and the address bar's colour is read back off the document, so
+     a palette can never drift from the stylesheet that defines it.
 
-     The nine names below are the only duplication of the app's theme list
+     Four core reading themes first, then the eight drawn from a tradition or
+     a place, which is the order the app's own picker groups them in. The
+     twelve names below are the only duplication of the app's theme list
      outside the stylesheet, and they exist because the picker is on every
      page while the swatch cards are only on the landing page. */
   const THEMES = [
     { id: 'obsidian', name: 'Obsidian Dark' },
     { id: 'warm-cream', name: 'Warm Cream' },
     { id: 'crisp-light', name: 'Crisp Light' },
+    { id: 'classic-ink', name: 'Classic Ink' },
     { id: 'madinah', name: 'Madinah Mushaf' },
     { id: 'ottoman', name: 'Ottoman Manuscript' },
     { id: 'andalusian', name: 'Andalusian' },
     { id: 'persian', name: 'Persian Illumination' },
     { id: 'sheikh-zayed', name: 'Sheikh Zayed' },
     { id: 'haramain', name: 'Haramain' },
+    { id: 'shiraz-dawn', name: 'Shiraz Dawn' },
+    { id: 'jali-moon', name: 'Jali Moon' },
   ];
 
   const STORE = 'ummahti:theme';

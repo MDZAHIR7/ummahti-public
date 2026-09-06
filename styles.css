@@ -30,8 +30,8 @@
 /* --------------------------------------------------------------------------
    Themes
 
-   The app ships nine reading themes; so does the page. A theme is nothing but
-   a block of tokens, so `[data-theme]` works on the document — the whole site
+   The app ships twelve reading themes; so does the page. A theme is nothing
+   but a block of tokens, so `[data-theme]` works on the document — the whole site
    changes light — and equally on a single subtree, which is how the themes
    section renders itself in a theme rather than describing one.
 
@@ -114,9 +114,13 @@
   --ink: #ffffff;
   --ink-2: #fbfbfc;
   --surface: #f6f7f9;
-  --gold: #8a6a16;
-  --gold-light: #6b520f;
-  --gold-dark: #8a6a16;
+  /* Deepened from #8a6a16 with the app, where the old value fell under 4.5:1
+     on the focal surface and inside its own highlight wash. The accent
+     resolves section labels, active states and the Hijri chip there, so it is
+     text a reader has to read rather than decoration. */
+  --gold: #7a5e13;
+  --gold-light: #5f490f;
+  --gold-dark: #7a5e13;
   --emerald: #64748b;
   --text: #0b0f17;
   --muted: #4a5261;
@@ -124,14 +128,106 @@
 
   --ink-rgb: 255, 255, 255;
   --surface-rgb: 246, 247, 249;
-  --gold-rgb: 138, 106, 22;
-  --gold-dark-rgb: 138, 106, 22;
+  --gold-rgb: 122, 94, 19;
+  --gold-dark-rgb: 122, 94, 19;
   --glow-rgb: 255, 255, 255;
   --amb-rgb: 100, 116, 139;
 
-  --gold-hi: #a8811f;
-  --gold-deep: #6b520f;
+  --gold-hi: #957317;
+  --gold-deep: #5f490f;
   --gold-ink: #fffdf5;
+}
+
+/* Classic Ink. The fourth core reading theme, new in V1.4, and the one whose
+   claim is absence: white paper, black ink, and a printed rule doing the work
+   colour does elsewhere. Its ambient tint is set equal to its page colour in
+   the app, which is what silences the wash rather than a switch, so --amb-rgb
+   is the page here too and --amb-a is nought below. */
+[data-theme='classic-ink'] {
+  color-scheme: light;
+  --ink: #ffffff;
+  --ink-2: #fafafa;
+  --surface: #f4f4f4;
+  --gold: #2b2b2b;
+  --gold-light: #111111;
+  --gold-dark: #2b2b2b;
+  --emerald: #ffffff;
+  --text: #000000;
+  --muted: #4a4a4a;
+  --muted-2: #6d6d6d;
+
+  --ink-rgb: 255, 255, 255;
+  --surface-rgb: 244, 244, 244;
+  --gold-rgb: 43, 43, 43;
+  --gold-dark-rgb: 43, 43, 43;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 255, 255, 255;
+
+  --gold-hi: #444444;
+  --gold-deep: #111111;
+  --gold-ink: #ffffff;
+}
+
+/* Shiraz Dawn. Cool stone, with the transmitted light kept to the margins.
+   The accent is the prayer hall's cobalt rather than the rose: on the accent
+   the rose would land on nearly every coloured element and turn the theme
+   into the thing it was drawn to avoid. */
+[data-theme='shiraz-dawn'] {
+  color-scheme: light;
+  --ink: #f3f2f4;
+  --ink-2: #f7f6f8;
+  --surface: #fbfafb;
+  --gold: #1f5f8b;
+  --gold-light: #17496c;
+  --gold-dark: #1f5f8b;
+  --emerald: #5b8fb8;
+  --text: #14131a;
+  --muted: #4c4a57;
+  --muted-2: #6a6875;
+
+  --ink-rgb: 243, 242, 244;
+  --surface-rgb: 251, 250, 251;
+  --gold-rgb: 31, 95, 139;
+  --gold-dark-rgb: 31, 95, 139;
+  --glow-rgb: 255, 255, 255;
+  --amb-rgb: 91, 143, 184;
+
+  --gold-hi: #2b76a9;
+  --gold-deep: #17496c;
+  --gold-ink: #f7fbfd;
+}
+
+/* Jali Moon. The lowest light the collection emits: moonstone ink holds AAA
+   on the night stone while sitting at roughly forty per cent less luminance
+   than the other dark palettes. Sage, not gold, because gold on a near-black
+   ground is four themes already and the accent carries most of the coloured
+   pixels in the app. */
+[data-theme='jali-moon'] {
+  color-scheme: dark;
+  --ink: #0b0b0c;
+  --ink-2: #0f1011;
+  --surface: #131415;
+  --gold: #7c9c8d;
+  --gold-light: #a3bdb0;
+  --gold-dark: #4f6459;
+  --emerald: #52657d;
+  --text: #c4bdae;
+  --muted: #8e9187;
+  /* Lifted from a straight derivation until it clears 4.5:1 on the page and
+     on the surface both. This is the dimmest theme in the collection and the
+     faintest tier in it still has to be read. */
+  --muted-2: #7d8177;
+
+  --ink-rgb: 11, 11, 12;
+  --surface-rgb: 19, 20, 21;
+  --gold-rgb: 124, 156, 141;
+  --gold-dark-rgb: 79, 100, 89;
+  --glow-rgb: 196, 189, 174;
+  --amb-rgb: 82, 101, 125;
+
+  --gold-hi: #a3bdb0;
+  --gold-deep: #5e7a6c;
+  --gold-ink: #0b0b0c;
 }
 
 [data-theme='madinah'] {
@@ -239,9 +335,12 @@
   --ink: #fdfcf8;
   --ink-2: #f7f7f2;
   --surface: #efefea;
-  --gold: #7a6a34;
-  --gold-light: #5f5326;
-  --gold-dark: #7a6a34;
+  /* Deepened from #7a6a34 with the app, for the same reason Crisp Light's
+     was. Its hairline is written as this value at 45%, so the hairline
+     follows without being restated. */
+  --gold: #6e5f2f;
+  --gold-light: #564a25;
+  --gold-dark: #6e5f2f;
   --emerald: #9ba79f;
   --text: #0a0b0c;
   --muted: #4d5150;
@@ -249,13 +348,13 @@
 
   --ink-rgb: 253, 252, 248;
   --surface-rgb: 239, 239, 234;
-  --gold-rgb: 122, 106, 52;
-  --gold-dark-rgb: 122, 106, 52;
+  --gold-rgb: 110, 95, 47;
+  --gold-dark-rgb: 110, 95, 47;
   --glow-rgb: 255, 255, 255;
   --amb-rgb: 155, 167, 159;
 
-  --gold-hi: #94824a;
-  --gold-deep: #5f5326;
+  --gold-hi: #857443;
+  --gold-deep: #564a25;
   --gold-ink: #fdfcf5;
 }
 
@@ -292,12 +391,21 @@
 [data-theme='madinah'],
 [data-theme='ottoman'],
 [data-theme='persian'],
-[data-theme='haramain'] {
+[data-theme='haramain'],
+[data-theme='jali-moon'] {
   --shadow-k: 1;
   --spec-k: 1;
   --amb-a: 1;
   --grain-a: .05;
   --moon-a: .16;
+}
+
+/* Jali Moon spends less light than the other dark themes, and the room it is
+   read in has to spend less too, or the page contradicts the palette. */
+[data-theme='jali-moon'] {
+  --amb-a: .8;
+  --grain-a: .038;
+  --moon-a: .1;
 }
 
 /* The polarity scalars. A light theme is not a dark theme with the colours
@@ -306,12 +414,21 @@
 [data-theme='warm-cream'],
 [data-theme='crisp-light'],
 [data-theme='andalusian'],
-[data-theme='sheikh-zayed'] {
+[data-theme='sheikh-zayed'],
+[data-theme='classic-ink'],
+[data-theme='shiraz-dawn'] {
   --shadow-k: .34;
   --spec-k: 3.2;
   --amb-a: .16;
   --grain-a: .028;
   --moon-a: .1;
+}
+
+/* Classic Ink carries no ambient wash at all. That is the theme, not a
+   setting: the app makes its ambient tint the page colour, and the gradient
+   and the glow resolve to nothing. Structure is left to the rule below. */
+[data-theme='classic-ink'] {
+  --amb-a: 0;
 }
 
 :root {
@@ -336,6 +453,14 @@
 [data-theme] {
   --rule: rgba(var(--gold-rgb), .16);
   --rule-soft: rgba(var(--gold-rgb), .09);
+}
+
+/* The one theme whose hairline is a genuine printed rule rather than a hint
+   of one. The app draws it at 28% where every other theme sits near 12%, and
+   with no wash and no glow the rule is what carries the structure. */
+[data-theme='classic-ink'] {
+  --rule: rgba(var(--gold-rgb), .28);
+  --rule-soft: rgba(var(--gold-rgb), .14);
 }
 
 *,
@@ -549,6 +674,14 @@ h1, h2, h3, .display {
 .prose p { margin: 0 0 1.1rem; }
 .prose strong { color: var(--text); font-weight: 600; }
 .prose a { color: var(--gold-light); text-underline-offset: 3px; }
+/* A quiet aside under a paragraph: still readable, plainly secondary. */
+.prose-note {
+  color: var(--muted-2);
+  font-size: .86rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 62ch;
+}
 
 /* ==========================================================================
    Controls
@@ -1737,20 +1870,147 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--muted);
 }
 
-/* Not on Google Play yet, and drawn as an outline so it cannot be mistaken
-   for one that is. */
-.voice-track li.is-soon {
-  background: transparent;
-  color: var(--muted);
-  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .3);
+/* --- Guide -------------------------------------------------------------- */
+
+/* Guide is the one feature on this page with no screenshot behind it, so the
+   panel shows what Guide returns instead of what it looks like: a topic, and
+   its sources named with their references. It is static markup and carries no
+   motion of its own, which is also why it reads identically with scripting
+   off. No Qur'anic Arabic appears in it, by the same rule that keeps every
+   ayah on this site inside a real app screenshot. */
+.guide-demo {
+  display: grid;
+  gap: 1.05rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
 }
-.voice-track li.is-soon b {
-  font-size: .62rem;
+.guide-ask {
+  display: grid;
+  gap: .45rem;
+  margin: 0;
+}
+.guide-ask b {
+  font-size: clamp(1.05rem, .95rem + .5vw, 1.32rem);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+}
+.guide-topic {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .55rem;
+  margin: 0;
+  padding-top: .95rem;
+  border-top: 1px solid var(--rule);
+  font-family: 'Cinzel', Georgia, serif;
   font-weight: 700;
-  letter-spacing: .14em;
+  font-size: 1.05rem;
+  color: var(--gold-light);
+}
+.guide-topic span {
+  font-family: 'Jakarta', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: .74rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.guide-sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .7rem;
+}
+.guide-sources li {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  align-items: baseline;
+  gap: .3rem .6rem;
+  padding-inline-start: .85rem;
+  border-inline-start: 2px solid rgba(var(--gold-rgb), .32);
+}
+.guide-sources b {
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--text);
+}
+/* The grading and the "start here" weight, which is a word rather than a
+   colour so it survives being read without one. */
+.guide-sources em {
+  font-style: normal;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--gold);
-  padding-left: .1rem;
+}
+.guide-sources span {
+  grid-column: 1 / -1;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.guide-step {
+  display: grid;
+  gap: .4rem;
+  margin: 0;
+  padding-top: .95rem;
+  border-top: 1px solid var(--rule);
+  font-size: .92rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.guide-note {
+  margin: 1rem 0 0;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--muted-2);
+}
+
+/* --- the name ----------------------------------------------------------- */
+
+/* A reading passage, not a column of feature copy, so it is measured rather
+   than allowed to run the width of the shell. 38rem lands the narration at
+   the same characters per line as the rest of the page. */
+.name-story {
+  display: grid;
+  gap: 1.15rem;
+  padding: clamp(1.6rem, 4vw, 2.8rem);
+  max-width: 38rem;
+  margin-inline: auto;
+}
+.name-story .d2 { margin: 0; }
+.name-story .prose { max-width: none; }
+.name-story .prose p:last-child { margin-bottom: 0; }
+
+/* The narration, held apart from Ummahti's own voice by a rule and an
+   indent as well as by the words around it. */
+.name-report {
+  margin: 0;
+  padding-inline-start: clamp(1rem, 3vw, 1.6rem);
+  border-inline-start: 2px solid rgba(var(--gold-rgb), .38);
+  display: grid;
+  gap: .8rem;
+}
+.name-report blockquote { margin: 0; }
+.name-report blockquote p {
+  margin: 0;
+  font-size: clamp(1rem, .95rem + .35vw, 1.14rem);
+  line-height: 1.72;
+  color: var(--text);
+}
+.name-report figcaption {
+  display: grid;
+  gap: .25rem;
+  font-size: .82rem;
+  line-height: 1.55;
+  color: var(--muted-2);
+}
+.name-report cite {
+  font-style: italic;
+  color: var(--muted);
 }
 
 /* --- the one verse ------------------------------------------------------ */
@@ -1938,21 +2198,23 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .wheel-list li[aria-selected='true'] { color: var(--gold-light); }
 .wheel-list li[aria-selected='true'] i { color: var(--gold); }
 
-/* Two rows that will not play, for two different reasons, and the drum keeps
-   both: it is the list of voices, and a voice that is coming is still a
-   voice. The rail above marks the same eleven the same way. */
-.wheel-list li.is-soon,
+/* Two rows that will not play, and the drum keeps both: it is the list of
+   voices the app has, and a voice with no clip on this site is still one of
+   them. `is-nosite` is declared in the markup, for a recording this page has
+   never been able to cut 21:92 out of; `is-missing` is set at runtime, for a
+   clip that was here and has gone. */
+.wheel-list li.is-nosite,
 .wheel-list li.is-missing { color: var(--muted-2); }
-.wheel-list li.is-soon::after,
+.wheel-list li.is-nosite::after,
 .wheel-list li.is-missing::after {
+  content: 'no clip';
+  color: var(--muted-2);
   font-size: .58rem;
   font-weight: 700;
   letter-spacing: .13em;
   text-transform: uppercase;
 }
-.wheel-list li.is-soon::after { content: 'soon'; color: var(--gold); }
-.wheel-list li.is-missing::after { content: 'no clip'; color: var(--muted-2); }
-.wheel-list li.is-soon[aria-selected='true'] { color: var(--muted); }
+.wheel-list li.is-nosite[aria-selected='true'] { color: var(--muted); }
 
 /* The iOS haptic, which has to stay in the layout to keep its haptic —
    display:none takes it away. One pixel in the corner, under the band, and

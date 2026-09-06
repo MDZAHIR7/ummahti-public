@@ -41,7 +41,6 @@
 
   const CLIPS = '/media/recitation/anbiya-92/';
   const GONE = 'That recitation is not on the site yet.';
-  const SOON = 'In the next update of the app.';
   const SPIN = 'Spin the drum to change the voice.';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -199,13 +198,15 @@
 
     const wasPlaying = !audio.paused && !audio.ended;
 
-    /* On the rail above, in the next update, and so not on this page's audio
-       either. The row stays in the drum — it is a voice that is coming, and
-       the drum is the list of voices — and it says which it is. */
-    if ('soon' in li.dataset) {
+    /* In the app, and named on the rail above. What it has no source for is
+       this page: the recording publishes no ayah timings, so 21:92 cannot be
+       cut out of it without guessing, and the fetch script skips it. The row
+       stays in the drum, because the drum is the list of voices, and it says
+       which it is. */
+    if ('nosite' in li.dataset) {
       audio.pause();
       audio.removeAttribute('src');
-      fail(SOON);
+      fail(GONE);
       return;
     }
 
