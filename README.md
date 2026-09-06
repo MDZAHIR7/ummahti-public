@@ -16,15 +16,20 @@ Public routes: `/`, `/whats-new`, `/privacy`, `/terms`, `/support`.
 > al-Madinah and thirty-eight reciters as available. Until the release is out,
 > nine themes and twenty-seven reciters is what is true.
 >
-> Two screenshots on that branch are also stale, and are marked `STALE FOR 1.4`
-> in `index.html` where they are used. Both must be regenerated before it is
-> merged:
+> The two screenshots this branch had flagged as stale for 1.4 have now been
+> regenerated.
+> `media/screens/themes-840.webp` / `-420.webp` and `unlock-840.webp` /
+> `-420.webp` are now real captures of the V1.4 app rather than recreations:
+> the themes shot is the Reading Themes & Heritage studio, and the unlock shot
+> is the redrawn card with its juz and page line and the paper coin in the
+> header. They come from `release/Play Store/build/captures/` in the Android
+> repository, resized and encoded by `build/make_web_derivatives.py` there.
 >
-> - `media/screens/themes-840.webp` and `-420.webp`, which show nine themes and
->   two accents that were deepened for contrast in 1.4.
-> - `media/screens/unlock-840.webp` and `-420.webp`, which predate the redrawn
->   Ayah on Unlock card: larger Arabic, a juz and page line, and a paper coin
->   in the header.
+> The other five screens under `media/screens/` (`home`, `mushaf`, `stream`,
+> `audio`, `calendar`) are still the pre-V1.4 recreations. They are not wrong
+> about any feature this branch claims, but they show a four-tab navigation bar
+> with no Guide, and two invented progress figures. Worth regenerating from the
+> same captures pipeline before this branch reaches `main`.
 
 The `updates/`, `ops/`, `emergency/` and `youtube/` machine-readable paths
 remain at their original URLs and are served `no-store`.
