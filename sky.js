@@ -221,7 +221,7 @@
   /* ------------------------------------------------------------ colours */
 
   /* Read back off the document rather than tabulated here, so the room is
-     lit by whichever of the nine themes is on and cannot disagree with it. */
+     lit by whichever of the twelve themes is on and cannot disagree with it. */
   const probe = document.createElement('span');
   probe.style.display = 'none';
   document.body.append(probe);

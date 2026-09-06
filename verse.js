@@ -162,7 +162,7 @@
     if (!frame) frame = requestAnimationFrame(() => { frame = 0; paint(); });
 
     /* The choice is made when the drum stops, not while it is passing. Any
-       other rule loads twenty-seven clips on one flick. scrollend would say
+       other rule loads thirty-eight clips on one flick. scrollend would say
        this exactly, and says it on the platforms that have it; the timer is
        for the ones that do not. */
     clearTimeout(settle);
