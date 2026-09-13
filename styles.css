@@ -3661,3 +3661,15 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--muted);
 }
 .governing-note a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; }
+
+/* The header holds the brand, the theme control and the install button, and
+   below about 430px those three only fit if the install button is short.
+   "Get Ummahti" is; "Dapatkan Ummahti" is not, and it pushed the header 5px
+   past the viewport on every Indonesian page. Shortening the translation
+   would fix Indonesian and leave the next language to discover the same
+   edge, so the wordmark gives way instead: the crescent still carries the
+   brand, and the button — the one thing on the header a visitor came to
+   press — keeps its full label in any language. */
+@media (max-width: 430px) {
+  .brand-name { display: none; }
+}

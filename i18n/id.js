@@ -175,7 +175,18 @@ window.UMMAHTI_I18N = {
    "why": "Bahasa Arab, dengan atau tanpa harakat."
   }
  ],
- "themes": {},
+ "themes": {
+  "obsidian": "Obsidian Gelap",
+  "warm-cream": "Krem Hangat",
+  "crisp-light": "Terang Bening",
+  "classic-ink": "Tinta Klasik",
+  "madinah": "Mushaf Madinah",
+  "ottoman": "Manuskrip Utsmaniyah",
+  "andalusian": "Andalusia",
+  "persian": "Iluminasi Persia",
+  "shiraz-dawn": "Fajar Syiraz",
+  "jali-moon": "Bulan Jali"
+ },
  "copy": {
   "copy": "Salin",
   "copied": "Tersalin",

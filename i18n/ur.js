@@ -178,7 +178,20 @@ window.UMMAHTI_I18N = {
    "why": "آپ کا اپنا ترجمہ بھی اُسی طرح تلاش ہوتا ہے۔"
   }
  ],
- "themes": {},
+ "themes": {
+  "obsidian": "اوبسیڈین تاریک",
+  "warm-cream": "گرم کریم",
+  "crisp-light": "شفاف روشن",
+  "classic-ink": "کلاسک اِنک",
+  "madinah": "مصحفِ مدینہ",
+  "ottoman": "عثمانی مخطوطہ",
+  "andalusian": "اندلسی",
+  "persian": "فارسی تذہیب",
+  "sheikh-zayed": "شیخ زاید",
+  "haramain": "حرمین",
+  "shiraz-dawn": "شیراز کی صبح",
+  "jali-moon": "جالی چاند"
+ },
  "copy": {
   "copy": "نقل کریں",
   "copied": "نقل ہو گیا",
