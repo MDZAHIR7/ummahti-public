@@ -21,6 +21,7 @@
 <meta property="og:image" content="https://ummahtiofficial.com/media/brand/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary_large_image">
 
 <script type="application/ld+json">
@@ -37,12 +38,59 @@
   "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
   },
   "sameAs": [
     "https://play.google.com/store/apps/details?id=com.ummahti.quran",
     "https://www.instagram.com/ummahti_quran/",
     "https://www.youtube.com/@Ummahti"
+  ],
+  "isAccessibleForFree": true,
+  "installUrl": "https://play.google.com/store/apps/details?id=com.ummahti.quran",
+  "downloadUrl": "https://play.google.com/store/apps/details?id=com.ummahti.quran",
+  "author": {
+    "@type": "Organization",
+    "name": "Ummahti",
+    "url": "https://ummahtiofficial.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ummahti",
+    "url": "https://ummahtiofficial.com/"
+  },
+  "inLanguage": [
+    "en",
+    "ar",
+    "ur",
+    "id",
+    "tr",
+    "fr",
+    "bn",
+    "hi",
+    "de",
+    "ru"
+  ],
+  "screenshot": [
+    "https://ummahtiofficial.com/media/screens/home-840.webp",
+    "https://ummahtiofficial.com/media/screens/mushaf-840.webp",
+    "https://ummahtiofficial.com/media/screens/stream-840.webp",
+    "https://ummahtiofficial.com/media/screens/audio-840.webp",
+    "https://ummahtiofficial.com/media/screens/themes-840.webp",
+    "https://ummahtiofficial.com/media/screens/calendar-840.webp",
+    "https://ummahtiofficial.com/media/screens/unlock-840.webp"
+  ],
+  "featureList": [
+    "The complete Qur'an offline, all 114 surahs and 6,236 ayat",
+    "Mushaf page view across all 604 pages, and a continuous verse stream reader",
+    "Hifz memorisation mode with hideable Arabic and session history",
+    "Ummahti Guide: sourced Qur'an and Sunnah references for a situation described in your own words, matched offline",
+    "Full-text search that forgives spelling, ignores harakat and reads Latin transliteration",
+    "Recitation from thirty-eight reciters",
+    "Twelve reading themes, six light and six dark",
+    "Ayah on Unlock",
+    "Merged Hijri and Gregorian calendar",
+    "No advertisements, no account, and no reading history collected"
   ]
 }
 </script>
@@ -80,6 +128,7 @@
       <a href="#guide">Guide</a>
       <a href="#themes">Themes</a>
       <a href="#promise">Our Promise</a>
+      <a href="#faq">FAQ</a>
       <a href="/whats-new">What&rsquo;s new</a>
       <div class="theme-pick" data-theme-pick hidden>
         <button class="theme-pick-btn" type="button" aria-expanded="false" aria-controls="theme-menu" data-theme-toggle>
@@ -1060,6 +1109,93 @@
     </div>
   </section>
 
+  <!-- ============================================================= faq -->
+
+  <!-- The questions someone asks in the last minute before installing, which
+       are not the same as the questions they ask afterwards. The full set,
+       including everything about Guide, themes and reporting a problem,
+       stays on /support, which is where the FAQPage markup lives: one
+       canonical answer to each question, in one place, rather than the same
+       schema competing with itself on two URLs. Native <details> elements,
+       so this works with no script and stays reachable from the keyboard. -->
+  <section class="bay shell" id="faq" aria-labelledby="faq-title">
+    <p class="label" data-reveal>Before you install</p>
+    <h2 class="d2" id="faq-title" data-reveal data-split>The questions worth asking first.</h2>
+
+    <div class="faq" data-reveal style="--delay:120ms">
+      <details class="faq-item">
+        <summary>Is it really free?</summary>
+        <div class="faq-body">
+          <p>Yes, and it stays free. There are no advertisements, no subscription, no paid
+          tier and no in-app purchases of any kind. Nothing in the app is held behind a
+          payment, and no feature is withheld to sell you a better one later.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What does it cost me instead, then?</summary>
+        <div class="faq-body">
+          <p>Nothing. There is no account to make, no advertising identifier, and no
+          reading history kept about you. Your position, bookmarks, reflections and Hifz
+          practice stay on your device and are never uploaded. Diagnostics are off unless
+          you turn them on, and every feature works identically with them off. The
+          <a href="/privacy">Privacy Policy</a> sets out exactly what is stored and what
+          is sent.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Does it work without a connection?</summary>
+        <div class="faq-body">
+          <p>The parts you read with, yes. The complete Arabic Qur&rsquo;an, the bundled
+          English translation, search, bookmarks, navigation and Ummahti Guide are on the
+          device from the moment you install, and need no connection ever. Streaming a
+          reciter and downloading an additional translation are the two things that
+          do.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Which translations can I read it in?</summary>
+        <div class="faq-body">
+          <p>Saheeh International is bundled and works offline out of the box. Beyond it
+          you can download Yusuf Ali, Pickthall, and Hilali &amp; Khan in English, and
+          editions in Urdu, Turkish, French, Indonesian, Bengali, Hindi, German and
+          Russian. Each one names its translator in Settings, and an edition whose
+          translator could not be established is not offered at all.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is there an iPhone version?</summary>
+        <div class="faq-body">
+          <p>Not at the moment. Ummahti is an Android app, and Google Play is the only
+          place it is published. Rather than promise a date, the honest answer is that
+          there is nothing to install on iOS today &mdash; the
+          <a href="https://www.youtube.com/@Ummahti">YouTube channel</a> and the community
+          group are where anything on that front would be said first.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is Ummahti Guide an AI, or a fatwa service?</summary>
+        <div class="faq-body">
+          <p>Neither. Guide matches what you describe against a catalogue of topics
+          written and reviewed in advance, and answers with Qur&rsquo;an and authentic
+          Sunnah passages held against that topic, each named with its exact reference so
+          you can check it yourself. Nothing is generated. It issues no rulings, and where
+          a topic&rsquo;s honest answer is that there is no prescribed recitation for it,
+          it says so.</p>
+        </div>
+      </details>
+    </div>
+
+    <p class="faq-more" data-reveal style="--delay:180ms">
+      More on Guide, the reading themes, your data and reporting a problem, on the
+      <a href="/support">support page</a>.
+    </p>
+  </section>
+
   <!-- =========================================================== close -->
   <section class="bay shell">
     <div class="close-panel" data-reveal>
@@ -1073,6 +1209,17 @@
       <div class="actions">
         <a class="badge-play" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" alt="Get it on Google Play" width="646" height="250" loading="lazy" decoding="async"></a>
         <a class="btn btn-ghost" href="https://chat.whatsapp.com/Ld2Czn0ixQL1pFDgNCMuVS">Join the community</a>
+      </div>
+
+      <!-- Ummahti is an Android app and this page is read on desktops too,
+           where the button above is a dead end: there is nothing to install
+           on the machine it was clicked from. The code closes that gap
+           without a form or an email. It is shown by media query rather than
+           by script, so it is never briefly visible on a phone, where it
+           would be useless. -->
+      <div class="qr-invite">
+        <img src="/media/brand/get-ummahti-qr.svg" alt="QR code linking to Ummahti Quran on Google Play" width="43" height="43" loading="lazy" decoding="async">
+        <p><b>Reading this on a computer?</b> Point your phone&rsquo;s camera at the code and Ummahti opens on Google&nbsp;Play.</p>
       </div>
 
       <!-- The two places Ummahti speaks from, set below the two actions rather
@@ -1119,6 +1266,24 @@
     </p>
   </div>
 </footer>
+
+<!-- On a phone the install button is in the header, which is where it stops
+     being visible the moment someone starts reading. This brings it back
+     once the hero is behind them, on touch pointers only, and it can be put
+     away for the visit. app.js reveals it; with no script there is nothing
+     here, and the header button is still one scroll up. -->
+<div class="install-bar" data-install-bar hidden>
+  <a class="install-bar-cta" href="https://play.google.com/store/apps/details?id=com.ummahti.quran">
+    <span class="install-bar-mark" aria-hidden="true"><img src="/media/brand/crescent.svg" alt="" width="891" height="941" loading="lazy"></span>
+    <span class="install-bar-text">
+      <b>Get Ummahti</b>
+      <i>Free on Google Play &middot; no ads, no account</i>
+    </span>
+  </a>
+  <button class="install-bar-close" type="button" data-install-dismiss aria-label="Hide the install bar">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+</div>
 
 </div>
 

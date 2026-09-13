@@ -2539,6 +2539,218 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .promise-list b { display: block; color: var(--text); font-weight: 600; margin-bottom: .15rem; }
 .promise-list span { color: var(--muted); font-size: .95rem; line-height: 1.6; }
 
+/* --- the questions before installing ------------------------------------ */
+
+/* Native <details>, because the thing this section must not do is depend on
+   script to be readable: someone deciding whether to install is exactly the
+   visitor who should never meet a half-working page. The open state is not
+   height-animated — doing that reliably still costs either script or a
+   property this stylesheet cannot yet count on, and a panel that snaps open
+   is better than one that sometimes does not open at all. */
+.faq {
+  display: grid;
+  gap: .55rem;
+  margin-top: clamp(1.6rem, 3.5vw, 2.4rem);
+  max-width: 46rem;
+}
+
+.faq-item {
+  border-radius: 14px;
+  background: rgba(var(--surface-rgb), .5);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .13);
+  transition: box-shadow 300ms var(--ease-out);
+}
+.faq-item[open] { box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .28); }
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  /* 48px of target, the same floor the app holds its controls to. */
+  min-height: 48px;
+  padding: .9rem clamp(1rem, 2.2vw, 1.3rem);
+  cursor: pointer;
+  list-style: none;
+  font-size: clamp(.98rem, .92rem + .2vw, 1.08rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+  border-radius: 14px;
+}
+
+/* Drawn rather than typed, so it cannot be read out as a character and does
+   not depend on a glyph being present in the subset. */
+.faq-item summary::after {
+  content: '';
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  rotate: 45deg;
+  translate: 0 -2px;
+  transition: rotate 300ms var(--ease-out), translate 300ms var(--ease-out);
+}
+.faq-item[open] summary::after { rotate: 225deg; translate: 0 2px; }
+
+.faq-body {
+  padding: 0 clamp(1rem, 2.2vw, 1.3rem) 1.15rem;
+}
+.faq-body p {
+  margin: 0;
+  max-width: 40rem;
+  font-size: .94rem;
+  line-height: 1.68;
+  color: var(--muted);
+}
+.faq-body a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; }
+
+.faq-more {
+  margin: 1.35rem 0 0;
+  font-size: .9rem;
+  color: var(--muted-2);
+}
+.faq-more a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item summary::after { transition: none; }
+}
+
+/* --- the code, for the visitor on a desktop ----------------------------- */
+
+/* Hidden by default and shown only where the primary pointer is a mouse. A
+   phone has no use for it, and this way it is never briefly painted there
+   before script could take it away. */
+.qr-invite { display: none; }
+
+@media (pointer: fine) and (min-width: 760px) {
+  .qr-invite {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    margin: 1.9rem auto 0;
+    padding: .9rem 1.25rem .9rem .9rem;
+    max-width: 27rem;
+    text-align: start;
+    border-radius: 15px;
+    background: rgba(var(--surface-rgb), .5);
+    box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .14);
+  }
+  /* The code keeps its own white plate at every theme: a scanner wants dark
+     modules on a light ground, and twelve themes cannot all provide one. */
+  .qr-invite img {
+    flex: none;
+    width: 88px;
+    height: 88px;
+    border-radius: 7px;
+    background: #fff;
+    padding: 0;
+  }
+  .qr-invite p {
+    margin: 0;
+    font-size: .88rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .qr-invite p b {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+  }
+}
+
+/* --- the install bar ---------------------------------------------------- */
+
+/* Touch pointers only, and revealed by app.js once the hero is out of the
+   way. It sits above the home indicator on a phone, and it is taken out of
+   the layout entirely — not merely faded — when it is away, so nothing
+   underneath it is left unreachable. */
+.install-bar {
+  position: fixed;
+  z-index: 40;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem var(--gutter) calc(.6rem + env(safe-area-inset-bottom));
+  background: rgba(var(--ink-rgb), .86);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--gold-rgb), .16),
+    0 -14px 30px -20px rgba(0, 0, 0, calc(.9 * var(--shadow-k)));
+  transform: translate3d(0, 110%, 0);
+  transition: transform 460ms var(--ease-out);
+}
+.install-bar.is-up { transform: none; }
+
+.install-bar-cta {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 48px;
+  padding: .35rem .85rem .35rem .4rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--gold-hi), var(--gold-deep));
+  color: var(--gold-ink);
+  text-decoration: none;
+}
+/* The crescent is a fixed gold gradient rather than currentColor, so on the
+   gold button it needs the dark ground it has everywhere else or it simply
+   disappears into the plate. */
+.install-bar-mark {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--gold-ink);
+}
+.install-bar-mark img { width: 17px; height: auto; }
+.install-bar-text { display: grid; min-width: 0; }
+.install-bar-text b {
+  font-size: .98rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.install-bar-text i {
+  font-style: normal;
+  font-size: .76rem;
+  line-height: 1.35;
+  opacity: .8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.install-bar-close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.install-bar-close svg { width: 19px; height: 19px; }
+.install-bar-close:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .install-bar { transition: none; }
+}
+
 /* --- closing call ------------------------------------------------------- */
 
 .close-panel {

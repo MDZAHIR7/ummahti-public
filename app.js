@@ -580,6 +580,62 @@
     }
   }
 
+  /* ----------------------------------------------------------- install bar */
+
+  /* The header carries the install button, and on a phone the header is the
+     first thing that scrolls away. This brings it back once the hero is
+     behind the reader.
+
+     Two things it deliberately does not do. It never appears on a desktop,
+     where the button is still on screen and the code in the closing panel is
+     the useful path instead. And it takes itself away over the closing
+     panel, where the real call already stands at full size — two install
+     buttons on one screen, one of them shouting, would make the quieter one
+     look like the afterthought. */
+  const installBar = document.querySelector('[data-install-bar]');
+  const touch = window.matchMedia('(pointer: coarse)');
+
+  if (installBar && touch.matches) {
+    let dismissed = false;
+    try { dismissed = sessionStorage.getItem('ummahti:install-bar') === 'away'; } catch (e) { /* private mode */ }
+
+    if (!dismissed && 'IntersectionObserver' in window) {
+      installBar.hidden = false;
+
+      const hero = document.querySelector('.hero');
+      const close = document.querySelector('.close-panel');
+      let past = false;
+      let atClose = false;
+
+      const settle = () => installBar.classList.toggle('is-up', past && !atClose);
+
+      if (hero) {
+        new IntersectionObserver(([e]) => {
+          past = !e.isIntersecting;
+          settle();
+        }, { threshold: 0 }).observe(hero);
+      }
+
+      if (close) {
+        new IntersectionObserver(([e]) => {
+          atClose = e.isIntersecting;
+          settle();
+        }, { threshold: 0 }).observe(close);
+      }
+
+      const away = installBar.querySelector('[data-install-dismiss]');
+      if (away) {
+        away.addEventListener('click', () => {
+          installBar.classList.remove('is-up');
+          try { sessionStorage.setItem('ummahti:install-bar', 'away'); } catch (e) { /* private mode */ }
+          /* Out of the layout once it has finished leaving, so nothing it
+             covered stays unreachable for the rest of the visit. */
+          setTimeout(() => { installBar.hidden = true; }, reduced.matches ? 0 : 500);
+        });
+      }
+    }
+  }
+
   /* ---------------------------------------------------------------- themes */
 
   /* The app ships twelve reading themes and the site wears the same twelve.
