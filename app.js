@@ -233,6 +233,115 @@
         });
       });
 
+      /* ---- turning the page by hand ---- */
+
+      /* The tabs lead and keep leading; this is for the reader who reaches
+         for the page itself, which on a phone is most of them.
+
+         The leaf is whichever page is mid-turn: the current one going out
+         when the drag runs with the binding, the previous one coming back
+         when it runs against it. One angle drives both directions, and the
+         direction only decides which page wears it and where it starts.
+
+         A drag is a choice, so like a tab press it stops the cycling. */
+      const stack = scripts.querySelector('.script-stack');
+      const SHUT = -102;      // where the leaf keyframe ends
+      const COMMIT = 0.34;    // of the stack's width, to carry the turn
+
+      if (stack && !reduced.matches && pages.length > 1) {
+        const hint = scripts.querySelector('[data-script-hint]');
+        if (hint) hint.hidden = false;
+
+        let from = 0, dir = 0, leaf = null, wide = 1, live = false;
+
+        const angle = (a) => {
+          stack.style.setProperty('--leaf-a', a.toFixed(2));
+          stack.style.setProperty('--leaf-b', (1 - Math.abs(a) / 170).toFixed(3));
+        };
+
+        function release() {
+          scripts.classList.remove('is-turning', 'is-settling');
+          if (leaf) leaf.classList.remove('is-leaf');
+          stack.style.removeProperty('--leaf-a');
+          stack.style.removeProperty('--leaf-b');
+          leaf = null;
+          dir = 0;
+          live = false;
+        }
+
+        /* The leaf is already where the turn ends, so the index changes with
+           no animation: replaying `leaf` here would snap the page back flat
+           and turn it a second time. */
+        function land(next) {
+          index = (next + pages.length) % pages.length;
+          pages.forEach((pg, i) => {
+            pg.classList.toggle('is-on', i === index);
+            pg.classList.remove('is-out');
+          });
+          tabs.forEach((t, i) => t.setAttribute('aria-pressed', String(i === index)));
+        }
+
+        stack.addEventListener('pointerdown', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          /* Belt to the stylesheet's braces: stops the browser starting its
+             own image drag, which would cancel this one. */
+          e.preventDefault();
+          taken = true;
+          clearTimeout(timer);
+          from = e.clientX;
+          wide = Math.max(1, stack.getBoundingClientRect().width);
+          dir = 0;
+          live = true;
+          stack.setPointerCapture(e.pointerId);
+        });
+
+        stack.addEventListener('pointermove', (e) => {
+          if (!live) return;
+          const dx = e.clientX - from;
+
+          /* The direction is settled once, on the first movement worth
+             calling one. Letting it flip mid-drag would swap the leaf out
+             from under the finger. */
+          if (!dir) {
+            if (Math.abs(dx) < 6) return;
+            dir = dx < 0 ? 1 : -1;
+            leaf = dir === 1 ? pages[index] : pages[(index - 1 + pages.length) % pages.length];
+            leaf.classList.add('is-leaf');
+            scripts.classList.add('is-turning');
+          }
+
+          const t = Math.min(1, Math.max(0, (dx * -dir) / (wide * 0.9)));
+          angle(dir === 1 ? SHUT * t : SHUT * (1 - t));
+        });
+
+        function finish(e) {
+          if (!live) return;
+          live = false;
+          const went = ((e.clientX - from) * -dir) / wide;
+          try { stack.releasePointerCapture(e.pointerId); } catch (err) { /* already gone */ }
+
+          if (!dir) { release(); return; }
+
+          const took = went > COMMIT;
+          const to = dir === 1 ? (took ? SHUT : 0) : (took ? 0 : SHUT);
+          const landing = dir === 1 ? index + 1 : index - 1;
+          const settling = leaf;
+
+          scripts.classList.remove('is-turning');
+          scripts.classList.add('is-settling');
+          angle(to);
+
+          setTimeout(() => {
+            if (took) land(landing);
+            if (settling) settling.classList.remove('is-leaf');
+            release();
+          }, 440);
+        }
+
+        stack.addEventListener('pointerup', finish);
+        stack.addEventListener('pointercancel', (e) => finish({ clientX: from, pointerId: e.pointerId }));
+      }
+
       if ('IntersectionObserver' in window) {
         new IntersectionObserver((entries) => {
           for (const entry of entries) {
@@ -1056,8 +1165,53 @@
   const moon = document.querySelector('.sky-moon');
   const halo = document.querySelector('.sky-halo');
   const track = document.querySelector('.modes-track');
-  const rail = document.querySelector('.modes-rail');
-  const bar = document.querySelector('.modes-progress i');
+  const modeScreens = document.querySelector('[data-mode-screens]');
+  const modeSteps = modeScreens ? [...document.querySelectorAll('[data-mode-steps] .mode-step')] : [];
+  const modeFrames = modeScreens ? [...modeScreens.querySelectorAll('.screen')] : [];
+  let modeAt = 0;
+
+  /* Moving to a step. Scroll drives this when the panel is pinned; a timer
+     drives it when it is not, which is every narrow screen. One function, so
+     the two cannot drift apart. */
+  function modeGo(next) {
+    if (next === modeAt || !modeFrames[next]) return;
+    modeFrames[modeAt].classList.remove('is-on');
+    modeFrames[modeAt].classList.add('is-out');
+    const leaving = modeFrames[modeAt];
+    setTimeout(() => leaving.classList.remove('is-out'), 760);
+    modeFrames[next].classList.remove('is-out');
+    modeFrames[next].classList.add('is-on');
+
+    if (modeSteps[modeAt]) {
+      modeSteps[modeAt].classList.remove('is-on');
+      modeSteps[modeAt].removeAttribute('aria-current');
+    }
+    if (modeSteps[next]) {
+      modeSteps[next].classList.add('is-on');
+      modeSteps[next].setAttribute('aria-current', 'true');
+    }
+    modeAt = next;
+  }
+
+  /* The unpinned run. Only ever on when the panel is not pinned and the
+     section is on screen, and never under reduced motion. */
+  let modeTimer = null;
+  let modeSeen = false;
+
+  function modeRun() {
+    clearInterval(modeTimer);
+    modeTimer = null;
+    if (!modeSeen || reduced.matches || !track || !track.classList.contains('is-unpinned')) return;
+    if (modeFrames.length < 2) return;
+    modeTimer = setInterval(() => modeGo((modeAt + 1) % modeFrames.length), 3200);
+  }
+
+  if (track && modeFrames.length > 1 && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      for (const e of entries) { modeSeen = e.isIntersecting; modeRun(); }
+    }, { threshold: 0.2 }).observe(track);
+    document.addEventListener('visibilitychange', () => (document.hidden ? clearInterval(modeTimer) : modeRun()));
+  }
 
   /* The devices beside the copy drift against the scroll. They are already
      measured for the lighting pass, so the parallax costs one lookup and no
@@ -1077,7 +1231,7 @@
     document.querySelectorAll('.panel, .device, .close-panel').forEach((el) => litIO.observe(el));
   }
 
-  let vw = 0, vh = 0, diag = 1, railOverflow = 0, trackTop = 0, trackRange = 1;
+  let vw = 0, vh = 0, diag = 1, trackTop = 0, trackRange = 1;
   let pinned = false;
 
   function measure() {
@@ -1089,23 +1243,26 @@
 
     if (window.UmmahtiSky) window.UmmahtiSky.remeasure();
 
-    if (track && rail) {
-      railOverflow = Math.max(0, rail.scrollWidth - vw);
-      // Pinning the viewport to move the rail 40px is worse than not pinning
-      // at all, so on very wide screens the run simply lays itself out.
-      if (railOverflow < 120) pinned = false;
+    if (track && modeFrames.length > 1) {
+      /* Holding the viewport still is only worth it if there is room to
+         hold it in: on a short window the pinned panel would be taller than
+         the screen it is pinned to. */
+      if (vh < 560) pinned = false;
 
       if (pinned) {
-        track.style.height = `${vh + railOverflow}px`;
+        /* Each step past the first costs most of a screen of scroll. Much
+           less and the steps flick past; much more and the reader is
+           scrolling through treacle. */
+        const perStep = vh * 0.82;
+        track.style.height = `${vh + (modeFrames.length - 1) * perStep}px`;
         const r = track.getBoundingClientRect();
         trackTop = r.top + window.scrollY;
         trackRange = Math.max(1, track.offsetHeight - vh);
       } else {
         track.style.height = '';
-        rail.style.removeProperty('--rail-x');
-        railOverflow = 0;
       }
       track.classList.toggle('is-unpinned', !pinned);
+      modeRun();
     }
   }
 
@@ -1143,9 +1300,13 @@
     if (moon) moon.style.setProperty('--sky-drift', drift);
     if (halo) halo.style.setProperty('--sky-drift', drift);
 
-    if (pinned && rail) {
-      rail.style.setProperty('--rail-x', `${(railP * railOverflow).toFixed(1)}px`);
-      if (bar) bar.style.setProperty('--rail-p', railP.toFixed(3));
+    /* Scroll position chooses the step. The progress is nudged half a slot
+       before it is floored so a step lights when it is reached rather than
+       when it is passed, and nothing is written unless the step changed —
+       this runs every frame. */
+    if (pinned && modeFrames.length > 1) {
+      const slots = modeFrames.length;
+      modeGo(Math.min(slots - 1, Math.max(0, Math.floor(railP * slots * 0.999))));
     }
 
     // The light sits where .sky-moon sits: high and to the right.

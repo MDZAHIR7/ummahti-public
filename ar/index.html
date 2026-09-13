@@ -342,6 +342,7 @@
                alt="الصفحة نفسها بخطّ النستعليق، مرسومة بمحرف Gulzar، على خطّ أساسه المائل المعلّق.">
         </div>
 
+        <p class="script-hint" data-script-hint hidden>اسحب الصفحة لتقلبها.</p>
         <div class="script-tabs" role="group" aria-label="قارن بين أربعة من الخطوط السبعة" hidden>
           <button type="button" aria-pressed="true" data-tab="uthmani">
             عثماني <small>Amiri Regular</small>
@@ -565,87 +566,72 @@
         </div>
       </div>
 
-      <div class="modes-rail">
-        <article class="mode">
+      <!-- One phone, held still while the page scrolls past it, changing
+           what it shows. The horizontal rail this replaces carried the same
+           five screens the hero now runs, so it was saying a second time
+           what the top of the page had already said; scroll driving the
+           screen says something the hero canلا, which is that all of this
+           is one app.
+
+           The steps are all in the markup and all readable. The scroll only
+           decides which is lit, so with no script, under reduced motion، أو
+           on a narrow screen — where pinning fights touch momentum — this
+           is a plain illustrated list and loses لاhing but the pinning. -->
+      <div class="modes-stage">
+        <div class="modes-device">
           <div class="device">
-            <img src="/media/screens/stream-840.webp"
+            <div class="screens" data-mode-screens>
+            <img class="screen is-on" src="/media/screens/stream-840.webp"
                  srcset="/media/screens/stream-420.webp 420w, /media/screens/stream-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="تدفّق الآيات، وفيه العربية تليها ترجمتها الإنجليزية لكلّ آية.">
-          </div>
-          <div>
-            <h3 class="mode-name">تدفّق الآيات</h3>
-            <p>العربية والترجمة معًا، آية آية، للقراءة مع الفهم.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/audio-840.webp"
+            <img class="screen" src="/media/screens/audio-840.webp"
                  srcset="/media/screens/audio-420.webp 420w, /media/screens/audio-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="مشغّل التلاوة، مع اختيار القارئ وأدوات التشغيل آية آية.">
-          </div>
-          <div>
-            <h3 class="mode-name">التلاوة</h3>
-            <p>استمع آية آية بينما يبقى موضع قراءتك حيث تركته تمامًا.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/calendar-840.webp"
+            <img class="screen" src="/media/screens/calendar-840.webp"
                  srcset="/media/screens/calendar-420.webp 420w, /media/screens/calendar-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="شاشة التقويم الهجري تعرض الشهر الهجري الحالي إلى جانب التواريخ الميلادية.">
-          </div>
-          <div>
-            <h3 class="mode-name">التقويم الهجري</h3>
-            <p>التاريخ الهجري إلى جانب الميلادي، في الشاشة الرئيسية وبتمامه.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/themes-840.webp"
+            <img class="screen" src="/media/screens/themes-840.webp"
                  srcset="/media/screens/themes-420.webp 420w, /media/screens/themes-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="«مظاهر القراءة والتراث»، وفيها مصحف المدينة والمخطوط العثماني والأندلسي بعضها تحت بعض، ولكلٍّ منها معاينة حيّة للآية نفسها بذلك المظهر، وملاحظة تبيّن مدى قرب نمطه من التقليد الذي جاء منه.">
-          </div>
-          <div>
-            <h3 class="mode-name">اثنا عشر مظهرًا</h3>
-            <p>من السبج إلى الحبر الكلاسيكي، كلٌّ منها مضبوط للقراءة الطويلة لا للإبهار.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/home-840.webp"
+            <img class="screen" src="/media/screens/home-840.webp"
                  srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="الشاشة الرئيسية مع بطاقة متابعة القراءة ومتتبّع الحفظ.">
+            </div>
           </div>
-          <div>
+        </div>
+        <ol class="modes-steps" data-mode-steps>
+          <li class="mode-step is-on" aria-current="true">
+            <h3 class="mode-name">تدفّق الآيات</h3>
+            <p>العربية والترجمة معًا، آية آية، للقراءة مع الفهم.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">التلاوة</h3>
+            <p>استمع آية آية بينما يبقى موضع قراءتك حيث تركته تمامًا.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">التقويم الهجري</h3>
+            <p>التاريخ الهجري إلى جانب الميلادي، في الشاشة الرئيسية وبتمامه.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">اثنا عشر مظهرًا</h3>
+            <p>من السبج إلى الحبر الكلاسيكي، كلٌّ منها مضبوط للقراءة الطويلة لا للإبهار.</p>
+          </li>
+          <li class="mode-step">
             <h3 class="mode-name">متتبّع الحفظ</h3>
             <p>تكرار ومراجعة موجَّهان للحفظ، يُحصَيان بأمانة ولا يُعطى عليهما تقييم أبدًا.</p>
-          </div>
-        </article>
-        <article class="mode mode-end">
-          <div class="panel">
-            <p class="label">مجّاني، بلا مشتريات</p>
-            <h3 class="mode-name">هذا هو التطبيق كلّه.</h3>
-            <p>كلّ شاشة أعلاه هي النسخة الموجودة على Google Play اليوم. ليس فيها تصميم تخيّليّ ولا شيء خلف جدار دفع.</p>
-            <a class="badge-play" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" alt="احصل عليه من Google Play" width="646" height="250" loading="lazy" decoding="async"></a>
-          </div>
-        </article>
+          </li>
+        </ol>
       </div>
-
-      <div class="modes-progress" aria-hidden="true"><i></i></div>
     </div>
   </section>
 

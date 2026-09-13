@@ -342,6 +342,7 @@
                alt="Halaman yang sama dalam khat Nastaliq, digambar dengan Gulzar, pada garis dasar menggantung yang miring.">
         </div>
 
+        <p class="script-hint" data-script-hint hidden>Seret halamannya untuk membaliknya.</p>
         <div class="script-tabs" role="group" aria-label="Bandingkan empat dari tujuh gaya kaligrafi" hidden>
           <button type="button" aria-pressed="true" data-tab="uthmani">
             Utsmani <small>Amiri Regular</small>
@@ -565,87 +566,72 @@
         </div>
       </div>
 
-      <div class="modes-rail">
-        <article class="mode">
+      <!-- One phone, held still while the page scrolls past it, changing
+           what it shows. The horizontal rail this replaces carried the same
+           five screens the hero now runs, so it was saying a second time
+           what the top of the page had already said; scroll driving the
+           screen says something the hero cantidak, which is that all of this
+           is one app.
+
+           The steps are all in the markup and all readable. The scroll only
+           decides which is lit, so with no script, under reduced motion, atau
+           on a narrow screen — where pinning fights touch momentum — this
+           is a plain illustrated list and loses tidakhing but the pinning. -->
+      <div class="modes-stage">
+        <div class="modes-device">
           <div class="device">
-            <img src="/media/screens/stream-840.webp"
+            <div class="screens" data-mode-screens>
+            <img class="screen is-on" src="/media/screens/stream-840.webp"
                  srcset="/media/screens/stream-420.webp 420w, /media/screens/stream-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="Arus ayat, menampilkan teks Arab diikuti terjemahan Inggrisnya untuk setiap ayat.">
-          </div>
-          <div>
-            <h3 class="mode-name">Arus ayat</h3>
-            <p>Arab dan terjemahan bersama, satu ayat sekali waktu, untuk membaca dengan pemahaman.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/audio-840.webp"
+            <img class="screen" src="/media/screens/audio-840.webp"
                  srcset="/media/screens/audio-420.webp 420w, /media/screens/audio-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="Pemutar tilawah, dengan pilihan qari dan kendali pemutaran ayat demi ayat.">
-          </div>
-          <div>
-            <h3 class="mode-name">Tilawah</h3>
-            <p>Dengarkan ayat demi ayat sementara posisi bacaan Anda tetap persis di tempat Anda meninggalkannya.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/calendar-840.webp"
+            <img class="screen" src="/media/screens/calendar-840.webp"
                  srcset="/media/screens/calendar-420.webp 420w, /media/screens/calendar-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="Layar kalender Hijriah yang menampilkan bulan Hijriah berjalan bersama tanggal Masehi.">
-          </div>
-          <div>
-            <h3 class="mode-name">Kalender Hijriah</h3>
-            <p>Tanggal Hijriah di samping Masehi, di layar beranda dan selengkapnya.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/themes-840.webp"
+            <img class="screen" src="/media/screens/themes-840.webp"
                  srcset="/media/screens/themes-420.webp 420w, /media/screens/themes-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="Tema Baca dan Warisan, menampilkan Mushaf Madinah, Manuskrip Utsmaniyah dan Andalusia berurutan ke bawah, masing-masing dengan pratinjau langsung ayat yang sama dalam tema itu dan catatan tentang seberapa dekat polanya mengikuti tradisi asalnya.">
-          </div>
-          <div>
-            <h3 class="mode-name">Dua belas tema</h3>
-            <p>Dari Obsidian sampai Tinta Klasik, masing-masing disetel untuk membaca lama, bukan untuk efek.</p>
-          </div>
-        </article>
-
-        <article class="mode">
-          <div class="device">
-            <img src="/media/screens/home-840.webp"
+            <img class="screen" src="/media/screens/home-840.webp"
                  srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
-                 sizes="(max-width: 760px) 74vw, 340px"
+                 sizes="(max-width: 960px) 74vw, 330px"
                  width="840" height="1867" loading="lazy" decoding="async"
                  alt="Layar beranda dengan kartu Lanjutkan Membaca dan pelacak hafalan.">
+            </div>
           </div>
-          <div>
+        </div>
+        <ol class="modes-steps" data-mode-steps>
+          <li class="mode-step is-on" aria-current="true">
+            <h3 class="mode-name">Arus ayat</h3>
+            <p>Arab dan terjemahan bersama, satu ayat sekali waktu, untuk membaca dengan pemahaman.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">Tilawah</h3>
+            <p>Dengarkan ayat demi ayat sementara posisi bacaan Anda tetap persis di tempat Anda meninggalkannya.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">Kalender Hijriah</h3>
+            <p>Tanggal Hijriah di samping Masehi, di layar beranda dan selengkapnya.</p>
+          </li>
+          <li class="mode-step">
+            <h3 class="mode-name">Dua belas tema</h3>
+            <p>Dari Obsidian sampai Tinta Klasik, masing-masing disetel untuk membaca lama, bukan untuk efek.</p>
+          </li>
+          <li class="mode-step">
             <h3 class="mode-name">Pelacak hafalan</h3>
             <p>Pengulangan dan muraja'ah terbimbing untuk hafalan, dihitung dengan jujur dan tidak pernah dinilai.</p>
-          </div>
-        </article>
-        <article class="mode mode-end">
-          <div class="panel">
-            <p class="label">Gratis, tanpa pembelian</p>
-            <h3 class="mode-name">Itulah seluruh aplikasinya.</h3>
-            <p>Setiap layar di atas adalah versi yang ada di Google Play hari ini. Tidak ada yang berupa purwarupa dan tidak ada yang di balik dinding bayar.</p>
-            <a class="badge-play" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" alt="Dapatkan di Google Play" width="646" height="250" loading="lazy" decoding="async"></a>
-          </div>
-        </article>
+          </li>
+        </ol>
       </div>
-
-      <div class="modes-progress" aria-hidden="true"><i></i></div>
     </div>
   </section>
 

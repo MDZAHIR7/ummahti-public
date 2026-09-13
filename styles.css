@@ -1450,6 +1450,62 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
   100% { transform: rotateY(-102deg); filter: brightness(.4); opacity: 0 }
 }
 
+/* Dragging turns the page by hand. The tabs still work and still lead; this
+   is for the reader who reaches for the page itself, which on a phone is
+   most of them.
+
+   `pan-y` lets a vertical swipe scroll the document as usual and reserves
+   only the horizontal axis, so grabbing a page never traps the scroll.
+
+   The leaf is whichever page is mid-turn: the current one on the way out
+   when the drag goes with the binding, the previous one on the way back in
+   when it goes against it. One element, one angle, either direction. */
+.scripts.is-live .script-stack { touch-action: pan-y; cursor: grab; }
+.scripts.is-live .script-stack:active { cursor: grabbing; }
+/* A page is an <img>, and an <img> is draggable: without this the browser
+   starts its own drag on the first movement, fires pointercancel, and the
+   turn dies before it has begun. */
+.scripts.is-live .script-page {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.scripts.is-turning .script-page.is-leaf,
+.scripts.is-settling .script-page.is-leaf {
+  opacity: 1;
+  z-index: 3;
+  animation: none;
+  transform: rotateY(calc(var(--leaf-a, 0) * 1deg));
+  filter: brightness(var(--leaf-b, 1));
+}
+/* Following a finger must not be eased; letting go must be. */
+.scripts.is-turning .script-page.is-leaf { transition: none; }
+.scripts.is-settling .script-page.is-leaf {
+  transition: transform 420ms var(--ease-out), filter 420ms var(--ease-out),
+              opacity 420ms var(--ease-out);
+}
+
+/* A page turning by hand should not be interrupted by a hover lift or the
+   auto-run's own animation starting underneath it. */
+.scripts.is-turning .script-page:not(.is-leaf),
+.scripts.is-settling .script-page:not(.is-leaf) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scripts.is-live .script-stack { touch-action: auto; cursor: auto; }
+}
+
+/* Shown only once the drag is actually wired, which is also the only state
+   in which it is true. */
+.script-hint {
+  margin: 0 0 .2rem;
+  text-align: center;
+  font-size: .76rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
 .script-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1799,7 +1855,7 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
 }
 .search-cases span { font-size: .87rem; color: var(--muted); line-height: 1.5; }
 
-/* --- reading modes: pinned horizontal run ------------------------------- */
+/* --- reading modes: the phone held still, the page scrolling past --------- */
 
 .modes-track { position: relative; }
 
@@ -1816,79 +1872,102 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
 .modes-head {
   width: min(100% - (var(--gutter) * 2), var(--shell));
   margin-inline: auto;
-  margin-bottom: clamp(1.4rem, 3vw, 2.4rem);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.5rem;
+  margin-bottom: clamp(1.2rem, 2.6vw, 2rem);
 }
 
-.modes-rail {
-  display: flex;
-  gap: clamp(1rem, 2.2vw, 1.8rem);
-  padding-inline: var(--gutter);
-  transform: translate3d(calc(var(--rail-x, 0px) * -1), 0, 0);
-  will-change: transform;
-}
-
-.mode {
-  flex: none;
-  width: clamp(244px, 23vw, 330px);
+.modes-stage {
+  width: min(100% - (var(--gutter) * 2), var(--shell));
+  margin-inline: auto;
   display: grid;
-  gap: 1.1rem;
-  align-content: start;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
 }
-.mode .device { width: 100%; }
-.mode .device img {
-  aspect-ratio: 9 / 12;
-  object-fit: cover;
-  object-position: top center;
+.modes-device { display: grid; justify-items: center; }
+.modes-device .device { width: min(100%, 300px); }
+
+/* The steps are a list, and they stay a list: all five readable at once,
+   with the one the scroll has reached lit and the rest stood down. Showing
+   only the active step would have been more cinematic and would have hidden
+   four fifths of what this section says from anyone not scrolling through
+   it slowly. */
+.modes-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .2rem;
+  counter-reset: step;
 }
+.mode-step {
+  counter-increment: step;
+  display: grid;
+  gap: .3rem;
+  padding: .85rem 0 .95rem 1.5rem;
+  position: relative;
+  opacity: .34;
+  transition: opacity 480ms var(--ease-out);
+}
+.mode-step.is-on { opacity: 1; }
+
+/* The rule down the left is the progress track; the lit segment is the step
+   you are on. One element does both jobs. */
+.mode-step::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: rgba(var(--gold-rgb), .18);
+  transition: background 480ms var(--ease-out);
+}
+.mode-step.is-on::before { background: var(--gold); }
+
 .mode-name {
+  margin: 0;
   font-family: 'Cinzel', Georgia, serif;
   font-weight: 700;
-  font-size: 1.12rem;
-  color: var(--text);
-  margin: 0;
+  font-size: clamp(1.05rem, .95rem + .5vw, 1.4rem);
+  line-height: 1.2;
+  color: var(--gold-light);
 }
-.mode p { margin: .4rem 0 0; font-size: .92rem; color: var(--muted); line-height: 1.58; }
+.mode-step p {
+  margin: 0;
+  max-width: 40ch;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
 
-/* Set by app.js when the rail already fits, so there is nothing to pin for. */
+/* The screens inside the frame reuse the hero's stack: same push, same
+   timing, so the two places on this page where a phone changes screen do it
+   the same way. */
+.modes-device .screens { border-radius: 27px; }
+
+/* Unpinned — narrow, or reduced motion, or a viewport too short to hold the
+   thing still. Holding the viewport is what goes; the one phone and the lit
+   step do not. app.js runs the steps on a timer instead of on scroll, so a
+   phone still shows one screen at a time against one lit step rather than
+   five tall pictures stacked over five paragraphs. */
+.modes-track.is-unpinned { height: auto !important; }
 .modes-track.is-unpinned .modes-pin {
   position: static;
   height: auto;
   overflow: visible;
-  display: block;
+  padding-block: clamp(3rem, 8vw, 5rem);
 }
-.modes-track.is-unpinned { padding-block: var(--bay); }
-.modes-track.is-unpinned .modes-rail {
-  transform: none;
-  justify-content: center;
-  flex-wrap: wrap;
-  row-gap: 2.5rem;
-}
-.modes-track.is-unpinned .modes-progress { display: none; }
 
-/* The card that closes the run. */
-.mode-end { align-content: center; }
-.mode-end .panel { display: grid; gap: .9rem; justify-items: start; }
-.mode-end .panel p { margin: 0; font-size: .92rem; color: var(--muted); line-height: 1.58; }
-.mode-end .mode-name { font-size: 1.3rem; }
-
-.modes-progress {
-  width: min(100% - (var(--gutter) * 2), var(--shell));
-  margin: clamp(1.4rem, 3vw, 2.2rem) auto 0;
-  height: 2px;
-  background: var(--rule-soft);
-  overflow: hidden;
+/* Reduced motion is the one case with no timer: nothing may change on its
+   own, so every step is lit and the first screen simply stands. */
+@media (prefers-reduced-motion: reduce) {
+  .modes-track.is-unpinned .mode-step { opacity: 1; }
+  .modes-track.is-unpinned .mode-step::before { background: rgba(var(--gold-rgb), .18); }
 }
-.modes-progress i {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
-  transform: scaleX(var(--rail-p, 0));
-  transform-origin: left;
+
+@media (max-width: 860px) {
+  .modes-stage { grid-template-columns: 1fr; gap: clamp(1.6rem, 6vw, 2.4rem); }
+  .modes-device .device { width: min(62%, 260px); }
 }
 
 /* --- themes ------------------------------------------------------------- */
@@ -3419,27 +3498,11 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .nav-links a:not(.btn) { display: none; }
   .nav .btn { padding: .5rem .95rem; }
 
-  /* Pinning fights native momentum on touch, so the run becomes an honest
-     swipeable rail instead. */
-  .modes-track { height: auto !important; }
-  .modes-pin {
-    position: static;
-    height: auto;
-    overflow: visible;
-    display: block;
-  }
-  .modes-rail {
-    transform: none !important;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 1rem;
-    scrollbar-width: none;
-  }
-  .modes-rail::-webkit-scrollbar { display: none; }
-  .mode { scroll-snap-align: center; width: min(74vw, 290px); }
-  .modes-progress { display: none; }
-  .modes-head { flex-direction: column; align-items: flex-start; gap: .9rem; }
+  /* Pinning fights native momentum on touch, so the run stops holding the
+     phone still and simply lays itself out. `.is-unpinned` carries that
+     form; app.js sets it, and this is the case where the media query has
+     already decided. */
+  .modes-head { gap: .9rem; }
 
   .promise-list li { grid-template-columns: 22px 1fr; gap: .8rem; }
 
@@ -3549,10 +3612,6 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .is-first .sky-moon, .is-first .sky-halo, .is-first .brand-mark img { animation: none !important; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
   .sky-ambient, .sky-moon, .sky-halo { transform: none !important; }
-  .modes-track { height: auto !important; }
-  .modes-pin { position: static; height: auto; overflow: visible; display: block; }
-  .modes-rail { transform: none !important; overflow-x: auto; }
-  .mode { width: min(74vw, 290px); }
   .scripts.is-live .script-page.is-out { animation: none !important; opacity: 0; }
 
   /* A row frozen mid-slide would sit half off the screen, so it stops being
