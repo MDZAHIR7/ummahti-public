@@ -175,17 +175,99 @@
         </ul>
       </div>
 
+      <!-- The phone uses itself. A single still says the app exists; five
+           screens moving the way the app actually moves says what it is,
+           before a word of the copy has been read. Every frame is a real
+           capture, pushed in the way Android pushes a screen. The first is
+           eager and the rest are lazy: the hero must not wait on four
+           images nobody has scrolled to yet.
+
+           It is markup, not script: with no script the first screen stands
+           on its own exactly as the single still did, and the dots below
+           are real buttons rather than decoration. -->
       <div class="stage" data-reveal style="--delay:160ms">
         <div class="device" data-tilt>
-          <img src="/media/screens/home-840.webp"
-               srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
-               sizes="(max-width: 960px) 70vw, 340px"
-               width="840" height="1867" fetchpriority="high" decoding="async"
-               alt="The Ummahti home screen, showing today's Hijri date, a Continue Reading card resuming Al-Baqara at verse 255, and a Hifz tracker.">
+          <div class="screens" data-screens>
+            <img class="screen is-on" src="/media/screens/home-840.webp"
+                 srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" fetchpriority="high" decoding="async"
+                 data-cap="Home"
+                 alt="The Ummahti home screen, showing today's Hijri date, a Continue Reading card resuming Al-Baqara at verse 255, and a Hifz tracker.">
+            <img class="screen" src="/media/screens/mushaf-840.webp"
+                 srcset="/media/screens/mushaf-420.webp 420w, /media/screens/mushaf-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Mushaf page"
+                 alt="The Mushaf page view, showing a traditional printed Qur'an page.">
+            <img class="screen" src="/media/screens/stream-840.webp"
+                 srcset="/media/screens/stream-420.webp 420w, /media/screens/stream-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Verse stream"
+                 alt="The verse stream, showing Arabic followed by its English translation for each ayah.">
+            <img class="screen" src="/media/screens/audio-840.webp"
+                 srcset="/media/screens/audio-420.webp 420w, /media/screens/audio-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Recitation"
+                 alt="The recitation player, with reciter selection and verse-by-verse playback controls.">
+            <img class="screen" src="/media/screens/themes-840.webp"
+                 srcset="/media/screens/themes-420.webp 420w, /media/screens/themes-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Reading themes"
+                 alt="Reading Themes and Heritage, showing themes with a live preview of the same verse in each."></div>
         </div>
         <span class="device-cast" aria-hidden="true"></span>
+        <div class="stage-rail" data-screen-rail hidden>
+          <p class="stage-cap" data-screen-cap aria-live="polite">Home</p>
+          <div class="stage-dots" role="tablist" aria-label="Screens" data-screen-dots></div>
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- ========================================================= what's new -->
+
+  <!-- Every product page worth the name says what is new before it says
+       what the thing is, because the returning visitor is the one who needs
+       telling and the new visitor reads it as momentum. These are the four
+       headline additions in 1.4, and each is a real link into the section
+       that shows it, so the band doubles as the fastest route into the
+       page. -->
+  <section class="whatsnew shell" aria-labelledby="whatsnew-title">
+    <p class="label" data-reveal><span class="whatsnew-tag">New</span> in version 1.4</p>
+    <h2 class="vh" id="whatsnew-title">New in version 1.4</h2>
+    <ul class="whatsnew-grid">
+      <li data-reveal>
+        <a href="#guide">
+          <b>Ummahti Guide</b>
+          <span>Say what you are facing, and read what was revealed about it &mdash; sourced, and offline.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:80ms">
+        <a href="#themes">
+          <b>Themes &amp; Heritage</b>
+          <span>Twelve reading themes, each with a live preview and the story of its pattern.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:160ms">
+        <a href="#reciters">
+          <b>Eleven more reciters</b>
+          <span>Thirty-eight voices now, murattal and mujawwad, verse by verse.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:240ms">
+        <a href="#mushaf">
+          <b>Mushaf al-Madinah</b>
+          <span>A seventh calligraphy, set in the King Fahd Complex&rsquo;s own face.</span>
+        </a>
+      </li>
+    </ul>
+    <p class="whatsnew-more" data-reveal style="--delay:320ms">
+      <a href="/whats-new">Everything in this release, and every one before it</a>
+    </p>
   </section>
 
   <!-- =========================================================== facts -->
@@ -1265,6 +1347,15 @@
       <a href="https://www.youtube.com/@Ummahti">YouTube</a>
       <a href="https://www.instagram.com/ummahti_quran/">Instagram</a>
     </nav>
+<!-- language switcher: written by tools/i18n/wire_english.py -->
+<div class="lang-pick">
+  <span class="lang-pick-label">Language</span>
+  <a hreflang="en" lang="en" href="/" aria-current="true">English</a>
+  <a hreflang="ar" lang="ar" href="/ar/">العربية</a>
+  <a hreflang="ur" lang="ur" href="/ur/">اردو</a>
+  <a hreflang="id" lang="id" href="/id/">Bahasa Indonesia</a>
+</div>
+<!-- /language switcher -->
   </div>
   <div class="footer-base shell">
     <span>&copy; 2026 Ummahti Quran</span>

@@ -1486,6 +1486,194 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
   background: linear-gradient(180deg, rgba(var(--glow-rgb), calc(.12 * var(--spec-k))), rgba(var(--glow-rgb), calc(.03 * var(--spec-k))));
 }
 
+/* --- what is new ---------------------------------------------------------- */
+
+/* Sits between the hero and the count of what is in the app: the first thing
+   after "here is the product" should be "and here is what just changed".
+   Four links, not four claims — each one goes to the section that proves it. */
+.whatsnew {
+  padding-block: clamp(2.2rem, 5vw, 3.4rem) 0;
+}
+.whatsnew .label { margin-bottom: 1.3rem; }
+
+/* The one badge on the page. It is small, and it is the only thing wearing
+   the accent as a fill rather than as ink, which is what makes it read as
+   news rather than as another heading. */
+.whatsnew-tag {
+  display: inline-block;
+  margin-inline-end: .5rem;
+  padding: .18em .55em;
+  border-radius: 5px;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.whatsnew-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: .75rem;
+}
+.whatsnew-grid a {
+  display: grid;
+  align-content: start;
+  gap: .4rem;
+  height: 100%;
+  padding: 1.05rem 1.15rem 1.2rem;
+  border-radius: 15px;
+  text-decoration: none;
+  background: rgba(var(--surface-rgb), .5);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .13);
+  transition: box-shadow 320ms var(--ease-out), transform 320ms var(--ease-out),
+              background 320ms var(--ease-out);
+}
+.whatsnew-grid b {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.25;
+  color: var(--gold-light);
+}
+.whatsnew-grid span {
+  font-size: .87rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.whatsnew-grid a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .whatsnew-grid a:hover {
+    transform: translate3d(0, -3px, 0);
+    background: rgba(var(--surface-rgb), .72);
+    box-shadow:
+      inset 0 0 0 1px rgba(var(--gold-rgb), .3),
+      0 18px 34px -24px rgba(0, 0, 0, calc(.95 * var(--shadow-k)));
+  }
+}
+
+.whatsnew-more {
+  margin: 1.15rem 0 0;
+  font-size: .88rem;
+}
+.whatsnew-more a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 240ms var(--ease-out);
+}
+.whatsnew-more a:hover { color: var(--gold-light); }
+
+@media (prefers-reduced-motion: reduce) {
+  .whatsnew-grid a { transition: none; }
+  .whatsnew-grid a:hover { transform: none; }
+}
+
+/* --- the hero device, running --------------------------------------------- */
+
+/* The screens are stacked in one box that holds the phone's aspect ratio, so
+   the frame never resizes as they change. Only the box is in flow; the
+   pictures inside it are absolute and take turns. */
+.screens {
+  position: relative;
+  aspect-ratio: 840 / 1867;
+  border-radius: 27px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.screens .screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 27px;
+  object-fit: cover;
+  opacity: 0;
+  /* Off to the leading edge, waiting to be pushed on. */
+  transform: translate3d(14%, 0, 0) scale(1.012);
+  /* Opacity lands well before the slide finishes, so a screen reads as
+     arriving rather than as fading up in place. */
+  transition: opacity 380ms var(--ease-out), transform 720ms var(--ease-out);
+  will-change: transform, opacity;
+}
+.screens .screen.is-on {
+  opacity: 1;
+  transform: none;
+  z-index: 2;
+}
+/* The one leaving goes the other way and only a little: on Android the
+   screen beneath barely moves, and matching that is what makes this read as
+   navigation rather than as a slideshow. */
+.screens .screen.is-out {
+  opacity: 0;
+  transform: translate3d(-5%, 0, 0) scale(.994);
+  z-index: 1;
+}
+
+/* The caption and the dots. Revealed by app.js: with no script there is one
+   screen and nothing to caption or step through. */
+.stage-rail {
+  display: grid;
+  justify-items: center;
+  gap: .7rem;
+  margin-top: 1.25rem;
+}
+.stage-cap {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 260ms var(--ease-out);
+}
+.stage-cap.is-swapping { opacity: 0; }
+
+.stage-dots {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+}
+.stage-dots button {
+  width: 30px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  /* The target is 22px tall and the mark inside it is 3px; the rest is the
+     reach, which has to be there on a phone. */
+  display: grid;
+  place-items: center;
+}
+.stage-dots button::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(var(--gold-rgb), .26);
+  transition: background 300ms var(--ease-out);
+}
+.stage-dots button[aria-selected='true']::after { background: var(--gold); }
+.stage-dots button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .stage-dots button:hover::after { background: rgba(var(--gold-rgb), .55); }
+}
+
+/* Motion here is the whole point of the section, so under reduced motion it
+   does not degrade to a faster version of itself: the run stops, one screen
+   stands, and the dots still change it on a click. */
+@media (prefers-reduced-motion: reduce) {
+  .screens .screen { transition: opacity 1ms linear; transform: none; }
+  .screens .screen.is-out { transform: none; }
+}
+
 /* --- search: the panel that performs the feature ------------------------ */
 
 .search-demo {
@@ -3192,8 +3380,31 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .hero-grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 8vw, 4rem); }
   .hero-copy { max-width: 34rem; }
   .hero .lede { max-width: none; }
-  .stage { order: 2; }
   .device { width: min(70%, 300px); }
+
+  /* On one column the phone came after the whole of the copy, which put a
+     full screen of text above it: on a 390px phone the device was 90px of
+     itself, peeking over the fold, and the one thing on this page that
+     moves was the one thing nobody saw. It now sits directly under the
+     headline, where a product belongs — the reader meets the app, then
+     reads about it.
+
+     `display: contents` dissolves the copy wrapper into the grid for the
+     length of this breakpoint, so its children can be ordered against the
+     stage as siblings. The wrapper carries no box of its own here, which is
+     why its max-width is restated on the children that need it. */
+  .hero-grid { row-gap: clamp(1.4rem, 5vw, 2.2rem); }
+  .hero-copy { display: contents; }
+  .hero-copy .label { order: 1; }
+  .hero-copy .d1 { order: 2; }
+  .stage { order: 3; margin-block: .4rem clamp(.6rem, 3vw, 1.2rem); }
+  .hero-copy .lede { order: 4; max-width: 34rem; }
+  .hero-copy .actions { order: 5; }
+  .hero-copy .hero-proof { order: 6; }
+  /* margin-top on the copy's children was doing the spacing; the grid's own
+     row gap does it now that they are grid items. */
+  .hero-copy > * + * { margin-top: 0; }
+  .hero-copy .label + .d1 { margin-top: 0; }
 
   .split { grid-template-columns: 1fr; gap: clamp(2.2rem, 7vw, 3.2rem); }
   .split.is-flipped .split-media { order: 0; }

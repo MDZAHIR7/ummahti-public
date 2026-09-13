@@ -87,11 +87,21 @@ def hreflang_block(route):
     return '\n'.join(rows)
 
 
-def switcher(lang, route):
-    """A plain list of links. It needs no script, and a crawler follows it."""
+def switcher(lang, route, label='Language'):
+    """A plain list of links. It needs no script, and a crawler follows it.
+
+    Used for the translated pages by build_page and for the English ones by
+    wire_english, so every page in every language carries the same row.
+
+    The row is built after the translation pass has run, so its own label has
+    to be handed in already translated; left to the pass it would stay in
+    English on every page. The language names themselves are deliberately not
+    translated — each names itself in its own language, which is the one form
+    a reader who wants it can recognise on a page they cannot read.
+    """
     tail = f'/{route}' if route else '/'
     out = ['<div class="lang-pick">',
-           '  <span class="lang-pick-label">Language</span>']
+           f'  <span class="lang-pick-label">{label}</span>']
     entries = [('en', 'English', tail)]
     entries += [(c, LANGS[c]['name'], f'/{c}{"/" + route if route else "/"}') for c in LANGS]
     for code, name, href in entries:
@@ -225,6 +235,10 @@ def build_page(src_rel, route, lang):
     here = f'{SITE}/{lang}{"/" + route if route else "/"}'
     out = re.sub(r'<!-- hreflang: written by tools/i18n/wire_english\.py -->.*?<!-- /hreflang -->\n?',
                  '', out, flags=re.S)
+    # Same for the switcher wire_english puts on the English page: this
+    # build writes its own, marking this language as the current one.
+    out = re.sub(r'<!-- language switcher: written by tools/i18n/wire_english\.py -->.*?<!-- /language switcher -->\n?',
+                 '', out, flags=re.S)
     out = re.sub(r'<link rel="canonical" href="[^"]*">',
                  f'<link rel="canonical" href="{here}">\n' + hreflang_block(route), out, count=1)
     out = re.sub(r'<meta property="og:url" content="[^"]*">',
@@ -250,7 +264,8 @@ def build_page(src_rel, route, lang):
 
     # The switcher, at the end of the footer's own nav.
     out = out.replace('</nav>\n  </div>\n  <div class="footer-base shell">',
-                      '</nav>\n' + switcher(lang, route) + '\n  </div>\n  <div class="footer-base shell">', 1)
+                      '</nav>\n' + switcher(lang, route, table.get('Language', 'Language'))
+                      + '\n  </div>\n  <div class="footer-base shell">', 1)
 
     out = relocalise_schema(out, lang, here)
 

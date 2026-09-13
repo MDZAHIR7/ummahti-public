@@ -173,17 +173,99 @@
         </ul>
       </div>
 
+      <!-- The phone uses itself. A single still says the app exists; five
+           screens moving the way the app actually moves says what it is,
+           before a word of the copy has been read. Every frame is a real
+           capture, pushed in the way Android pushes a screen. The first is
+           eager and the rest are lazy: the hero must شامل نہیں wait on four
+           images nobody has scrolled to yet.
+
+           It is markup, شامل نہیں script: with no script the first screen stands
+           on its own exactly as the single still did, and the dots below
+           are real buttons rather than decoration. -->
       <div class="stage" data-reveal style="--delay:160ms">
         <div class="device" data-tilt>
-          <img src="/media/screens/home-840.webp"
-               srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
-               sizes="(max-width: 960px) 70vw, 340px"
-               width="840" height="1867" fetchpriority="high" decoding="async"
-               alt="اُمّتی کی ہوم اسکرین، جس میں آج کی ہجری تاریخ، البقرہ آیت 255 سے مطالعہ جاری رکھنے کا کارڈ، اور حفظ ٹریکر ہے۔">
+          <div class="screens" data-screens>
+            <img class="screen is-on" src="/media/screens/home-840.webp"
+                 srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" fetchpriority="high" decoding="async"
+                 data-cap="ہوم"
+                 alt="اُمّتی کی ہوم اسکرین، جس میں آج کی ہجری تاریخ، البقرہ آیت 255 سے مطالعہ جاری رکھنے کا کارڈ، اور حفظ ٹریکر ہے۔">
+            <img class="screen" src="/media/screens/mushaf-840.webp"
+                 srcset="/media/screens/mushaf-420.webp 420w, /media/screens/mushaf-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="مصحف کا صفحہ"
+                 alt="مصحف صفحے کا منظر، جس میں روایتی چھپا ہوا قرآنی صفحہ ہے۔">
+            <img class="screen" src="/media/screens/stream-840.webp"
+                 srcset="/media/screens/stream-420.webp 420w, /media/screens/stream-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="آیات کی رَو"
+                 alt="آیات کی رَو، جس میں ہر آیت کی عربی کے بعد اُس کا انگریزی ترجمہ ہے۔">
+            <img class="screen" src="/media/screens/audio-840.webp"
+                 srcset="/media/screens/audio-420.webp 420w, /media/screens/audio-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="تلاوت"
+                 alt="تلاوت کا پلیئر، قاری کے انتخاب اور آیت بہ آیت سننے کے کنٹرول کے ساتھ۔">
+            <img class="screen" src="/media/screens/themes-840.webp"
+                 srcset="/media/screens/themes-420.webp 420w, /media/screens/themes-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="مطالعہ تھیمز"
+                 alt="«مطالعہ تھیمز اور ورثہ»، جس میں ہر تھیم کے ساتھ اُسی آیت کی زندہ جھلک ہے۔"></div>
         </div>
         <span class="device-cast" aria-hidden="true"></span>
+        <div class="stage-rail" data-screen-rail hidden>
+          <p class="stage-cap" data-screen-cap aria-live="polite">ہوم</p>
+          <div class="stage-dots" role="tablist" aria-label="Screens" data-screen-dots></div>
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- ========================================================= what's new -->
+
+  <!-- Every product page worth the name says what is new before it says
+       what the thing is, because the returning visitor is the one who needs
+       telling and the new visitor reads it as momentum. These are the four
+       headline additions in 1.4, and each is a real link into the section
+       that shows it, so the band doubles as the fastest route into the
+       page. -->
+  <section class="whatsnew shell" aria-labelledby="whatsnew-title">
+    <p class="label" data-reveal><span class="whatsnew-tag">نیا</span> ورژن 1.4 میں</p>
+    <h2 class="vh" id="whatsnew-title">ورژن 1.4 میں نیا</h2>
+    <ul class="whatsnew-grid">
+      <li data-reveal>
+        <a href="#guide">
+          <b>اُمّتی رہنما</b>
+          <span>جو پیش آ رہا ہے وہ کہیے، اور اُس بارے میں جو نازل ہوا وہ پڑھیے &mdash; حوالوں کے ساتھ، اور آف لائن۔</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:80ms">
+        <a href="#themes">
+          <b>تھیمز اور ورثہ</b>
+          <span>بارہ مطالعہ تھیمز، ہر ایک کے ساتھ زندہ جھلک اور اُس کے نمونے کی کہانی۔</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:160ms">
+        <a href="#reciters">
+          <b>گیارہ مزید قاری</b>
+          <span>اب اڑتیس آوازیں، مرتّل اور مجوّد، آیت بہ آیت۔</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:240ms">
+        <a href="#mushaf">
+          <b>مصحفِ مدینہ</b>
+          <span>ساتواں خط، مجمع الملک فہد کے اپنے ٹائپ فیس میں۔</span>
+        </a>
+      </li>
+    </ul>
+    <p class="whatsnew-more" data-reveal style="--delay:320ms">
+      <a href="/ur/whats-new">اِس ریلیز کی ہر چیز، اور اُس سے پہلے کی ہر ریلیز</a>
+    </p>
   </section>
 
   <!-- =========================================================== facts -->
@@ -245,7 +327,7 @@
                srcset="/media/scripts/indopak-420.webp 420w, /media/scripts/indopak-720.webp 720w"
                sizes="(max-width: 960px) 70vw, 380px"
                width="720" height="1426" loading="lazy" decoding="async"
-               alt="وہی صفحہ ہند و پاک رسم میں، Scheherazade New سے لکھا ہوا۔">
+               alt="وہی صفحہ ہند و پاک رسم میں، Scheherazade نیا سے لکھا ہوا۔">
           <img class="script-page" data-script="naskh"
                src="/media/scripts/naskh-720.webp"
                srcset="/media/scripts/naskh-420.webp 420w, /media/scripts/naskh-720.webp 720w"
@@ -265,7 +347,7 @@
             عثمانی <small>Amiri Regular</small>
           </button>
           <button type="button" aria-pressed="false" data-tab="indopak">
-            ہند و پاک <small>Scheherazade New</small>
+            ہند و پاک <small>Scheherazade نیا</small>
           </button>
           <button type="button" aria-pressed="false" data-tab="naskh">
             نسخ <small>Noto نسخ Arabic</small>
@@ -1202,7 +1284,7 @@
       <a href="https://www.instagram.com/ummahti_quran/">انسٹاگرام</a>
     </nav>
 <div class="lang-pick">
-  <span class="lang-pick-label">Language</span>
+  <span class="lang-pick-label">زبان</span>
   <a hreflang="en" lang="en" href="/">English</a>
   <a hreflang="ar" lang="ar" href="/ar/">العربية</a>
   <a hreflang="ur" lang="ur" href="/ur/" aria-current="true">اردو</a>

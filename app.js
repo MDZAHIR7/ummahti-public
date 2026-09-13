@@ -700,6 +700,102 @@
     }
   }
 
+  /* ----------------------------------------------------------- the device */
+
+  /* The hero phone runs through five screens. The page's first impression is
+     the product being used, not a photograph of it.
+
+     Three rules it follows. It stops when it is off screen, because a timer
+     driving transforms behind the fold is work nobody asked for. It stops
+     while the pointer is over it or a dot has focus, because someone looking
+     at a screen should not have it taken away. And a dot press stops the run
+     for good: once a reader has said which screen they want, moving them on
+     is the site overruling them. */
+  const screens = document.querySelector('[data-screens]');
+  const stageRail = document.querySelector('[data-screen-rail]');
+
+  if (screens && stageRail) {
+    const frames = [...screens.querySelectorAll('.screen')];
+    const cap = stageRail.querySelector('[data-screen-cap]');
+    const dots = stageRail.querySelector('[data-screen-dots]');
+
+    if (frames.length > 1) {
+      stageRail.hidden = false;
+
+      let at = 0;
+      let timer = null;
+      let onScreen = false;
+      let held = false;   /* pointer over it, or a dot focused */
+      let taken = false;  /* a dot was pressed: the run is over */
+
+      const buttons = frames.map((frame, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(i === 0));
+        b.setAttribute('aria-label', frame.dataset.cap || `Screen ${i + 1}`);
+        b.addEventListener('click', () => { taken = true; stop(); show(i); });
+        b.addEventListener('focus', () => { held = true; stop(); });
+        b.addEventListener('blur', () => { held = false; run(); });
+        dots.append(b);
+        return b;
+      });
+
+      function show(next) {
+        if (next === at) return;
+        const from = frames[at];
+        const to = frames[next];
+
+        from.classList.remove('is-on');
+        from.classList.add('is-out');
+        /* The outgoing frame keeps its class only as long as the slide it is
+           doing; left on, it would sit above the next one to leave. */
+        setTimeout(() => from.classList.remove('is-out'), 760);
+
+        to.classList.remove('is-out');
+        /* Force a reflow so the browser sees the start state before the end
+           state; without it the frame simply appears where it is going. */
+        void to.offsetWidth;
+        to.classList.add('is-on');
+
+        buttons[at].setAttribute('aria-selected', 'false');
+        buttons[next].setAttribute('aria-selected', 'true');
+
+        if (cap) {
+          cap.classList.add('is-swapping');
+          setTimeout(() => {
+            cap.textContent = to.dataset.cap || '';
+            cap.classList.remove('is-swapping');
+          }, reduced.matches ? 0 : 240);
+        }
+
+        at = next;
+      }
+
+      function tick() { show((at + 1) % frames.length); }
+
+      function run() {
+        stop();
+        if (taken || held || !onScreen || reduced.matches) return;
+        timer = setInterval(tick, 3200);
+      }
+      function stop() { clearInterval(timer); timer = null; }
+
+      screens.addEventListener('pointerenter', () => { held = true; stop(); });
+      screens.addEventListener('pointerleave', () => { held = false; run(); });
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          for (const e of entries) { onScreen = e.isIntersecting; run(); }
+        }, { threshold: 0.18 }).observe(screens);
+      } else {
+        onScreen = true;
+        run();
+      }
+    }
+  }
+
   /* ---------------------------------------------------------------- themes */
 
   /* The app ships twelve reading themes and the site wears the same twelve.

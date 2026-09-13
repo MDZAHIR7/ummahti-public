@@ -14,10 +14,17 @@ import io, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
-from build import LANGS, PAGES, SITE, hreflang_block  # noqa: E402
+from build import LANGS, PAGES, SITE, hreflang_block, switcher  # noqa: E402
 
 BEGIN = '<!-- hreflang: written by tools/i18n/wire_english.py -->'
 END = '<!-- /hreflang -->'
+
+# The switcher has to be on the English pages too, not only the translated
+# ones. hreflang tells a search engine which languages exist; it tells a
+# reader nothing. Someone who arrives at the English page looking for Urdu
+# needs a link they can see.
+SW_BEGIN = '<!-- language switcher: written by tools/i18n/wire_english.py -->'
+SW_END = '<!-- /language switcher -->'
 
 
 def main():
@@ -33,8 +40,16 @@ def main():
             assert m, f'{src_rel}: no canonical to anchor to'
             s = s[:m.end()] + '\n' + block + s[m.end():]
 
+        sw = f'{SW_BEGIN}\n' + switcher('en', route) + f'\n{SW_END}'
+        if SW_BEGIN in s:
+            s = re.sub(re.escape(SW_BEGIN) + r'.*?' + re.escape(SW_END), sw, s, flags=re.S)
+        else:
+            anchor = '</nav>\n  </div>\n  <div class="footer-base shell">'
+            assert s.count(anchor) == 1, f'{src_rel}: no footer nav to anchor to'
+            s = s.replace(anchor, '</nav>\n' + sw + '\n  </div>\n  <div class="footer-base shell">', 1)
+
         io.open(p, 'w', encoding='utf-8').write(s)
-        print(f'{src_rel:<22} alternates written')
+        print(f'{src_rel:<22} alternates + switcher written')
 
     rows = []
     for _, route in PAGES:

@@ -173,17 +173,99 @@
         </ul>
       </div>
 
+      <!-- The phone uses itself. A single still says the app exists; five
+           screens moving the way the app actually moves says what it is,
+           before a word of the copy has been read. Every frame is a real
+           capture, pushed in the way Android pushes a screen. The first is
+           eager and the rest are lazy: the hero must tidak wait on four
+           images nobody has scrolled to yet.
+
+           It is markup, tidak script: with no script the first screen stands
+           on its own exactly as the single still did, and the dots below
+           are real buttons rather than decoration. -->
       <div class="stage" data-reveal style="--delay:160ms">
         <div class="device" data-tilt>
-          <img src="/media/screens/home-840.webp"
-               srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
-               sizes="(max-width: 960px) 70vw, 340px"
-               width="840" height="1867" fetchpriority="high" decoding="async"
-               alt="Layar beranda Ummahti, menampilkan tanggal Hijriah hari ini, kartu Lanjutkan Membaca pada Al-Baqarah ayat 255, dan pelacak hafalan.">
+          <div class="screens" data-screens>
+            <img class="screen is-on" src="/media/screens/home-840.webp"
+                 srcset="/media/screens/home-420.webp 420w, /media/screens/home-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" fetchpriority="high" decoding="async"
+                 data-cap="Beranda"
+                 alt="Layar beranda Ummahti, menampilkan tanggal Hijriah hari ini, kartu Lanjutkan Membaca pada Al-Baqarah ayat 255, dan pelacak hafalan.">
+            <img class="screen" src="/media/screens/mushaf-840.webp"
+                 srcset="/media/screens/mushaf-420.webp 420w, /media/screens/mushaf-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Halaman mushaf"
+                 alt="Tampilan halaman mushaf, menampilkan halaman Al-Qur'an cetak tradisional.">
+            <img class="screen" src="/media/screens/stream-840.webp"
+                 srcset="/media/screens/stream-420.webp 420w, /media/screens/stream-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Arus ayat"
+                 alt="Arus ayat, menampilkan teks Arab diikuti terjemahan Inggrisnya untuk setiap ayat.">
+            <img class="screen" src="/media/screens/audio-840.webp"
+                 srcset="/media/screens/audio-420.webp 420w, /media/screens/audio-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Tilawah"
+                 alt="Pemutar tilawah, dengan pilihan qari dan kendali pemutaran ayat demi ayat.">
+            <img class="screen" src="/media/screens/themes-840.webp"
+                 srcset="/media/screens/themes-420.webp 420w, /media/screens/themes-840.webp 840w"
+                 sizes="(max-width: 960px) 70vw, 340px"
+                 width="840" height="1867" loading="lazy" decoding="async"
+                 data-cap="Tema baca"
+                 alt="Tema Baca dan Warisan, menampilkan tema-tema dengan pratinjau langsung ayat yang sama pada masing-masing."></div>
         </div>
         <span class="device-cast" aria-hidden="true"></span>
+        <div class="stage-rail" data-screen-rail hidden>
+          <p class="stage-cap" data-screen-cap aria-live="polite">Beranda</p>
+          <div class="stage-dots" role="tablist" aria-label="Screens" data-screen-dots></div>
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- ========================================================= what's new -->
+
+  <!-- Every product page worth the name says what is new before it says
+       what the thing is, because the returning visitor is the one who needs
+       telling and the new visitor reads it as momentum. These are the four
+       headline additions in 1.4, and each is a real link into the section
+       that shows it, so the band doubles as the fastest route into the
+       page. -->
+  <section class="whatsnew shell" aria-labelledby="whatsnew-title">
+    <p class="label" data-reveal><span class="whatsnew-tag">Baru</span> di versi 1.4</p>
+    <h2 class="vh" id="whatsnew-title">Baru di versi 1.4</h2>
+    <ul class="whatsnew-grid">
+      <li data-reveal>
+        <a href="#guide">
+          <b>Panduan Ummahti</b>
+          <span>Katakan apa yang Anda hadapi, dan bacalah apa yang diturunkan tentangnya &mdash; bersumber, dan offline.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:80ms">
+        <a href="#themes">
+          <b>Tema &amp; Warisan</b>
+          <span>Dua belas tema baca, masing-masing dengan pratinjau langsung dan kisah polanya.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:160ms">
+        <a href="#reciters">
+          <b>Sebelas qari tambahan</b>
+          <span>Kini tiga puluh delapan suara, murattal dan mujawwad, ayat demi ayat.</span>
+        </a>
+      </li>
+      <li data-reveal style="--delay:240ms">
+        <a href="#mushaf">
+          <b>Mushaf al-Madinah</b>
+          <span>Kaligrafi ketujuh, dengan tipografi milik Kompleks Raja Fahd.</span>
+        </a>
+      </li>
+    </ul>
+    <p class="whatsnew-more" data-reveal style="--delay:320ms">
+      <a href="/id/whats-new">Semua yang ada di rilis ini, dan setiap rilis sebelumnya</a>
+    </p>
   </section>
 
   <!-- =========================================================== facts -->
@@ -245,7 +327,7 @@
                srcset="/media/scripts/indopak-420.webp 420w, /media/scripts/indopak-720.webp 720w"
                sizes="(max-width: 960px) 70vw, 380px"
                width="720" height="1426" loading="lazy" decoding="async"
-               alt="Halaman yang sama dalam rasm IndoPak, digambar dengan Scheherazade New.">
+               alt="Halaman yang sama dalam rasm IndoPak, digambar dengan Scheherazade Baru.">
           <img class="script-page" data-script="naskh"
                src="/media/scripts/naskh-720.webp"
                srcset="/media/scripts/naskh-420.webp 420w, /media/scripts/naskh-720.webp 720w"
@@ -265,7 +347,7 @@
             Utsmani <small>Amiri Regular</small>
           </button>
           <button type="button" aria-pressed="false" data-tab="indopak">
-            IndoPak <small>Scheherazade New</small>
+            IndoPak <small>Scheherazade Baru</small>
           </button>
           <button type="button" aria-pressed="false" data-tab="naskh">
             Naskh <small>Noto Naskh Arabic</small>
@@ -1202,7 +1284,7 @@
       <a href="https://www.instagram.com/ummahti_quran/">Instagram</a>
     </nav>
 <div class="lang-pick">
-  <span class="lang-pick-label">Language</span>
+  <span class="lang-pick-label">Bahasa</span>
   <a hreflang="en" lang="en" href="/">English</a>
   <a hreflang="ar" lang="ar" href="/ar/">العربية</a>
   <a hreflang="ur" lang="ur" href="/ur/">اردو</a>
