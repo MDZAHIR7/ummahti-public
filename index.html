@@ -49,8 +49,8 @@
 
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260906b">
-<script src="/theme.js?v=20260906b"></script>
+<link rel="stylesheet" href="/styles.css?v=20260913a">
+<script src="/theme.js?v=20260913a"></script>
 </head>
 
 <body>
@@ -337,12 +337,37 @@
       </div>
 
       <div class="split-media">
-        <div class="guide-demo panel" data-reveal style="--delay:120ms">
+        <!-- The animated panel. app.js reveals it and hides the static one
+             below, exactly as the search demo does. It runs the same five
+             topics the app itself would return, drawn from GuideCatalog.kt
+             and its strings rather than composed here, and it quotes no
+             scripture: a reference, the app's own caption for why that
+             reference is the one to start with, and the practical step. The
+             Arabic stays in the app. -->
+        <div class="guide-demo guide-play panel" data-guide-demo data-reveal style="--delay:120ms" hidden>
+          <p class="guide-ask">
+            <span class="label">You type</span>
+            <b><span data-guide-q></span><span class="guide-caret" aria-hidden="true"></span></b>
+          </p>
+          <div class="guide-answer" data-guide-answer>
+            <p class="guide-topic"><b data-guide-title></b> <span data-guide-cat></span></p>
+            <ul class="guide-sources" data-guide-sources></ul>
+            <p class="guide-step">
+              <span class="label">And one thing to do</span>
+              <span data-guide-step></span>
+            </p>
+          </div>
+          <p class="guide-why" data-guide-why></p>
+        </div>
+
+        <!-- The fallback, and the source of truth: with no script, or under
+             reduced motion, one whole answer stands on its own. -->
+        <div class="guide-demo panel" data-guide-static data-reveal style="--delay:120ms">
           <p class="guide-ask">
             <span class="label">You type</span>
             <b>I can&rsquo;t stop worrying</b>
           </p>
-          <p class="guide-topic">Anxiety and Worry <span>Heart and emotions</span></p>
+          <p class="guide-topic">Anxiety and Worry <span>Heart &amp; Emotions</span></p>
           <ul class="guide-sources">
             <li>
               <b>Qur&rsquo;an 13:28</b>
@@ -368,10 +393,11 @@
           </p>
         </div>
         <p class="guide-note">
-          A real answer, from a catalogue of eighty-one topics across ten categories, on
+          Real answers, from a catalogue of eighty-one topics across ten categories, on
           Qur&rsquo;an references from sixty-seven surahs, fifty-seven graded narrations and
-          fifteen supplications. The Arabic itself is in the app, drawn with the app&rsquo;s own
-          vetted Qur&rsquo;an typefaces, and never in a browser.
+          fifteen supplications &mdash; matched in ten languages, so the situation can be
+          described in the words you would actually use. The Arabic itself is in the app,
+          drawn with the app&rsquo;s own vetted Qur&rsquo;an typefaces, and never in a browser.
         </p>
       </div>
     </div>
@@ -1096,9 +1122,9 @@
 
 </div>
 
-<script src="/vendor/lenis.min.js?v=20260906b" defer></script>
-<script src="/sky.js?v=20260906b" defer></script>
-<script src="/verse.js?v=20260906b" defer></script>
-<script src="/app.js?v=20260906b" defer></script>
+<script src="/vendor/lenis.min.js?v=20260913a" defer></script>
+<script src="/sky.js?v=20260913a" defer></script>
+<script src="/verse.js?v=20260913a" defer></script>
+<script src="/app.js?v=20260913a" defer></script>
 </body>
 </html>

@@ -329,6 +329,257 @@
     }
   }
 
+  /* ----------------------------------------------------------------- guide */
+
+  /* Guide's whole claim is that a situation described in ordinary words comes
+     back as sourced, checkable references. A paragraph can assert that; only
+     watching it happen five times over is convincing. So this runs five real
+     topics out of `GuideCatalog.kt` — the query is one of that topic's own
+     `aliases`, the title, the category, the references, the captions and the
+     practical step are the app's own strings, and the caption under a
+     narration is the site's own short form of the app's summary, in the same
+     voice the static panel below already used.
+
+     Two of the five queries are not English, because two of the ten locales
+     the catalogue is matched in do more to show the reach than a third
+     English phrasing would.
+
+     No scripture is quoted, here or anywhere on this site. A reference, and
+     what it says, is as far as the browser goes. */
+
+  const GUIDE = [
+    {
+      q: 'I can’t stop worrying',
+      title: 'Anxiety and Worry',
+      cat: 'Heart & Emotions',
+      why: 'Plain English. No Islamic search term to know first, and no topic index to have memorised.',
+      sources: [
+        { ref: 'Qur’an 13:28', tag: 'Start here',
+          note: 'States that hearts find rest in the remembrance of Allah.' },
+        { ref: 'Qur’an 94:5-6' },
+        { ref: 'Qur’an 2:286' },
+        { ref: 'Sahih al-Bukhari 6363', tag: 'Sahih',
+          note: 'Seeking refuge from worry and grief by name.' },
+        { ref: 'Sunan Abi Dawud 1319', tag: 'Hasan, per al-Albani' },
+      ],
+      step: 'Return to short, simple dhikr when your mind is racing: even a few words, repeated.',
+    },
+    {
+      q: 'i did it again',
+      title: 'Falling Back into the Same Sin',
+      cat: 'Faith & Repentance',
+      why: 'Four words, no keyword in them. The catalogue carries the phrasings people actually type.',
+      sources: [
+        { ref: 'Qur’an 3:135', tag: 'Start here',
+          note: 'Praises those who, having wronged themselves, remember Allah and do not persist knowingly.' },
+        { ref: 'Qur’an 39:53' },
+        { ref: 'Qur’an 4:110' },
+        { ref: 'Sahih al-Bukhari 7507', tag: 'Sahih',
+          note: 'A servant sins and asks forgiveness, sins and asks again, and is forgiven each time he returns.' },
+      ],
+      step: 'Repent again, without treating the last tawbah as wasted. It was not.',
+    },
+    {
+      q: 'gagal ujian',
+      title: 'Failing an Exam',
+      cat: 'Work, Study & Rizq',
+      why: 'Indonesian, typed the way it is said. The catalogue is matched in ten languages, not translated after the fact.',
+      sources: [
+        { ref: 'Qur’an 2:216', tag: 'Start here',
+          note: 'States that you may dislike a thing that is good for you, and Allah knows while you do not.' },
+        { ref: 'Qur’an 3:139' },
+        { ref: 'Qur’an 94:5-6' },
+        { ref: 'Sahih Muslim 2664', tag: 'Sahih',
+          note: 'Be keen on what benefits you and seek Allah’s help; and when something goes against you, do not say “if only”.' },
+      ],
+      step: 'Find out exactly what went wrong, and treat that as information rather than as identity.',
+    },
+    {
+      q: 'قرض',
+      rtl: true,
+      title: 'Debt',
+      cat: 'Work, Study & Rizq',
+      why: 'Urdu, in Urdu script. It is matched on the phone, and what you typed never leaves it.',
+      sources: [
+        { ref: 'Qur’an 2:280', tag: 'Start here',
+          note: 'Instructs granting time to a debtor in hardship, and that remitting it is better.' },
+        { ref: 'Qur’an 65:7',
+          note: 'States that Allah will bring about ease after hardship.' },
+        { ref: 'Qur’an 2:275' },
+        { ref: 'Sahih al-Bukhari 6363', tag: 'Sahih',
+          note: 'Seeking refuge from worry and grief, and from the burden of debt.' },
+      ],
+      step: 'Write the full amount down and make a repayment plan, however slow. A named number is smaller than a feared one.',
+    },
+    {
+      q: 'i don’t know what to choose',
+      title: 'A Difficult Decision (Istikharah)',
+      cat: 'Life & Decisions',
+      why: 'A situation rather than a term — answered with what can be sourced, and never with a ruling.',
+      sources: [
+        { ref: 'Qur’an 3:159', tag: 'Start here',
+          note: 'Commands relying on Allah once a decision has been made.' },
+        { ref: 'Qur’an 2:216',
+          note: 'States that you may dislike a thing that is good for you, and Allah knows while you do not.' },
+        { ref: 'Qur’an 65:3' },
+        { ref: 'Sahih al-Bukhari 1166', tag: 'Sahih',
+          note: 'The prayer and the supplication the Prophet ﷺ taught for seeking guidance before a decision.' },
+      ],
+      step: 'Pray voluntary units as you are able, then make the istikharah supplication in your own understanding of it.',
+    },
+  ];
+
+  const gDemo = document.querySelector('[data-guide-demo]');
+  const gStatic = document.querySelector('[data-guide-static]');
+
+  if (gDemo && gStatic && !reduced.matches) {
+    gDemo.hidden = false;
+    gStatic.hidden = true;
+
+    const gq = gDemo.querySelector('[data-guide-q]');
+    const gLine = gq.parentElement;
+    const gAnswer = gDemo.querySelector('[data-guide-answer]');
+    const gTitle = gDemo.querySelector('[data-guide-title]');
+    const gCat = gDemo.querySelector('[data-guide-cat]');
+    const gList = gDemo.querySelector('[data-guide-sources]');
+    const gStep = gDemo.querySelector('[data-guide-step]');
+    const gWhy = gDemo.querySelector('[data-guide-why]');
+
+    let gi = 0;
+    let gTimer = null;
+    let gOn = false;
+
+    const gWait = (ms) => new Promise((res) => { gTimer = setTimeout(res, ms); });
+
+    /* Lay every answer out once and keep the tallest, so the panel stops
+       resizing between cases. It is all one synchronous pass with the block
+       already at opacity 0, so nothing of it is ever painted. Re-run on a
+       resize, because the column this sits in is fluid and the tallest case
+       at one width is not the tallest at another. */
+    function gFloor() {
+      const cls = gAnswer.className;
+      gAnswer.classList.remove('is-shown');
+      gDemo.style.setProperty('--guide-floor', '0px');
+
+      let tallest = 0;
+      for (const c of GUIDE) {
+        gTitle.textContent = c.title;
+        gCat.textContent = c.cat;
+        gStep.textContent = c.step;
+        gList.textContent = '';
+        for (const src of c.sources) gList.append(sourceRow(src));
+        tallest = Math.max(tallest, gAnswer.getBoundingClientRect().height);
+      }
+
+      gTitle.textContent = '';
+      gCat.textContent = '';
+      gStep.textContent = '';
+      gList.textContent = '';
+      gAnswer.className = cls;
+      gDemo.style.setProperty('--guide-floor', Math.ceil(tallest) + 'px');
+    }
+
+    /* A source row is the same three parts the static panel uses: the
+       reference, an optional word of weight, and what it says. */
+    function sourceRow(src) {
+      const li = document.createElement('li');
+      const b = document.createElement('b');
+      b.textContent = src.ref;
+      li.append(b);
+      if (src.tag) {
+        const em = document.createElement('em');
+        em.textContent = src.tag;
+        li.append(em);
+      }
+      if (src.note) {
+        const span = document.createElement('span');
+        span.textContent = src.note;
+        li.append(span);
+      }
+      return li;
+    }
+
+    async function gPlay() {
+      while (gOn) {
+        const c = GUIDE[gi % GUIDE.length];
+
+        gq.textContent = '';
+        /* The direction goes on the line rather than on the span, so the flex
+           row reverses with it and the caret sits at the end of the word —
+           the left of it — the way it would in the app's own field. */
+        if (c.rtl) { gLine.lang = 'ur'; gLine.dir = 'rtl'; }
+        else { gLine.removeAttribute('lang'); gLine.removeAttribute('dir'); }
+        gAnswer.classList.remove('is-shown');
+        gWhy.classList.remove('is-shown');
+        await gWait(420);
+        if (!gOn) return;
+
+        for (const ch of [...c.q]) {
+          gq.textContent += ch;
+          await gWait(52 + Math.random() * 48);
+          if (!gOn) return;
+        }
+
+        /* The beat before the answer is the matching. It is honest about the
+           app: the search is deterministic and quick, not a request going
+           somewhere and coming back. */
+        await gWait(380);
+        if (!gOn) return;
+
+        gTitle.textContent = c.title;
+        gCat.textContent = c.cat;
+        gStep.textContent = c.step;
+
+        gList.textContent = '';
+        c.sources.forEach((src, n) => {
+          const li = sourceRow(src);
+          li.style.setProperty('--n', String(n));
+          gList.append(li);
+        });
+
+        gAnswer.classList.add('is-shown');
+        await gWait(320 + c.sources.length * 90);
+        if (!gOn) return;
+
+        gWhy.textContent = c.why;
+        gWhy.classList.add('is-shown');
+
+        await gWait(3400);
+        if (!gOn) return;
+        gi++;
+      }
+    }
+
+    gFloor();
+    /* Cinzel and Jakarta land after first paint on a cold visit, and both
+       change the measurement. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(gFloor);
+
+    let gResize = null;
+    let gWidth = gDemo.getBoundingClientRect().width;
+    window.addEventListener('resize', () => {
+      const w = gDemo.getBoundingClientRect().width;
+      if (Math.abs(w - gWidth) < 1) return;
+      gWidth = w;
+      clearTimeout(gResize);
+      gResize = setTimeout(gFloor, 180);
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const was = gOn;
+          gOn = entry.isIntersecting;
+          if (gOn && !was) gPlay();
+          if (!gOn) clearTimeout(gTimer);
+        }
+      }, { threshold: 0.25 }).observe(gDemo);
+    } else {
+      gOn = true;
+      gPlay();
+    }
+  }
+
   /* ---------------------------------------------------------------- themes */
 
   /* The app ships twelve reading themes and the site wears the same twelve.

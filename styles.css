@@ -2056,6 +2056,101 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--muted-2);
 }
 
+/* The animated form of the same panel. It cycles five real topics, so the
+   thing to design around is the panel not resizing between them: a card that
+   grows and shrinks five times a minute reads as a glitch, not a demo. The
+   answer block is therefore floored at the tallest case and everything sits
+   at the top of it. Below the breakpoint the measure changes enough that a
+   fixed floor would leave a hole, so it is dropped and the panel is allowed
+   to flow. */
+.guide-play {
+  gap: .95rem;
+}
+.guide-play .guide-topic b {
+  font: inherit;
+  color: inherit;
+}
+.guide-play .guide-ask b {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 1.4em;
+}
+.guide-play .guide-ask b[dir='rtl'] [data-guide-q] {
+  font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Segoe UI', 'Geeza Pro', 'Times New Roman', serif;
+  font-size: 1.18em;
+  line-height: 1.9;
+}
+.guide-caret {
+  width: 2px;
+  height: 1.2em;
+  flex: none;
+  background: var(--gold-light);
+  animation: caret 1.05s steps(1) infinite;
+}
+
+.guide-answer {
+  display: grid;
+  gap: 1.05rem;
+  align-content: start;
+  /* The floor is measured, not guessed. app.js lays out all five answers
+     once, takes the tallest, and writes it here, so the panel holds still
+     through the cycle without a stack of breakpoints that would go stale the
+     first time one of these topics is reworded. Until it is set, and with no
+     script, the block simply takes its content's height. */
+  min-height: var(--guide-floor, 0px);
+  opacity: 0;
+  transition: opacity 460ms var(--ease-out);
+}
+.guide-answer.is-shown { opacity: 1; }
+
+/* The topic resolving is the moment the feature is understood, so it lifts
+   rather than only fading. The sources then arrive in order, which is the
+   order the catalogue put them in: the first is the one to read if you read
+   nothing else. */
+.guide-answer .guide-topic,
+.guide-answer .guide-step {
+  transform: translate3d(0, 7px, 0);
+  transition: transform 460ms var(--ease-out);
+}
+.guide-answer.is-shown .guide-topic,
+.guide-answer.is-shown .guide-step { transform: none; }
+
+.guide-answer .guide-sources li {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+}
+.guide-answer.is-shown .guide-sources li {
+  opacity: 1;
+  transform: none;
+  transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+  transition-delay: calc(140ms + var(--n) * 90ms);
+}
+
+.guide-play .guide-step { transition-delay: 120ms; }
+
+.guide-why {
+  margin: 0;
+  min-height: 2.6em;
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--muted);
+  padding-top: .85rem;
+  border-top: 1px solid var(--rule-soft);
+  opacity: 0;
+  transition: opacity 420ms var(--ease-out);
+}
+.guide-why.is-shown { opacity: 1; }
+
+/* Motion here is decoration over content that is already complete, so under
+   reduced motion the static panel is the one that shows and none of this
+   applies. app.js never reveals the animated panel in that case; this is the
+   belt to that braces. */
+@media (prefers-reduced-motion: reduce) {
+  .guide-play { display: none; }
+  .guide-caret { animation: none; }
+}
+
 /* --- the name ----------------------------------------------------------- */
 
 /* A reading passage, not a column of feature copy, so it is measured rather
