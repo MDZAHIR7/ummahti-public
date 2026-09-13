@@ -11,6 +11,7 @@ through six hand-maintained copies per language.
   python3 tools/i18n/build.py            # every language, every page
   python3 tools/i18n/build.py ar         # one language
 """
+import html
 import io
 import json
 import os
@@ -45,6 +46,19 @@ LANGS = {
 }
 
 SITE = 'https://ummahtiofficial.com'
+
+# Routes whose translated copy must say which version governs. A privacy
+# policy and a terms page make commitments, and two language versions of a
+# commitment can disagree; saying plainly that the English one is the
+# operative text is how that disagreement is settled in advance. Unlike the
+# draft banner this does not go away when the language is marked reviewed —
+# a reviewed translation of a legal document is still a translation.
+GOVERNING = {
+    'ar': 'هذه ترجمة للتيسير. والنسخة الإنجليزية هي النصّ المعتمد.',
+    'ur': 'یہ سہولت کے لیے ترجمہ ہے۔ معتبر متن انگریزی نسخہ ہی ہے۔',
+    'id': 'Ini terjemahan untuk kemudahan. Versi bahasa Inggris adalah teks yang berlaku.',
+}
+LEGAL = ('privacy', 'terms')
 
 # Paths that are files rather than routes, and so are never language-prefixed.
 ASSET = re.compile(r'^/(media|fonts|vendor|i18n|styles\.css|app\.js|theme\.js|sky\.js|verse\.js|site\.webmanifest|robots\.txt|sitemap\.xml)')
@@ -87,6 +101,32 @@ def switcher(lang, route):
     return '\n'.join(out)
 
 
+def mask_scripts(markup):
+    """Take <script> contents out of the segment pass, and give them back.
+
+    A segment is matched as plain text anywhere in the file, and script
+    bodies are not prose: "FAQ" is a navigation label and also the first
+    three characters of the value "FAQPage", so translating in place turned
+    a valid @type into "أسئلة شائعةPage" and silently broke the page's
+    structured data. Scripts are localised deliberately, by
+    relocalise_schema, from the translated markup — never by text
+    substitution.
+    """
+    held = []
+
+    def take(m):
+        held.append(m.group(0))
+        return f'\x00SCRIPT{len(held) - 1}\x00'
+
+    return re.sub(r'(?s)<script\b.*?</script>', take, markup), held
+
+
+def unmask_scripts(markup, held):
+    for i, original in enumerate(held):
+        markup = markup.replace(f'\x00SCRIPT{i}\x00', original, 1)
+    return markup
+
+
 def apply_translations(markup, table, report):
     """Put each translated segment back where its English original sits.
 
@@ -116,13 +156,61 @@ def apply_translations(markup, table, report):
     return markup
 
 
+def relocalise_schema(markup, lang, here):
+    """Make the structured data agree with the page it sits on.
+
+    Two blocks would otherwise still describe the English page: the FAQ
+    answers, which are inside a <script> and so are never touched by the
+    segment pass, and SoftwareApplication's url and description. Structured
+    data that disagrees with the page is worse than none — it is what a
+    search engine quotes.
+
+    The FAQ is rebuilt from this page's own translated markup rather than
+    from a second table, so it cannot drift from what a reader sees.
+    """
+    if '"@type": "FAQPage"' in markup:
+        pairs = re.findall(r'<h3>(.*?)</h3>\s*<p>(.*?)</p>', markup, re.S)
+        if pairs:
+            def clean(t):
+                t = html.unescape(t).strip()
+                t = re.sub(r'href="(/[^"]*)"', r'href="' + SITE + r'\1"', t)
+                return re.sub(r'\s+', ' ', t)
+            faq = {
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                'inLanguage': lang,
+                'mainEntity': [{
+                    '@type': 'Question',
+                    'name': re.sub(r'<[^>]+>', '', clean(q)),
+                    'acceptedAnswer': {'@type': 'Answer', 'text': clean(a)},
+                } for q, a in pairs],
+            }
+            markup = re.sub(
+                r'<script type="application/ld\+json">\s*\{\s*"@context".*?"@type": "FAQPage".*?</script>',
+                '<script type="application/ld+json">\n'
+                + json.dumps(faq, ensure_ascii=False, indent=2) + '\n</script>',
+                markup, count=1, flags=re.S)
+
+    if '"@type": "SoftwareApplication"' in markup:
+        m = re.search(r'<meta name="description" content="([^"]*)"', markup)
+        markup = markup.replace(f'"url": "{SITE}/"', f'"url": "{here}"', 1)
+        if m:
+            desc = html.unescape(m.group(1))
+            markup = re.sub(r'("description": )"(?:[^"\\]|\\.)*"',
+                            lambda _: '"description": ' + json.dumps(desc, ensure_ascii=False),
+                            markup, count=1)
+    return markup
+
+
 def build_page(src_rel, route, lang):
     src = io.open(os.path.join(ROOT, src_rel), encoding='utf-8').read()
     table_path = os.path.join(HERE, f'{lang}.json')
     table = json.load(io.open(table_path, encoding='utf-8')) if os.path.exists(table_path) else {}
 
     report = {'applied': 0, 'untranslated': 0, 'missing': []}
-    out = apply_translations(src, table, report)
+    out, scripts = mask_scripts(src)
+    out = apply_translations(out, table, report)
+    out = unmask_scripts(out, scripts)
     out = localise_links(out, lang)
 
     meta = LANGS[lang]
@@ -144,6 +232,11 @@ def build_page(src_rel, route, lang):
     out = re.sub(r'<meta property="og:locale" content="[^"]*">',
                  f'<meta property="og:locale" content="{lang}">', out, count=1)
 
+    if route in LEGAL:
+        note = (f'<p class="governing-note">{GOVERNING[lang]} '
+                f'<a href="{tail}" lang="en" dir="ltr">English version</a></p>')
+        out = out.replace('<div class="doc shell">', note + '\n  <div class="doc shell">', 1)
+
     if not meta.get('reviewed'):
         out = out.replace('<meta name="theme-color"',
                           '<meta name="robots" content="noindex,follow">\n<meta name="theme-color"', 1)
@@ -158,6 +251,8 @@ def build_page(src_rel, route, lang):
     # The switcher, at the end of the footer's own nav.
     out = out.replace('</nav>\n  </div>\n  <div class="footer-base shell">',
                       '</nav>\n' + switcher(lang, route) + '\n  </div>\n  <div class="footer-base shell">', 1)
+
+    out = relocalise_schema(out, lang, here)
 
     dest_dir = os.path.join(ROOT, lang, route) if route else os.path.join(ROOT, lang)
     os.makedirs(dest_dir, exist_ok=True)

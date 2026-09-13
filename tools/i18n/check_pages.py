@@ -8,7 +8,7 @@ compared against the table that made them.
 
   python3 tools/i18n/check_pages.py
 """
-import io, json, os, sys
+import io, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -24,6 +24,28 @@ KEEP = {
     'Cinzel', 'Plus Jakarta Sans', 'Google Play', 'YouTube', 'Instagram',
     'WhatsApp', 'Kotlin', 'Jetpack Compose', 'Android',
 }
+
+
+# The @type values this site actually publishes. A localised page that has
+# had one translated is broken structured data, which is exactly the failure
+# that reached a built page once: "FAQ" is a nav label as well as the opening
+# of "FAQPage", so the segment pass rewrote the type.
+VALID_TYPES = {'SoftwareApplication', 'FAQPage', 'Organization', 'WebSite', 'Question', 'Answer', 'Offer'}
+
+
+def schema_problems(markup, path):
+    out = []
+    for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', markup, re.S):
+        try:
+            data = json.loads(block)
+        except ValueError as e:
+            out.append(f'{path}: ld+json does not parse ({e})')
+            continue
+        if data.get('@type') not in VALID_TYPES:
+            out.append(f'{path}: ld+json @type is {data.get("@type")!r}')
+        if data.get('@context') != 'https://schema.org':
+            out.append(f'{path}: ld+json @context is {data.get("@context")!r}')
+    return out
 
 
 def main():
@@ -42,6 +64,11 @@ def main():
             here = segments(io.open(built, encoding='utf-8').read())
             # Anything still matching an English key had a translation and
             # did not get it.
+            markup = io.open(built, encoding='utf-8').read()
+            for problem in schema_problems(markup, f'/{lang}/{route}'):
+                print('  ' + problem)
+                bad += 1
+
             leaked = [s for s in here
                       if s in table and table[s] != s and s not in KEEP]
             if leaked:
