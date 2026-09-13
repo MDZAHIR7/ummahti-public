@@ -19,6 +19,13 @@
   root.classList.remove('no-js');
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* The demos below are the one place this file holds reader-facing text.
+     A localised page loads /i18n/<lang>.js ahead of this file, which sets
+     these; on the English pages nothing sets them and the arrays written
+     here stand. The Guide strings in those files are the app's own, lifted
+     from its localised resources rather than translated a second time. */
+  const I18N = window.UMMAHTI_I18N || {};
   const coarse = window.matchMedia('(hover: none)');
   const narrow = window.matchMedia('(max-width: 760px)');
 
@@ -263,6 +270,8 @@
       why: 'Arabic, with or without the harakat.' },
   ];
 
+  const SEARCH_CASES = I18N.search || CASES;
+
   const demo = document.querySelector('[data-search-demo]');
   const cases = document.querySelector('[data-search-cases]');
 
@@ -284,7 +293,7 @@
 
     async function play() {
       while (onScreen) {
-        const c = CASES[i % CASES.length];
+        const c = SEARCH_CASES[i % SEARCH_CASES.length];
 
         qEl.textContent = '';
         if (c.ar) { qEl.lang = 'ar'; qEl.dir = 'rtl'; }
@@ -429,6 +438,8 @@
     },
   ];
 
+  const GUIDE_CASES = I18N.guide || GUIDE;
+
   const gDemo = document.querySelector('[data-guide-demo]');
   const gStatic = document.querySelector('[data-guide-static]');
 
@@ -462,7 +473,7 @@
       gDemo.style.setProperty('--guide-floor', '0px');
 
       let tallest = 0;
-      for (const c of GUIDE) {
+      for (const c of GUIDE_CASES) {
         gTitle.textContent = c.title;
         gCat.textContent = c.cat;
         gStep.textContent = c.step;
@@ -501,7 +512,7 @@
 
     async function gPlay() {
       while (gOn) {
-        const c = GUIDE[gi % GUIDE.length];
+        const c = GUIDE_CASES[gi % GUIDE_CASES.length];
 
         gq.textContent = '';
         /* The direction goes on the line rather than on the span, so the flex
@@ -652,25 +663,27 @@
       const head = block.querySelector('header');
       if (!text || !head) continue;
 
+      const words = I18N.copy || { copy: 'Copy', copied: 'Copied', manual: 'Press Ctrl+C' };
+
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'press-copy-btn';
-      btn.textContent = 'Copy';
+      btn.textContent = words.copy;
       /* The label is what changes on success, so it has to be announced. */
       btn.setAttribute('aria-live', 'polite');
 
       let settle = null;
       btn.addEventListener('click', () => {
         navigator.clipboard.writeText(text.textContent.trim()).then(() => {
-          btn.textContent = 'Copied';
+          btn.textContent = words.copied;
           btn.classList.add('is-done');
           clearTimeout(settle);
           settle = setTimeout(() => {
-            btn.textContent = 'Copy';
+            btn.textContent = words.copy;
             btn.classList.remove('is-done');
           }, 2000);
         }, () => {
-          btn.textContent = 'Press Ctrl+C';
+          btn.textContent = words.manual;
           /* Hand the selection over, so the keystroke it just asked for
              actually has something to act on. */
           const range = document.createRange();
@@ -679,7 +692,7 @@
           sel.removeAllRanges();
           sel.addRange(range);
           clearTimeout(settle);
-          settle = setTimeout(() => { btn.textContent = 'Copy'; }, 3000);
+          settle = setTimeout(() => { btn.textContent = words.copy; }, 3000);
         });
       });
 
@@ -701,6 +714,10 @@
      twelve names below are the only duplication of the app's theme list
      outside the stylesheet, and they exist because the picker is on every
      page while the swatch cards are only on the landing page. */
+  /* The id is what the stylesheet and the stored preference key on, so a
+     localised page overrides only the name a reader sees. */
+  const THEME_NAMES = I18N.themes || {};
+
   const THEMES = [
     { id: 'obsidian', name: 'Obsidian Dark' },
     { id: 'warm-cream', name: 'Warm Cream' },
@@ -714,7 +731,7 @@
     { id: 'haramain', name: 'Haramain' },
     { id: 'shiraz-dawn', name: 'Shiraz Dawn' },
     { id: 'jali-moon', name: 'Jali Moon' },
-  ];
+  ].map((t) => (THEME_NAMES[t.id] ? { ...t, name: THEME_NAMES[t.id] } : t));
 
   const STORE = 'ummahti:theme';
   const themeMeta = document.querySelector('meta[name="theme-color"]');

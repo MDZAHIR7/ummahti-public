@@ -552,7 +552,7 @@ a:focus-visible:not([class]),
 
 .skip-link {
   position: fixed;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: -6rem;
   z-index: 999;
   padding: .8rem 1.1rem;
@@ -1073,7 +1073,7 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
 .theme-menu {
   position: absolute;
   top: calc(100% + 12px);
-  right: 0;
+  inset-inline-end: 0;
   z-index: 60;
   width: min(15rem, calc(100vw - 2rem));
   display: grid;
@@ -2236,8 +2236,8 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 }
 .ayah-gloss {
   margin: 1.15rem 0 0;
-  padding-left: 1rem;
-  border-left: 2px solid rgba(var(--gold-rgb), .32);
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid rgba(var(--gold-rgb), .32);
 }
 .ayah-gloss p {
   margin: 0;
@@ -2493,9 +2493,9 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .lock-verse figcaption { justify-content: center; text-align: center; }
   .ayah-lat { text-align: center; }
   .ayah-gloss {
-    padding-left: 0;
+    padding-inline-start: 0;
     padding-top: .9rem;
-    border-left: 0;
+    border-inline-start: 0;
     border-top: 2px solid rgba(var(--gold-rgb), .32);
     text-align: center;
   }
@@ -2914,7 +2914,7 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 }
 .doc-body p, .doc-body li { color: var(--muted); }
 .doc-body p { margin: .9rem 0; }
-.doc-body ul, .doc-body ol { padding-left: 1.2rem; }
+.doc-body ul, .doc-body ol { padding-inline-start: 1.2rem; }
 .doc-body li { margin: .45rem 0; }
 .doc-body strong { color: var(--text); font-weight: 600; }
 .doc-body a { color: var(--gold-light); text-underline-offset: 3px; }
@@ -3582,3 +3582,66 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .press-not b { font-size: .96rem; font-weight: 600; color: var(--text); }
 .press-not span { font-size: .9rem; line-height: 1.62; color: var(--muted); }
 .press-not a { color: var(--gold-light); text-underline-offset: 3px; }
+
+/* --- the language switcher ---------------------------------------------- */
+
+/* A row of plain links in the footer. No script, no flag icons — a flag
+   stands for a country and these are languages — and each link names its own
+   language in that language, which is the one form every reader of it can
+   recognise. `lang` on each is what lets a browser pick the right face for
+   the Urdu and Arabic names while the page around them is in English. */
+.lang-pick {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem 1.15rem;
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule-soft);
+}
+.lang-pick-label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.lang-pick a {
+  font-size: .9rem;
+  color: var(--muted);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+.lang-pick a:hover { color: var(--gold-light); text-decoration: underline; }
+.lang-pick a[aria-current] {
+  color: var(--gold-light);
+  font-weight: 600;
+}
+.lang-pick a[lang='ur'] { font-size: 1.05rem; }
+
+/* The sky's moon is placed off one edge. Left where it is under RTL it would
+   crowd the side the text now starts from, so it changes sides with the
+   text. It is ambient, and nothing depends on which side it sits. */
+[dir='rtl'] .sky-moon { right: auto; left: -10vw; }
+[dir='rtl'] .sky-halo { right: auto; left: 3vw; }
+
+/* A draft translation says so, above everything else on the page. Quiet
+   rather than alarming — it is a note about provenance, not a warning — but
+   it is the first thing in the document and it is not dismissible, because
+   the reader deciding whether to trust a sentence about the Qur'an is
+   exactly who it is for. It disappears when the language is marked reviewed
+   in tools/i18n/build.py. */
+.draft-note {
+  position: relative;
+  z-index: 5;
+  margin: 0;
+  padding: .7rem var(--gutter);
+  text-align: center;
+  font-size: .82rem;
+  line-height: 1.5;
+  color: var(--gold-light);
+  background: rgba(var(--gold-rgb), .1);
+  box-shadow: inset 0 -1px 0 rgba(var(--gold-rgb), .22);
+}
+.draft-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
