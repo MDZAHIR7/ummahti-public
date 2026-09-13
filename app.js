@@ -636,6 +636,57 @@
     }
   }
 
+  /* ------------------------------------------------------------ press kit */
+
+  /* The descriptions on /press exist to be taken, and selecting three
+     sentences cleanly on a phone is a small misery. The button is added here
+     rather than sitting in the markup, so where the clipboard is not
+     available — an insecure origin, an old browser, a locked-down profile —
+     there is no button that does nothing, and the text is still there to
+     select by hand. */
+  const copyBlocks = document.querySelectorAll('[data-copy-block]');
+
+  if (copyBlocks.length && navigator.clipboard && window.isSecureContext) {
+    for (const block of copyBlocks) {
+      const text = block.querySelector('[data-copy-text]');
+      const head = block.querySelector('header');
+      if (!text || !head) continue;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'press-copy-btn';
+      btn.textContent = 'Copy';
+      /* The label is what changes on success, so it has to be announced. */
+      btn.setAttribute('aria-live', 'polite');
+
+      let settle = null;
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text.textContent.trim()).then(() => {
+          btn.textContent = 'Copied';
+          btn.classList.add('is-done');
+          clearTimeout(settle);
+          settle = setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('is-done');
+          }, 2000);
+        }, () => {
+          btn.textContent = 'Press Ctrl+C';
+          /* Hand the selection over, so the keystroke it just asked for
+             actually has something to act on. */
+          const range = document.createRange();
+          range.selectNodeContents(text);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          clearTimeout(settle);
+          settle = setTimeout(() => { btn.textContent = 'Copy'; }, 3000);
+        });
+      });
+
+      head.append(btn);
+    }
+  }
+
   /* ---------------------------------------------------------------- themes */
 
   /* The app ships twelve reading themes and the site wears the same twelve.
