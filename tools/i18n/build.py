@@ -29,6 +29,7 @@ PAGES = [
     ('support/index.html', 'support'),
     ('whats-new/index.html', 'whats-new'),
     ('press/index.html', 'press'),
+    ('contact/index.html', 'contact'),
 ]
 
 # `reviewed` is the gate on a translation being treated as finished. Until a
