@@ -19,6 +19,13 @@
   root.classList.remove('no-js');
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* The demos below are the one place this file holds reader-facing text.
+     A localised page loads /i18n/<lang>.js ahead of this file, which sets
+     these; on the English pages nothing sets them and the arrays written
+     here stand. The Guide strings in those files are the app's own, lifted
+     from its localised resources rather than translated a second time. */
+  const I18N = window.UMMAHTI_I18N || {};
   const coarse = window.matchMedia('(hover: none)');
   const narrow = window.matchMedia('(max-width: 760px)');
 
@@ -226,6 +233,115 @@
         });
       });
 
+      /* ---- turning the page by hand ---- */
+
+      /* The tabs lead and keep leading; this is for the reader who reaches
+         for the page itself, which on a phone is most of them.
+
+         The leaf is whichever page is mid-turn: the current one going out
+         when the drag runs with the binding, the previous one coming back
+         when it runs against it. One angle drives both directions, and the
+         direction only decides which page wears it and where it starts.
+
+         A drag is a choice, so like a tab press it stops the cycling. */
+      const stack = scripts.querySelector('.script-stack');
+      const SHUT = -102;      // where the leaf keyframe ends
+      const COMMIT = 0.34;    // of the stack's width, to carry the turn
+
+      if (stack && !reduced.matches && pages.length > 1) {
+        const hint = scripts.querySelector('[data-script-hint]');
+        if (hint) hint.hidden = false;
+
+        let from = 0, dir = 0, leaf = null, wide = 1, live = false;
+
+        const angle = (a) => {
+          stack.style.setProperty('--leaf-a', a.toFixed(2));
+          stack.style.setProperty('--leaf-b', (1 - Math.abs(a) / 170).toFixed(3));
+        };
+
+        function release() {
+          scripts.classList.remove('is-turning', 'is-settling');
+          if (leaf) leaf.classList.remove('is-leaf');
+          stack.style.removeProperty('--leaf-a');
+          stack.style.removeProperty('--leaf-b');
+          leaf = null;
+          dir = 0;
+          live = false;
+        }
+
+        /* The leaf is already where the turn ends, so the index changes with
+           no animation: replaying `leaf` here would snap the page back flat
+           and turn it a second time. */
+        function land(next) {
+          index = (next + pages.length) % pages.length;
+          pages.forEach((pg, i) => {
+            pg.classList.toggle('is-on', i === index);
+            pg.classList.remove('is-out');
+          });
+          tabs.forEach((t, i) => t.setAttribute('aria-pressed', String(i === index)));
+        }
+
+        stack.addEventListener('pointerdown', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          /* Belt to the stylesheet's braces: stops the browser starting its
+             own image drag, which would cancel this one. */
+          e.preventDefault();
+          taken = true;
+          clearTimeout(timer);
+          from = e.clientX;
+          wide = Math.max(1, stack.getBoundingClientRect().width);
+          dir = 0;
+          live = true;
+          stack.setPointerCapture(e.pointerId);
+        });
+
+        stack.addEventListener('pointermove', (e) => {
+          if (!live) return;
+          const dx = e.clientX - from;
+
+          /* The direction is settled once, on the first movement worth
+             calling one. Letting it flip mid-drag would swap the leaf out
+             from under the finger. */
+          if (!dir) {
+            if (Math.abs(dx) < 6) return;
+            dir = dx < 0 ? 1 : -1;
+            leaf = dir === 1 ? pages[index] : pages[(index - 1 + pages.length) % pages.length];
+            leaf.classList.add('is-leaf');
+            scripts.classList.add('is-turning');
+          }
+
+          const t = Math.min(1, Math.max(0, (dx * -dir) / (wide * 0.9)));
+          angle(dir === 1 ? SHUT * t : SHUT * (1 - t));
+        });
+
+        function finish(e) {
+          if (!live) return;
+          live = false;
+          const went = ((e.clientX - from) * -dir) / wide;
+          try { stack.releasePointerCapture(e.pointerId); } catch (err) { /* already gone */ }
+
+          if (!dir) { release(); return; }
+
+          const took = went > COMMIT;
+          const to = dir === 1 ? (took ? SHUT : 0) : (took ? 0 : SHUT);
+          const landing = dir === 1 ? index + 1 : index - 1;
+          const settling = leaf;
+
+          scripts.classList.remove('is-turning');
+          scripts.classList.add('is-settling');
+          angle(to);
+
+          setTimeout(() => {
+            if (took) land(landing);
+            if (settling) settling.classList.remove('is-leaf');
+            release();
+          }, 440);
+        }
+
+        stack.addEventListener('pointerup', finish);
+        stack.addEventListener('pointercancel', (e) => finish({ clientX: from, pointerId: e.pointerId }));
+      }
+
       if ('IntersectionObserver' in window) {
         new IntersectionObserver((entries) => {
           for (const entry of entries) {
@@ -263,6 +379,8 @@
       why: 'Arabic, with or without the harakat.' },
   ];
 
+  const SEARCH_CASES = I18N.search || CASES;
+
   const demo = document.querySelector('[data-search-demo]');
   const cases = document.querySelector('[data-search-cases]');
 
@@ -284,7 +402,7 @@
 
     async function play() {
       while (onScreen) {
-        const c = CASES[i % CASES.length];
+        const c = SEARCH_CASES[i % SEARCH_CASES.length];
 
         qEl.textContent = '';
         if (c.ar) { qEl.lang = 'ar'; qEl.dir = 'rtl'; }
@@ -329,6 +447,464 @@
     }
   }
 
+  /* ----------------------------------------------------------------- guide */
+
+  /* Guide's whole claim is that a situation described in ordinary words comes
+     back as sourced, checkable references. A paragraph can assert that; only
+     watching it happen five times over is convincing. So this runs five real
+     topics out of `GuideCatalog.kt` — the query is one of that topic's own
+     `aliases`, the title, the category, the references, the captions and the
+     practical step are the app's own strings, and the caption under a
+     narration is the site's own short form of the app's summary, in the same
+     voice the static panel below already used.
+
+     Two of the five queries are not English, because two of the ten locales
+     the catalogue is matched in do more to show the reach than a third
+     English phrasing would.
+
+     No scripture is quoted, here or anywhere on this site. A reference, and
+     what it says, is as far as the browser goes. */
+
+  const GUIDE = [
+    {
+      q: 'I can’t stop worrying',
+      title: 'Anxiety and Worry',
+      cat: 'Heart & Emotions',
+      why: 'Plain English. No Islamic search term to know first, and no topic index to have memorised.',
+      sources: [
+        { ref: 'Qur’an 13:28', tag: 'Start here',
+          note: 'States that hearts find rest in the remembrance of Allah.' },
+        { ref: 'Qur’an 94:5-6' },
+        { ref: 'Qur’an 2:286' },
+        { ref: 'Sahih al-Bukhari 6363', tag: 'Sahih',
+          note: 'Seeking refuge from worry and grief by name.' },
+        { ref: 'Sunan Abi Dawud 1319', tag: 'Hasan, per al-Albani' },
+      ],
+      step: 'Return to short, simple dhikr when your mind is racing: even a few words, repeated.',
+    },
+    {
+      q: 'i did it again',
+      title: 'Falling Back into the Same Sin',
+      cat: 'Faith & Repentance',
+      why: 'Four words, no keyword in them. The catalogue carries the phrasings people actually type.',
+      sources: [
+        { ref: 'Qur’an 3:135', tag: 'Start here',
+          note: 'Praises those who, having wronged themselves, remember Allah and do not persist knowingly.' },
+        { ref: 'Qur’an 39:53' },
+        { ref: 'Qur’an 4:110' },
+        { ref: 'Sahih al-Bukhari 7507', tag: 'Sahih',
+          note: 'A servant sins and asks forgiveness, sins and asks again, and is forgiven each time he returns.' },
+      ],
+      step: 'Repent again, without treating the last tawbah as wasted. It was not.',
+    },
+    {
+      q: 'gagal ujian',
+      title: 'Failing an Exam',
+      cat: 'Work, Study & Rizq',
+      why: 'Indonesian, typed the way it is said. The catalogue is matched in ten languages, not translated after the fact.',
+      sources: [
+        { ref: 'Qur’an 2:216', tag: 'Start here',
+          note: 'States that you may dislike a thing that is good for you, and Allah knows while you do not.' },
+        { ref: 'Qur’an 3:139' },
+        { ref: 'Qur’an 94:5-6' },
+        { ref: 'Sahih Muslim 2664', tag: 'Sahih',
+          note: 'Be keen on what benefits you and seek Allah’s help; and when something goes against you, do not say “if only”.' },
+      ],
+      step: 'Find out exactly what went wrong, and treat that as information rather than as identity.',
+    },
+    {
+      q: 'قرض',
+      rtl: true,
+      title: 'Debt',
+      cat: 'Work, Study & Rizq',
+      why: 'Urdu, in Urdu script. It is matched on the phone, and what you typed never leaves it.',
+      sources: [
+        { ref: 'Qur’an 2:280', tag: 'Start here',
+          note: 'Instructs granting time to a debtor in hardship, and that remitting it is better.' },
+        { ref: 'Qur’an 65:7',
+          note: 'States that Allah will bring about ease after hardship.' },
+        { ref: 'Qur’an 2:275' },
+        { ref: 'Sahih al-Bukhari 6363', tag: 'Sahih',
+          note: 'Seeking refuge from worry and grief, and from the burden of debt.' },
+      ],
+      step: 'Write the full amount down and make a repayment plan, however slow. A named number is smaller than a feared one.',
+    },
+    {
+      q: 'i don’t know what to choose',
+      title: 'A Difficult Decision (Istikharah)',
+      cat: 'Life & Decisions',
+      why: 'A situation rather than a term — answered with what can be sourced, and never with a ruling.',
+      sources: [
+        { ref: 'Qur’an 3:159', tag: 'Start here',
+          note: 'Commands relying on Allah once a decision has been made.' },
+        { ref: 'Qur’an 2:216',
+          note: 'States that you may dislike a thing that is good for you, and Allah knows while you do not.' },
+        { ref: 'Qur’an 65:3' },
+        { ref: 'Sahih al-Bukhari 1166', tag: 'Sahih',
+          note: 'The prayer and the supplication the Prophet ﷺ taught for seeking guidance before a decision.' },
+      ],
+      step: 'Pray voluntary units as you are able, then make the istikharah supplication in your own understanding of it.',
+    },
+  ];
+
+  const GUIDE_CASES = I18N.guide || GUIDE;
+
+  const gDemo = document.querySelector('[data-guide-demo]');
+  const gStatic = document.querySelector('[data-guide-static]');
+
+  if (gDemo && gStatic && !reduced.matches) {
+    gDemo.hidden = false;
+    gStatic.hidden = true;
+
+    const gq = gDemo.querySelector('[data-guide-q]');
+    const gLine = gq.parentElement;
+    const gAnswer = gDemo.querySelector('[data-guide-answer]');
+    const gTitle = gDemo.querySelector('[data-guide-title]');
+    const gCat = gDemo.querySelector('[data-guide-cat]');
+    const gList = gDemo.querySelector('[data-guide-sources]');
+    const gStep = gDemo.querySelector('[data-guide-step]');
+    const gWhy = gDemo.querySelector('[data-guide-why]');
+
+    let gi = 0;
+    let gTimer = null;
+    let gOn = false;
+
+    const gWait = (ms) => new Promise((res) => { gTimer = setTimeout(res, ms); });
+
+    /* Lay every answer out once and keep the tallest, so the panel stops
+       resizing between cases. It is all one synchronous pass with the block
+       already at opacity 0, so nothing of it is ever painted. Re-run on a
+       resize, because the column this sits in is fluid and the tallest case
+       at one width is not the tallest at another. */
+    function gFloor() {
+      const cls = gAnswer.className;
+      gAnswer.classList.remove('is-shown');
+      gDemo.style.setProperty('--guide-floor', '0px');
+
+      let tallest = 0;
+      for (const c of GUIDE_CASES) {
+        gTitle.textContent = c.title;
+        gCat.textContent = c.cat;
+        gStep.textContent = c.step;
+        gList.textContent = '';
+        for (const src of c.sources) gList.append(sourceRow(src));
+        tallest = Math.max(tallest, gAnswer.getBoundingClientRect().height);
+      }
+
+      gTitle.textContent = '';
+      gCat.textContent = '';
+      gStep.textContent = '';
+      gList.textContent = '';
+      gAnswer.className = cls;
+      gDemo.style.setProperty('--guide-floor', Math.ceil(tallest) + 'px');
+    }
+
+    /* A source row is the same three parts the static panel uses: the
+       reference, an optional word of weight, and what it says. */
+    function sourceRow(src) {
+      const li = document.createElement('li');
+      const b = document.createElement('b');
+      b.textContent = src.ref;
+      li.append(b);
+      if (src.tag) {
+        const em = document.createElement('em');
+        em.textContent = src.tag;
+        li.append(em);
+      }
+      if (src.note) {
+        const span = document.createElement('span');
+        span.textContent = src.note;
+        li.append(span);
+      }
+      return li;
+    }
+
+    async function gPlay() {
+      while (gOn) {
+        const c = GUIDE_CASES[gi % GUIDE_CASES.length];
+
+        gq.textContent = '';
+        /* The direction goes on the line rather than on the span, so the flex
+           row reverses with it and the caret sits at the end of the word —
+           the left of it — the way it would in the app's own field. */
+        if (c.rtl) { gLine.lang = 'ur'; gLine.dir = 'rtl'; }
+        else { gLine.removeAttribute('lang'); gLine.removeAttribute('dir'); }
+        gAnswer.classList.remove('is-shown');
+        gWhy.classList.remove('is-shown');
+        await gWait(420);
+        if (!gOn) return;
+
+        for (const ch of [...c.q]) {
+          gq.textContent += ch;
+          await gWait(52 + Math.random() * 48);
+          if (!gOn) return;
+        }
+
+        /* The beat before the answer is the matching. It is honest about the
+           app: the search is deterministic and quick, not a request going
+           somewhere and coming back. */
+        await gWait(380);
+        if (!gOn) return;
+
+        gTitle.textContent = c.title;
+        gCat.textContent = c.cat;
+        gStep.textContent = c.step;
+
+        gList.textContent = '';
+        c.sources.forEach((src, n) => {
+          const li = sourceRow(src);
+          li.style.setProperty('--n', String(n));
+          gList.append(li);
+        });
+
+        gAnswer.classList.add('is-shown');
+        await gWait(320 + c.sources.length * 90);
+        if (!gOn) return;
+
+        gWhy.textContent = c.why;
+        gWhy.classList.add('is-shown');
+
+        await gWait(3400);
+        if (!gOn) return;
+        gi++;
+      }
+    }
+
+    gFloor();
+    /* Cinzel and Jakarta land after first paint on a cold visit, and both
+       change the measurement. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(gFloor);
+
+    let gResize = null;
+    let gWidth = gDemo.getBoundingClientRect().width;
+    window.addEventListener('resize', () => {
+      const w = gDemo.getBoundingClientRect().width;
+      if (Math.abs(w - gWidth) < 1) return;
+      gWidth = w;
+      clearTimeout(gResize);
+      gResize = setTimeout(gFloor, 180);
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const was = gOn;
+          gOn = entry.isIntersecting;
+          if (gOn && !was) gPlay();
+          if (!gOn) clearTimeout(gTimer);
+        }
+      }, { threshold: 0.25 }).observe(gDemo);
+    } else {
+      gOn = true;
+      gPlay();
+    }
+  }
+
+  /* ----------------------------------------------------------- install bar */
+
+  /* The header carries the install button, and on a phone the header is the
+     first thing that scrolls away. This brings it back once the hero is
+     behind the reader.
+
+     Two things it deliberately does not do. It never appears on a desktop,
+     where the button is still on screen and the code in the closing panel is
+     the useful path instead. And it takes itself away over the closing
+     panel, where the real call already stands at full size — two install
+     buttons on one screen, one of them shouting, would make the quieter one
+     look like the afterthought. */
+  const installBar = document.querySelector('[data-install-bar]');
+  const touch = window.matchMedia('(pointer: coarse)');
+
+  if (installBar && touch.matches) {
+    let dismissed = false;
+    try { dismissed = sessionStorage.getItem('ummahti:install-bar') === 'away'; } catch (e) { /* private mode */ }
+
+    if (!dismissed && 'IntersectionObserver' in window) {
+      installBar.hidden = false;
+
+      const hero = document.querySelector('.hero');
+      const close = document.querySelector('.close-panel');
+      let past = false;
+      let atClose = false;
+
+      const settle = () => installBar.classList.toggle('is-up', past && !atClose);
+
+      if (hero) {
+        new IntersectionObserver(([e]) => {
+          past = !e.isIntersecting;
+          settle();
+        }, { threshold: 0 }).observe(hero);
+      }
+
+      if (close) {
+        new IntersectionObserver(([e]) => {
+          atClose = e.isIntersecting;
+          settle();
+        }, { threshold: 0 }).observe(close);
+      }
+
+      const away = installBar.querySelector('[data-install-dismiss]');
+      if (away) {
+        away.addEventListener('click', () => {
+          installBar.classList.remove('is-up');
+          try { sessionStorage.setItem('ummahti:install-bar', 'away'); } catch (e) { /* private mode */ }
+          /* Out of the layout once it has finished leaving, so nothing it
+             covered stays unreachable for the rest of the visit. */
+          setTimeout(() => { installBar.hidden = true; }, reduced.matches ? 0 : 500);
+        });
+      }
+    }
+  }
+
+  /* ------------------------------------------------------------ press kit */
+
+  /* The descriptions on /press exist to be taken, and selecting three
+     sentences cleanly on a phone is a small misery. The button is added here
+     rather than sitting in the markup, so where the clipboard is not
+     available — an insecure origin, an old browser, a locked-down profile —
+     there is no button that does nothing, and the text is still there to
+     select by hand. */
+  const copyBlocks = document.querySelectorAll('[data-copy-block]');
+
+  if (copyBlocks.length && navigator.clipboard && window.isSecureContext) {
+    for (const block of copyBlocks) {
+      const text = block.querySelector('[data-copy-text]');
+      const head = block.querySelector('header');
+      if (!text || !head) continue;
+
+      const words = I18N.copy || { copy: 'Copy', copied: 'Copied', manual: 'Press Ctrl+C' };
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'press-copy-btn';
+      btn.textContent = words.copy;
+      /* The label is what changes on success, so it has to be announced. */
+      btn.setAttribute('aria-live', 'polite');
+
+      let settle = null;
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text.textContent.trim()).then(() => {
+          btn.textContent = words.copied;
+          btn.classList.add('is-done');
+          clearTimeout(settle);
+          settle = setTimeout(() => {
+            btn.textContent = words.copy;
+            btn.classList.remove('is-done');
+          }, 2000);
+        }, () => {
+          btn.textContent = words.manual;
+          /* Hand the selection over, so the keystroke it just asked for
+             actually has something to act on. */
+          const range = document.createRange();
+          range.selectNodeContents(text);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          clearTimeout(settle);
+          settle = setTimeout(() => { btn.textContent = words.copy; }, 3000);
+        });
+      });
+
+      head.append(btn);
+    }
+  }
+
+  /* ----------------------------------------------------------- the device */
+
+  /* The hero phone runs through five screens. The page's first impression is
+     the product being used, not a photograph of it.
+
+     Three rules it follows. It stops when it is off screen, because a timer
+     driving transforms behind the fold is work nobody asked for. It stops
+     while the pointer is over it or a dot has focus, because someone looking
+     at a screen should not have it taken away. And a dot press stops the run
+     for good: once a reader has said which screen they want, moving them on
+     is the site overruling them. */
+  const screens = document.querySelector('[data-screens]');
+  const stageRail = document.querySelector('[data-screen-rail]');
+
+  if (screens && stageRail) {
+    const frames = [...screens.querySelectorAll('.screen')];
+    const cap = stageRail.querySelector('[data-screen-cap]');
+    const dots = stageRail.querySelector('[data-screen-dots]');
+
+    if (frames.length > 1) {
+      stageRail.hidden = false;
+
+      let at = 0;
+      let timer = null;
+      let onScreen = false;
+      let held = false;   /* pointer over it, or a dot focused */
+      let taken = false;  /* a dot was pressed: the run is over */
+
+      const buttons = frames.map((frame, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(i === 0));
+        b.setAttribute('aria-label', frame.dataset.cap || `Screen ${i + 1}`);
+        b.addEventListener('click', () => { taken = true; stop(); show(i); });
+        b.addEventListener('focus', () => { held = true; stop(); });
+        b.addEventListener('blur', () => { held = false; run(); });
+        dots.append(b);
+        return b;
+      });
+
+      function show(next) {
+        if (next === at) return;
+        const from = frames[at];
+        const to = frames[next];
+
+        from.classList.remove('is-on');
+        from.classList.add('is-out');
+        /* The outgoing frame keeps its class only as long as the slide it is
+           doing; left on, it would sit above the next one to leave. */
+        setTimeout(() => from.classList.remove('is-out'), 760);
+
+        to.classList.remove('is-out');
+        /* Force a reflow so the browser sees the start state before the end
+           state; without it the frame simply appears where it is going. */
+        void to.offsetWidth;
+        to.classList.add('is-on');
+
+        buttons[at].setAttribute('aria-selected', 'false');
+        buttons[next].setAttribute('aria-selected', 'true');
+
+        if (cap) {
+          cap.classList.add('is-swapping');
+          setTimeout(() => {
+            cap.textContent = to.dataset.cap || '';
+            cap.classList.remove('is-swapping');
+          }, reduced.matches ? 0 : 240);
+        }
+
+        at = next;
+      }
+
+      function tick() { show((at + 1) % frames.length); }
+
+      function run() {
+        stop();
+        if (taken || held || !onScreen || reduced.matches) return;
+        timer = setInterval(tick, 3200);
+      }
+      function stop() { clearInterval(timer); timer = null; }
+
+      screens.addEventListener('pointerenter', () => { held = true; stop(); });
+      screens.addEventListener('pointerleave', () => { held = false; run(); });
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          for (const e of entries) { onScreen = e.isIntersecting; run(); }
+        }, { threshold: 0.18 }).observe(screens);
+      } else {
+        onScreen = true;
+        run();
+      }
+    }
+  }
+
   /* ---------------------------------------------------------------- themes */
 
   /* The app ships twelve reading themes and the site wears the same twelve.
@@ -343,6 +919,10 @@
      twelve names below are the only duplication of the app's theme list
      outside the stylesheet, and they exist because the picker is on every
      page while the swatch cards are only on the landing page. */
+  /* The id is what the stylesheet and the stored preference key on, so a
+     localised page overrides only the name a reader sees. */
+  const THEME_NAMES = I18N.themes || {};
+
   const THEMES = [
     { id: 'obsidian', name: 'Obsidian Dark' },
     { id: 'warm-cream', name: 'Warm Cream' },
@@ -356,7 +936,7 @@
     { id: 'haramain', name: 'Haramain' },
     { id: 'shiraz-dawn', name: 'Shiraz Dawn' },
     { id: 'jali-moon', name: 'Jali Moon' },
-  ];
+  ].map((t) => (THEME_NAMES[t.id] ? { ...t, name: THEME_NAMES[t.id] } : t));
 
   const STORE = 'ummahti:theme';
   const themeMeta = document.querySelector('meta[name="theme-color"]');
@@ -585,8 +1165,53 @@
   const moon = document.querySelector('.sky-moon');
   const halo = document.querySelector('.sky-halo');
   const track = document.querySelector('.modes-track');
-  const rail = document.querySelector('.modes-rail');
-  const bar = document.querySelector('.modes-progress i');
+  const modeScreens = document.querySelector('[data-mode-screens]');
+  const modeSteps = modeScreens ? [...document.querySelectorAll('[data-mode-steps] .mode-step')] : [];
+  const modeFrames = modeScreens ? [...modeScreens.querySelectorAll('.screen')] : [];
+  let modeAt = 0;
+
+  /* Moving to a step. Scroll drives this when the panel is pinned; a timer
+     drives it when it is not, which is every narrow screen. One function, so
+     the two cannot drift apart. */
+  function modeGo(next) {
+    if (next === modeAt || !modeFrames[next]) return;
+    modeFrames[modeAt].classList.remove('is-on');
+    modeFrames[modeAt].classList.add('is-out');
+    const leaving = modeFrames[modeAt];
+    setTimeout(() => leaving.classList.remove('is-out'), 760);
+    modeFrames[next].classList.remove('is-out');
+    modeFrames[next].classList.add('is-on');
+
+    if (modeSteps[modeAt]) {
+      modeSteps[modeAt].classList.remove('is-on');
+      modeSteps[modeAt].removeAttribute('aria-current');
+    }
+    if (modeSteps[next]) {
+      modeSteps[next].classList.add('is-on');
+      modeSteps[next].setAttribute('aria-current', 'true');
+    }
+    modeAt = next;
+  }
+
+  /* The unpinned run. Only ever on when the panel is not pinned and the
+     section is on screen, and never under reduced motion. */
+  let modeTimer = null;
+  let modeSeen = false;
+
+  function modeRun() {
+    clearInterval(modeTimer);
+    modeTimer = null;
+    if (!modeSeen || reduced.matches || !track || !track.classList.contains('is-unpinned')) return;
+    if (modeFrames.length < 2) return;
+    modeTimer = setInterval(() => modeGo((modeAt + 1) % modeFrames.length), 3200);
+  }
+
+  if (track && modeFrames.length > 1 && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      for (const e of entries) { modeSeen = e.isIntersecting; modeRun(); }
+    }, { threshold: 0.2 }).observe(track);
+    document.addEventListener('visibilitychange', () => (document.hidden ? clearInterval(modeTimer) : modeRun()));
+  }
 
   /* The devices beside the copy drift against the scroll. They are already
      measured for the lighting pass, so the parallax costs one lookup and no
@@ -606,7 +1231,7 @@
     document.querySelectorAll('.panel, .device, .close-panel').forEach((el) => litIO.observe(el));
   }
 
-  let vw = 0, vh = 0, diag = 1, railOverflow = 0, trackTop = 0, trackRange = 1;
+  let vw = 0, vh = 0, diag = 1, trackTop = 0, trackRange = 1;
   let pinned = false;
 
   function measure() {
@@ -618,23 +1243,26 @@
 
     if (window.UmmahtiSky) window.UmmahtiSky.remeasure();
 
-    if (track && rail) {
-      railOverflow = Math.max(0, rail.scrollWidth - vw);
-      // Pinning the viewport to move the rail 40px is worse than not pinning
-      // at all, so on very wide screens the run simply lays itself out.
-      if (railOverflow < 120) pinned = false;
+    if (track && modeFrames.length > 1) {
+      /* Holding the viewport still is only worth it if there is room to
+         hold it in: on a short window the pinned panel would be taller than
+         the screen it is pinned to. */
+      if (vh < 560) pinned = false;
 
       if (pinned) {
-        track.style.height = `${vh + railOverflow}px`;
+        /* Each step past the first costs most of a screen of scroll. Much
+           less and the steps flick past; much more and the reader is
+           scrolling through treacle. */
+        const perStep = vh * 0.82;
+        track.style.height = `${vh + (modeFrames.length - 1) * perStep}px`;
         const r = track.getBoundingClientRect();
         trackTop = r.top + window.scrollY;
         trackRange = Math.max(1, track.offsetHeight - vh);
       } else {
         track.style.height = '';
-        rail.style.removeProperty('--rail-x');
-        railOverflow = 0;
       }
       track.classList.toggle('is-unpinned', !pinned);
+      modeRun();
     }
   }
 
@@ -672,9 +1300,13 @@
     if (moon) moon.style.setProperty('--sky-drift', drift);
     if (halo) halo.style.setProperty('--sky-drift', drift);
 
-    if (pinned && rail) {
-      rail.style.setProperty('--rail-x', `${(railP * railOverflow).toFixed(1)}px`);
-      if (bar) bar.style.setProperty('--rail-p', railP.toFixed(3));
+    /* Scroll position chooses the step. The progress is nudged half a slot
+       before it is floored so a step lights when it is reached rather than
+       when it is passed, and nothing is written unless the step changed —
+       this runs every frame. */
+    if (pinned && modeFrames.length > 1) {
+      const slots = modeFrames.length;
+      modeGo(Math.min(slots - 1, Math.max(0, Math.floor(railP * slots * 0.999))));
     }
 
     // The light sits where .sky-moon sits: high and to the right.

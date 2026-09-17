@@ -1,0 +1,63 @@
+{
+  "_note": "DRAFT, AWAITING NATIVE REVIEW. The site's own framing for the two landing-page demos: the query typed, and the line under the answer saying what just happened. Guide's own words are NOT here - make_demo_strings.py takes those from the Android app's localised resources. Every 'q' below is a real alias of that topic in GuideCatalog.kt, so each one genuinely resolves to the answer shown.",
+
+  "ar": {
+    "queries": ["قلق", "اكرر نفس الذنب", "رسبت في الامتحان", "دين", "استخارة"],
+    "why": [
+      "كلمة واحدة بالعربية الدارجة. لا مصطلح بحث تعرفه أولًا، ولا فهرس موضوعات تحفظه.",
+      "جملة كما تُقال، ليس فيها كلمة مفتاحية. الفهرس يحمل الصيغ التي يكتبها الناس فعلًا.",
+      "موقف من الحياة اليومية، لا مصطلح شرعي. والجواب يذكر مصادره كاملة.",
+      "كلمة واحدة. المطابقة تجري على هاتفك، وما تكتبه لا يغادره أبدًا.",
+      "يجيب بما يمكن إسناده وحده. لا يصدر فتوى ولا حكمًا."
+    ],
+    "search": [
+      {"q": "الرحمن", "rtl": true, "hit": "الرحمن · سورة 55", "sub": "بالحركات أو بدونها", "why": "بالعربية، مشكولة أو غير مشكولة."},
+      {"q": "اية الكرسي", "rtl": true, "hit": "البقرة 255", "sub": "آية الكرسي", "why": "بالاسم الذي يستعمله الناس، لا بالرقم."},
+      {"q": "2:255", "hit": "البقرة 255", "sub": "سورة البقرة", "why": "بإشارة مرجعية مباشرة."},
+      {"q": "mal qariah", "hit": "القارعة · سورة 101", "sub": "بحروف لاتينية", "why": "مكتوبة بحروف لاتينية كما تُنطق. لا حاجة إلى لوحة مفاتيح عربية."},
+      {"q": "صدقه", "rtl": true, "hit": "الصدقة", "sub": "آيات الإنفاق في سبيل الله", "why": "حرف ناقص، ويجدها رغم ذلك."},
+      {"q": "يس", "rtl": true, "hit": "يس · سورة 36", "sub": "يٰس، ياسين", "why": "رسوم الاسم الواحد تُجمع كلها."}
+    ],
+    "copy": {"copy": "نسخ", "copied": "تم النسخ", "manual": "اضغط Ctrl+C"}
+  },
+
+  "ur": {
+    "queries": ["بے چینی", "بار بار گناہ", "امتحان میں ناکام", "قرض", "مشکل فیصلہ"],
+    "why": [
+      "روزمرہ اردو کے دو لفظ۔ نہ کوئی اصطلاح پہلے سے جاننا پڑتی ہے، نہ موضوعات کی فہرست یاد ہونا۔",
+      "جیسے کہا جاتا ہے ویسے ہی لکھا گیا، کوئی کلیدی لفظ نہیں۔ فہرست وہی الفاظ رکھتی ہے جو لوگ واقعی لکھتے ہیں۔",
+      "روزمرہ زندگی کی ایک صورتِ حال، کوئی شرعی اصطلاح نہیں۔ اور جواب اپنے حوالے پورے نام سے دیتا ہے۔",
+      "ایک لفظ۔ مِلان آپ کے فون پر ہوتا ہے، اور جو آپ لکھتے ہیں وہ فون سے باہر نہیں جاتا۔",
+      "وہی بتاتا ہے جس کا حوالہ دیا جا سکے۔ نہ فتویٰ دیتا ہے، نہ کوئی حکم۔"
+    ],
+    "search": [
+      {"q": "الرحمن", "rtl": true, "hit": "الرحمٰن · سورہ 55", "sub": "اعراب کے ساتھ یا بغیر", "why": "عربی میں، اعراب لگے ہوں یا نہ ہوں۔"},
+      {"q": "آیت الکرسی", "rtl": true, "hit": "البقرہ 255", "sub": "آیت الکرسی", "why": "اُسی نام سے جس سے لوگ پکارتے ہیں، نمبر سے نہیں۔"},
+      {"q": "2:255", "hit": "البقرہ 255", "sub": "سورہ البقرہ", "why": "سیدھا حوالہ۔"},
+      {"q": "yaseen", "hit": "یٰس · سورہ 36", "sub": "یٰس، یاسین", "why": "لاطینی حروف میں، جیسے بولا جاتا ہے۔ عربی کی بورڈ کی ضرورت نہیں۔"},
+      {"q": "صدقہ", "rtl": true, "hit": "صدقہ", "sub": "اللہ کی راہ میں خرچ کرنے کی آیات", "why": "ایک موضوع، اُس کے کسی بھی نام سے: زکوٰۃ، خیرات، صدقة۔"},
+      {"q": "رحمت", "rtl": true, "hit": "رحمت کی آیات", "sub": "آپ کے اپنے ترجمے میں", "why": "آپ کا اپنا ترجمہ بھی اُسی طرح تلاش ہوتا ہے۔"}
+    ],
+    "copy": {"copy": "نقل کریں", "copied": "نقل ہو گیا", "manual": "Ctrl+C دبائیں"}
+  },
+
+  "id": {
+    "queries": ["cemas", "mengulangi dosa", "gagal ujian", "hutang", "keputusan sulit"],
+    "why": [
+      "Satu kata sehari-hari. Tidak perlu tahu istilah pencarian lebih dulu, dan tidak perlu hafal daftar topik.",
+      "Ditulis sebagaimana diucapkan, tanpa kata kunci. Katalognya memuat ungkapan yang benar-benar diketik orang.",
+      "Situasi sehari-hari, bukan istilah keagamaan. Dan jawabannya menyebut sumbernya lengkap.",
+      "Satu kata. Pencocokan berjalan di ponsel Anda, dan apa yang Anda ketik tidak pernah meninggalkannya.",
+      "Menjawab dengan apa yang bisa dirujuk saja. Tidak mengeluarkan fatwa dan tidak memberi hukum."
+    ],
+    "search": [
+      {"q": "mal qariah", "hit": "Al-Qaari’a · Surah 101", "sub": "Hari Kiamat", "why": "Huruf Latin, dieja menurut bunyinya. Tidak perlu papan ketik Arab."},
+      {"q": "ayat kursi", "hit": "Al-Baqarah 255", "sub": "Ayat Kursi", "why": "Dengan nama yang dipakai orang, bukan nomornya."},
+      {"q": "2:255", "hit": "Al-Baqarah 255", "sub": "Surah Al-Baqarah", "why": "Rujukan ayat biasa."},
+      {"q": "yasin", "hit": "Yaasiin · Surah 36", "sub": "Ya-Sin, Yasin, Yaseen", "why": "Ejaan-ejaan dari satu bunyi Arab menyatu."},
+      {"q": "sedekah", "hit": "Sedekah", "sub": "Ayat-ayat tentang menafkahkan harta di jalan Allah", "why": "Sebuah topik, dengan nama apa pun: zakat, infak, صدقة."},
+      {"q": "الرحمن", "rtl": true, "hit": "Ar-Rahmaan · Surah 55", "sub": "Yang Maha Pengasih", "why": "Bahasa Arab, dengan atau tanpa harakat."}
+    ],
+    "copy": {"copy": "Salin", "copied": "Tersalin", "manual": "Tekan Ctrl+C"}
+  }
+}

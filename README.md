@@ -31,6 +31,59 @@ Public routes: `/`, `/whats-new`, `/privacy`, `/terms`, `/support`.
 > with no Guide, and two invented progress figures. Worth regenerating from the
 > same captures pipeline before this branch reaches `main`.
 
+## Translations
+
+Arabic, Urdu and Indonesian, at `/ar/`, `/ur/` and `/id/`, mirroring every
+English route. **They are drafts and are not reviewed.** Until a speaker of
+the language has read them they are served `noindex` and carry a line at the
+top saying so; flip `reviewed` for that language in `tools/i18n/build.py` and
+rebuild to remove both.
+
+The English pages are the source of truth. A translated page is generated
+from its English original plus a table keyed by the exact English text, so a
+correction is made once and reaches every page carrying that sentence. The
+generated pages are committed like everything else here: there is still no
+build step, and deploying is still pushing the files.
+
+```
+tools/i18n/<lang>.json        the translations, English text -> translated
+tools/i18n/demo-site-copy.json  the site's own framing for the two demos
+tools/i18n/build.py           writes /ar /ur /id from the English pages
+tools/i18n/extract.py         lists a page's translatable segments
+tools/i18n/make_demo_strings.py  writes /i18n/<lang>.js from the ANDROID app
+tools/i18n/merge_app_names.py    folds the app's reciter names into a table
+tools/i18n/wire_english.py    reciprocal hreflang + the sitemap
+tools/i18n/check_pages.py     fails on English left on a built page, and on
+                              broken ld+json
+tools/i18n/check_queries.py   fails if a Guide demo query is not a real alias
+```
+
+Guide's own words are **not** translated here. The Android app is already
+localised into ten languages, so `make_demo_strings.py` lifts the topic
+titles, categories, captions, practical steps and narration summaries out of
+its `res/values-<lang>` resources, and `merge_app_names.py` does the same for
+all thirty-nine reciter names. A reader sees on the site exactly the string
+their phone would show them. Only the site's own framing is authored here.
+
+After changing a translation:
+
+```
+python3 tools/i18n/build.py                                  # or one language
+python3 tools/i18n/make_demo_strings.py ../UmmahtiQuran      # if demos changed
+python3 tools/i18n/check_pages.py && python3 tools/i18n/check_queries.py ../UmmahtiQuran
+```
+
+Two failures these guards exist to catch, both of which reached a built page
+once: a short segment replacing inside a longer one (`Guide` inside `Ummahti
+Guide`), and the segment pass rewriting text inside a `<script>` — `FAQ` is a
+navigation label and also the opening of `FAQPage`, which made the structured
+data invalid. Replacement is longest-first and scripts are masked out; the
+checkers fail on either regressing.
+
+The translated `/privacy` and `/terms` pages carry a note saying the English
+text is the operative one. That note is not tied to the draft state and
+should stay.
+
 The `updates/`, `ops/`, `emergency/` and `youtube/` machine-readable paths
 remain at their original URLs and are served `no-store`.
 
