@@ -33,6 +33,33 @@ KEEP = {
 VALID_TYPES = {'SoftwareApplication', 'FAQPage', 'Organization', 'WebSite', 'Question', 'Answer', 'Offer'}
 
 
+# An external URL is not prose. Whatever a page says, it must point at the same
+# outside addresses its English original does — the same YouTube channel, the
+# same Play listing. This exists because the segment pass rewrote the brand
+# name inside href values and every Arabic page linked "the official Ummahti
+# YouTube channel" to a stranger's channel, and every Urdu page to a 404.
+OURS = re.compile(r'https?://(?:www\.)?ummahtiofficial\.com')
+
+
+def external_urls(markup):
+    found = set()
+    for m in re.finditer(r'(?:href|src|content)="(https?://[^"]+)"', markup):
+        url = m.group(1)
+        if not OURS.match(url):
+            found.add(url)
+    return found
+
+
+def url_problems(built, source, path):
+    want, got = external_urls(source), external_urls(built)
+    out = []
+    for url in sorted(want - got):
+        out.append(f'{path}: external URL lost or rewritten: {url}')
+    for url in sorted(got - want):
+        out.append(f'{path}: external URL not in the English source: {url}')
+    return out
+
+
 def schema_problems(markup, path):
     out = []
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', markup, re.S):
@@ -66,6 +93,12 @@ def main():
             # did not get it.
             markup = io.open(built, encoding='utf-8').read()
             for problem in schema_problems(markup, f'/{lang}/{route}'):
+                print('  ' + problem)
+                bad += 1
+
+            src_rel = next(src for src, r in PAGES if r == route)
+            english = io.open(os.path.join(ROOT, src_rel), encoding='utf-8').read()
+            for problem in url_problems(markup, english, f'/{lang}/{route}'):
                 print('  ' + problem)
                 bad += 1
 

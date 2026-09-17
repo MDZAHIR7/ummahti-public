@@ -131,6 +131,44 @@ def mask_scripts(markup):
     return re.sub(r'(?s)<script\b.*?</script>', take, markup), held
 
 
+def mask_urls(markup):
+    """Take URLs out of the segment pass, the way script bodies already are.
+
+    A URL is not prose and must never be translated, but the segment pass is a
+    plain text substitution over the whole file, so any brand name that is also
+    a translation key rewrites the addresses it appears in. That is not
+    theoretical: the table carries "Ummahti" -> "أُمّتي", and every Arabic page
+    shipped with
+
+        href="https://www.youtube.com/@أُمّتي"
+
+    which is a real channel belonging to somebody else, and the Urdu equivalent
+    which is a 404. Indonesian was untouched only because its table happens to
+    have no bare brand key.
+
+    href/src/srcset are always held. Any other attribute is held only when its
+    value actually looks like a URL, so prose in content="..." still translates.
+    """
+    held = []
+
+    def take(m):
+        attr, value = m.group(1).lower(), m.group(2)
+        is_url = attr in ('href', 'src', 'srcset', 'poster', 'action', 'cite') or \
+            re.match(r'(?:https?:|mailto:|tel:)|^//|^/|^\.\./', value)
+        if not is_url:
+            return m.group(0)
+        held.append(m.group(0))
+        return f'\x00URL{len(held) - 1}\x00'
+
+    return re.sub(r'\b([A-Za-z_][\w:-]*)="([^"]*)"', take, markup), held
+
+
+def unmask_urls(markup, held):
+    for i, original in enumerate(held):
+        markup = markup.replace(f'\x00URL{i}\x00', original, 1)
+    return markup
+
+
 def unmask_scripts(markup, held):
     for i, original in enumerate(held):
         markup = markup.replace(f'\x00SCRIPT{i}\x00', original, 1)
@@ -219,7 +257,9 @@ def build_page(src_rel, route, lang):
 
     report = {'applied': 0, 'untranslated': 0, 'missing': []}
     out, scripts = mask_scripts(src)
+    out, urls = mask_urls(out)
     out = apply_translations(out, table, report)
+    out = unmask_urls(out, urls)
     out = unmask_scripts(out, scripts)
     out = localise_links(out, lang)
 
