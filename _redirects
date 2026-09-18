@@ -1,0 +1,11 @@
+# Two stale copies of an older privacy policy, published before /privacy/
+# existed and byte-identical to each other. Nothing on this site links to
+# either, but an app store listing or a saved link might, so they are not
+# deleted — a privacy policy URL that 404s is worse than one that moves.
+# A permanent redirect keeps those links working, sends anyone who follows
+# one to the policy that is actually current, and leaves search engines with
+# a single canonical copy instead of three.
+/privacy-policy       /privacy/   301
+/privacy-policy.html  /privacy/   301
+/PRIVACY_POLICY       /privacy/   301
+/PRIVACY_POLICY.html  /privacy/   301

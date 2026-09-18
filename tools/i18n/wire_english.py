@@ -53,10 +53,10 @@ def main():
 
     rows = []
     for _, route in PAGES:
-        tail = f'/{route}' if route else '/'
+        tail = f'/{route}/' if route else '/'
         rows.append(f'  <url><loc>{SITE}{tail}</loc></url>')
         for code in LANGS:
-            rows.append(f'  <url><loc>{SITE}/{code}{"/" + route if route else "/"}</loc></url>')
+            rows.append(f'  <url><loc>{SITE}/{code}/{route + "/" if route else ""}</loc></url>')
 
     io.open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8').write(
         '<?xml version="1.0" encoding="UTF-8"?>\n'

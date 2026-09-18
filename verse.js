@@ -40,8 +40,27 @@
   if (!rows.length) return;
 
   const CLIPS = '/media/recitation/anbiya-92/';
-  const GONE = 'That recitation is not on the site yet.';
-  const SPIN = 'Spin the drum to change the voice.';
+
+  /* The player's own sentences, in whatever language the page is written in.
+
+     They used to be English literals here, so an Arabic, Urdu or Indonesian
+     reader who pressed play on a voice with no clip — or whose browser
+     refused to start the audio — got the explanation in a language the rest
+     of the page was not in.
+
+     They travel as attributes on the section rather than in a strings file,
+     because the translation pass works over the built markup and picks up an
+     attribute value exactly as it picks up a sentence; the site has no build
+     and the Content-Security-Policy allows no inline script, so this is both
+     the simplest route and the only cheap one. The English is the fallback,
+     which is what an untranslated page and an older cached copy both get. */
+  const say = (key, fallback) => root.dataset[key] || fallback;
+  const GONE = say('msgGone', 'That recitation is not on the site yet.');
+  const SPIN = say('msgSpin', 'Spin the drum to change the voice.');
+  const BLOCKED = say('msgBlocked', 'This browser would not start the audio.');
+  const PLAYING = say('msgPlaying', 'Playing.');
+  const PLAY = say('msgPlay', 'Play this verse');
+  const PAUSE = say('msgPause', 'Pause');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   root.hidden = false;
@@ -227,7 +246,7 @@
     }
 
     playBtn.disabled = false;
-    hintEl.textContent = wasPlaying ? 'Playing.' : SPIN;
+    hintEl.textContent = wasPlaying ? PLAYING : SPIN;
 
     setMediaSession();
 
@@ -267,7 +286,7 @@
       /* A play() on a clip that 404s rejects and fires error, in that order,
          so the generic message would land on top of the true one. The clip
          being absent is the better answer whenever it is the right one. */
-      fail(missing.has(rows[index].dataset.clip) ? GONE : 'This browser would not start the audio.');
+      fail(missing.has(rows[index].dataset.clip) ? GONE : BLOCKED);
     });
   }
 
@@ -278,13 +297,13 @@
 
   audio.addEventListener('play', () => {
     playBtn.setAttribute('aria-pressed', 'true');
-    playBtn.setAttribute('aria-label', 'Pause');
-    hintEl.textContent = 'Playing.';
+    playBtn.setAttribute('aria-label', PAUSE);
+    hintEl.textContent = PLAYING;
   });
 
   audio.addEventListener('pause', () => {
     playBtn.setAttribute('aria-pressed', 'false');
-    playBtn.setAttribute('aria-label', 'Play this verse');
+    playBtn.setAttribute('aria-label', PLAY);
   });
 
   audio.addEventListener('ended', () => {

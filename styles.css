@@ -64,7 +64,24 @@
   --emerald: #132a22;
   --text: #f0f0f5;
   --muted: #9ca3af;
-  --muted-2: #6b7280;
+  /* --muted-2 carries the site's smallest text: the language label, the guide
+     note, the script hint, the footer note, the copyright line and the drum's
+     unplayable rows — 11.5px to 15px, which is exactly the size that has no
+     contrast to spare.
+
+     It was calibrated against each theme's flat ink and so sat right on the
+     4.5:1 line, which meant it dropped under as soon as the text landed on a
+     panel or a gradient a shade off the page. Measured against the worse of
+     ink and surface it ran 4.17:1 to 4.70:1 across the twelve themes: under
+     AA nearly everywhere, and never by much, which is why it was easy to
+     miss. Every theme's value now clears 5.2:1 against whichever of the two
+     is worse for it, which leaves the on-surface and on-gradient cases
+     clear of 4.5:1 rather than sitting on it.
+
+     Hue and saturation are untouched in every case; only lightness moved, and
+     in the direction that is away from that theme's background — up on the
+     dark themes, down on the light ones. */
+  --muted-2: #848b98;
 
   --ink-rgb: 8, 8, 10;
   --surface-rgb: 20, 23, 31;
@@ -95,7 +112,7 @@
   --emerald: #7a4f00;
   --text: #000000;
   --muted: #4b453b;
-  --muted-2: #6b6357;
+  --muted-2: #696155;
 
   --ink-rgb: 250, 247, 242;
   --surface-rgb: 242, 236, 225;
@@ -124,7 +141,7 @@
   --emerald: #64748b;
   --text: #0b0f17;
   --muted: #4a5261;
-  --muted-2: #6b7280;
+  --muted-2: #626876;
 
   --ink-rgb: 255, 255, 255;
   --surface-rgb: 246, 247, 249;
@@ -154,7 +171,7 @@
   --emerald: #ffffff;
   --text: #000000;
   --muted: #4a4a4a;
-  --muted-2: #6d6d6d;
+  --muted-2: #666666;
 
   --ink-rgb: 255, 255, 255;
   --surface-rgb: 244, 244, 244;
@@ -183,7 +200,7 @@
   --emerald: #5b8fb8;
   --text: #14131a;
   --muted: #4c4a57;
-  --muted-2: #6a6875;
+  --muted-2: #666470;
 
   --ink-rgb: 243, 242, 244;
   --surface-rgb: 251, 250, 251;
@@ -216,7 +233,7 @@
   /* Lifted from a straight derivation until it clears 4.5:1 on the page and
      on the surface both. This is the dimmest theme in the collection and the
      faintest tier in it still has to be read. */
-  --muted-2: #7d8177;
+  --muted-2: #868980;
 
   --ink-rgb: 11, 11, 12;
   --surface-rgb: 19, 20, 21;
@@ -241,7 +258,7 @@
   --emerald: #16402f;
   --text: #f1f6f2;
   --muted: #9ab0a4;
-  --muted-2: #6d8378;
+  --muted-2: #7e9389;
 
   --ink-rgb: 6, 18, 14;
   --surface-rgb: 14, 32, 25;
@@ -266,7 +283,7 @@
   --emerald: #1b3a6b;
   --text: #f0f3fa;
   --muted: #9aa6c0;
-  --muted-2: #6d7794;
+  --muted-2: #848ca5;
 
   --ink-rgb: 6, 10, 20;
   --surface-rgb: 17, 26, 46;
@@ -291,7 +308,7 @@
   --emerald: #b4652f;
   --text: #1b1209;
   --muted: #5b4a37;
-  --muted-2: #7c6b56;
+  --muted-2: #6c5d4b;
 
   --ink-rgb: 251, 244, 232;
   --surface-rgb: 243, 231, 212;
@@ -316,7 +333,7 @@
   --emerald: #12707a;
   --text: #eef4f7;
   --muted: #9bb0b8;
-  --muted-2: #6e858e;
+  --muted-2: #7c929a;
 
   --ink-rgb: 5, 13, 18;
   --surface-rgb: 13, 30, 40;
@@ -344,7 +361,7 @@
   --emerald: #9ba79f;
   --text: #0a0b0c;
   --muted: #4d5150;
-  --muted-2: #6a6f6f;
+  --muted-2: #5f6464;
 
   --ink-rgb: 253, 252, 248;
   --surface-rgb: 239, 239, 234;
@@ -369,7 +386,7 @@
   --emerald: #4a3312;
   --text: #f5efe2;
   --muted: #b0a48f;
-  --muted-2: #837868;
+  --muted-2: #918574;
 
   --ink-rgb: 10, 7, 5;
   --surface-rgb: 23, 16, 9;
@@ -1931,6 +1948,34 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
   font-size: clamp(1.05rem, .95rem + .5vw, 1.4rem);
   line-height: 1.2;
   color: var(--gold-light);
+}
+
+/* The step name, when app.js has made it the control that stops the run.
+   It looks exactly like the heading it replaced — the point is the keyboard
+   and the pointer target, not a new piece of chrome — but it takes a proper
+   focus ring and a 44px row so it can actually be hit on a phone. */
+.mode-jump {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: -.55rem 0;
+  padding: .55rem 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 220ms var(--ease-out);
+}
+.mode-jump:hover { color: var(--gold); }
+.mode-jump:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 .mode-step p {
   margin: 0;

@@ -892,6 +892,10 @@
 
       screens.addEventListener('pointerenter', () => { held = true; stop(); });
       screens.addEventListener('pointerleave', () => { held = false; run(); });
+      /* Hover was the only pause, which left the frames moving under anyone
+         tabbing through the strip's own buttons. */
+      screens.addEventListener('focusin', () => { held = true; stop(); });
+      screens.addEventListener('focusout', () => { held = false; run(); });
       document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
 
       if ('IntersectionObserver' in window) {
@@ -1033,7 +1037,9 @@
 
     const head = document.createElement('p');
     head.className = 'theme-menu-head';
-    head.textContent = 'Reading theme';
+    /* Translated by the same route as the player's sentences: an attribute on
+       the element the pass can see, with the English as the fallback. */
+    head.textContent = pick.dataset.menuHead || 'Reading theme';
     menu.append(head);
 
     THEMES.forEach((theme) => {
@@ -1194,16 +1200,63 @@
   }
 
   /* The unpinned run. Only ever on when the panel is not pinned and the
-     section is on screen, and never under reduced motion. */
+     section is on screen, and never under reduced motion.
+
+     Pinned, the strip is driven by the reader's own scroll, so it is already
+     theirs. Unpinned — which is to say on a phone — it used to advance every
+     3.2 seconds with nothing at all to stop it: the steps are list items, so
+     there was no hover to pause on, no control to press and nothing to focus.
+     Content that moves on its own and cannot be stopped is a failure of WCAG
+     2.2.2 and, long before that, simply rude: it reads the section to you at
+     its own pace and takes the choice away.
+
+     So when the strip is unpinned each step's name becomes a button that
+     jumps to that mode and ends the run for good, the way the screens strip
+     above already behaves once its tabs are used. Pointer and focus pause it
+     meanwhile. Pinned again, the buttons are taken back out, because a
+     control that does nothing is worse than no control. */
   let modeTimer = null;
   let modeSeen = false;
+  let modeTaken = false;     // the reader chose a step; the run is over
+  let modeHeld = false;      // pointer or focus is on the strip right now
 
   function modeRun() {
     clearInterval(modeTimer);
     modeTimer = null;
     if (!modeSeen || reduced.matches || !track || !track.classList.contains('is-unpinned')) return;
-    if (modeFrames.length < 2) return;
+    if (modeTaken || modeHeld || modeFrames.length < 2) return;
     modeTimer = setInterval(() => modeGo((modeAt + 1) % modeFrames.length), 3200);
+  }
+
+  /* The name is moved into the button rather than copied, so the accessible
+     name stays single and the translated text is whatever the page shipped. */
+  function modeControls(on) {
+    modeSteps.forEach((li, i) => {
+      const name = li.querySelector('.mode-name');
+      if (!name) return;
+      const existing = name.querySelector('.mode-jump');
+      if (on && !existing) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'mode-jump';
+        b.textContent = name.textContent.trim();
+        name.textContent = '';
+        name.append(b);
+        b.addEventListener('click', () => { modeTaken = true; modeGo(i); modeRun(); });
+        b.addEventListener('focus', () => { modeHeld = true; modeRun(); });
+        b.addEventListener('blur', () => { modeHeld = false; modeRun(); });
+      } else if (!on && existing) {
+        name.textContent = existing.textContent;
+      }
+    });
+  }
+
+  if (modeScreens) {
+    const strip = document.querySelector('[data-mode-steps]');
+    if (strip) {
+      strip.addEventListener('pointerenter', () => { modeHeld = true; modeRun(); });
+      strip.addEventListener('pointerleave', () => { modeHeld = false; modeRun(); });
+    }
   }
 
   if (track && modeFrames.length > 1 && 'IntersectionObserver' in window) {
@@ -1262,6 +1315,7 @@
         track.style.height = '';
       }
       track.classList.toggle('is-unpinned', !pinned);
+      modeControls(!pinned);
       modeRun();
     }
   }
