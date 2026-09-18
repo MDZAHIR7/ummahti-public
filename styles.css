@@ -3933,13 +3933,36 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .governing-note a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; }
 
 /* The header holds the brand, the theme control and the install button, and
-   below about 430px those three only fit if the install button is short.
-   "Get Ummahti" is; "Dapatkan Ummahti" is not, and it pushed the header 5px
-   past the viewport on every Indonesian page. Shortening the translation
-   would fix Indonesian and leave the next language to discover the same
-   edge, so the wordmark gives way instead: the crescent still carries the
-   brand, and the button — the one thing on the header a visitor came to
-   press — keeps its full label in any language. */
+   below about 430px those three only fit if something gives. The wordmark is
+   the brand and it stays on every width. It was hidden below
+   430px to buy room for the Indonesian install button, which is the wrong
+   trade twice over: it took the name off every phone, and because the selector
+   was unscoped it took it out of the footer as well.
+
+   The room comes from the theme control instead. Its name is still announced —
+   .vh keeps it in the accessibility tree — but on a phone the swatch and caret
+   already say what it is, and that buys back about 30px. At the very narrow
+   end the install button gives up some padding rather than the brand giving up
+   its name. */
 @media (max-width: 430px) {
-  .brand-name { display: none; }
+  .site-header .brand-name { font-size: .92rem; letter-spacing: .055em; }
+  .site-header .theme-pick-btn [data-theme-label] {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 374px) {
+  .site-header .nav-links .btn-primary {
+    padding-inline: .72rem;
+    font-size: .82rem;
+  }
+  /* 320px is one phone generation. Here, and only here, the header wordmark
+     steps aside for the install button. Scoped to the header — the footer
+     keeps the name at every width. */
+  .site-header .brand-name { display: none; }
 }
