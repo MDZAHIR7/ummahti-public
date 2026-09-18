@@ -210,6 +210,15 @@
       return;
     }
 
+    /* The clips come from two providers at whatever level each of them
+       mastered, and measured as R128 integrated loudness they ran thirteen
+       decibels apart — so spinning one way made the Qur'an about four times
+       as loud and spinning back buried it, in a control whose whole purpose
+       is spinning. tools/level_recitation.py measures each clip and writes
+       the `data-gain` here; the audio itself is untouched, because a named
+       recitation should stay the bytes its reciter published. No attribute
+       means full volume, which is also what happens if the tool never ran. */
+    audio.volume = Number(li.dataset.gain) || 1;
     audio.src = CLIPS + li.dataset.clip + '.mp3';
 
     if (missing.has(li.dataset.clip)) {

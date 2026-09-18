@@ -2770,11 +2770,25 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 
 /* --- the promise -------------------------------------------------------- */
 
+/* This section is the one that has to be believed, so it was the wrong one
+   to leave undressed. It used to be four rows of text ruled apart by a
+   hairline, sitting straight on the page background with no horizontal
+   padding at all — flatter than the FAQ directly beneath it, which at least
+   had cards. Read against the rest of the site it looked unfinished, and a
+   promise that looks unfinished is not a promise anyone reads twice.
+
+   Three things changed. The four undertakings are now held in one inlaid
+   panel, in the same surface-over-hairline material the site uses everywhere
+   else it wants something to feel made. Each mark sits in its own medallion
+   rather than floating at 20px. And the quote centres against that panel
+   instead of hanging from the top of a column twice its height, which is
+   what left four hundred pixels of nothing under it on a desktop. */
+
 .promise {
   display: grid;
-  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
-  gap: clamp(2rem, 6vw, 5rem);
-  align-items: start;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
 }
 .promise blockquote {
   margin: 0;
@@ -2785,26 +2799,62 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--gold-light);
   text-wrap: balance;
 }
+
+/* A rule that starts gold at the text edge and gives out, so the quote has
+   somewhere to end. The same gradient the section dividers use. */
+.promise-say blockquote::after {
+  content: '';
+  display: block;
+  width: clamp(4rem, 9vw, 7rem);
+  height: 1px;
+  margin-top: clamp(1.4rem, 3vw, 2rem);
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+/* --- the panel */
+
 .promise-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: clamp(.35rem, 1.2vw, .6rem) clamp(.9rem, 2.4vw, 1.6rem);
   display: grid;
-  gap: 1px;
-  background: var(--rule-soft);
-  border-block: 1px solid var(--rule-soft);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg,
+      rgba(var(--glow-rgb), calc(.055 * var(--spec-k))),
+      rgba(var(--glow-rgb), calc(.012 * var(--spec-k)))),
+    rgba(var(--surface-rgb), .5);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .16);
 }
+
+/* The rules divide the undertakings from one another; they do not fence the
+   set off from its own panel, so the first and last rows have none. */
 .promise-list li {
-  background: var(--ink);
   display: grid;
-  grid-template-columns: 26px 1fr;
-  gap: 1rem;
+  grid-template-columns: 40px 1fr;
+  gap: clamp(.9rem, 2vw, 1.15rem);
   align-items: start;
-  padding: 1.1rem .2rem;
+  padding: clamp(1rem, 2.2vw, 1.3rem) 0;
 }
-.promise-list svg { width: 20px; height: 20px; color: var(--gold); margin-top: .25rem; }
-.promise-list b { display: block; color: var(--text); font-weight: 600; margin-bottom: .15rem; }
-.promise-list span { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+.promise-list li + li { border-top: 1px solid var(--rule-soft); }
+
+/* --- the marks */
+
+.promise-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(var(--gold-rgb), .11), rgba(var(--gold-rgb), .035));
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .2);
+}
+.promise-list svg { width: 20px; height: 20px; color: var(--gold); }
+.promise-list b { display: block; color: var(--text); font-weight: 600; margin-bottom: .2rem; }
+.promise-list li > span:last-child { color: var(--muted); font-size: .95rem; line-height: 1.62; }
+
+/* The action belongs to the panel above it, not to the column edge. */
+.promise-keep .actions { margin-top: clamp(1.4rem, 3vw, 2rem); }
 
 /* --- the questions before installing ------------------------------------ */
 
@@ -3489,14 +3539,33 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   .split.is-flipped .split-media { order: 0; }
   .split .device { width: min(66%, 290px); }
 
-  .promise { grid-template-columns: 1fr; }
+  /* Stacked, the quote no longer has a panel to centre against. */
+  .promise { grid-template-columns: 1fr; align-items: start; }
   .kit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .themes-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }
 
-@media (max-width: 760px) {
+/* The header's own links come out before the header runs out of room.
+
+   They used to come out at 760px, which was measured against nothing: the
+   full nav — brand, four links, the theme control and the install button —
+   does not actually fit an English page until about 957px, and Indonesian
+   until about 925px. Between 761px and 999px every English page therefore
+   scrolled sideways and the install button sat off the right edge. That band
+   is not an exotic one: iPad portrait is 768, iPad Air 820, iPad Pro 11-inch
+   834, and any browser window shared with something else on a desktop lands
+   in it too.
+
+   980px is the measured fitting point with room to spare for a language whose
+   words run longer than the ones measured. Nothing becomes unreachable: every
+   header link is also in the footer nav, which is the trade this breakpoint
+   was already making — it was just making it 240px too late to help. */
+@media (max-width: 980px) {
   .nav-links a:not(.btn) { display: none; }
   .nav .btn { padding: .5rem .95rem; }
+}
+
+@media (max-width: 760px) {
 
   /* Pinning fights native momentum on touch, so the run stops holding the
      phone still and simply lays itself out. `.is-unpinned` carries that
@@ -3504,7 +3573,11 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
      already decided. */
   .modes-head { gap: .9rem; }
 
-  .promise-list li { grid-template-columns: 22px 1fr; gap: .8rem; }
+  /* The medallion steps down with the panel's padding rather than being
+     dropped for a bare 22px icon, which is what used to happen here. */
+  .promise-list li { grid-template-columns: 34px 1fr; gap: .85rem; }
+  .promise-mark { width: 34px; height: 34px; border-radius: 10px; }
+  .promise-list svg { width: 18px; height: 18px; }
 
   /* The install badge is the primary action on every one of these rows, and
      it cannot be stretched -- distorting it breaks Google's brand guidelines.
