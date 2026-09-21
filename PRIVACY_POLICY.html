@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy &middot; Ummahti Quran</title>
+<meta name="description" content="How Ummahti Quran handles your data: no account, no advertising identifier, and no reading-history profile.">
+<link rel="canonical" href="https://ummahtiofficial.com/privacy/">
+
+<!-- Why this file exists, and why it is not simply a redirect.
+
+     The Google Play listing for Ummahti Quran declares its privacy policy URL
+     as https://mdzahir7.github.io/ummahti-public/privacy-policy.html, which is
+     the GitHub Pages mirror of this repository rather than the custom domain.
+
+     b958dde deleted this path and replaced it with a 301 in _redirects. That
+     works on ummahtiofficial.com, because Cloudflare Pages implements
+     _redirects and evaluates it ahead of static assets, so the custom domain
+     still answers /privacy-policy.html with a redirect to /privacy/ and this
+     file is never served there. GitHub Pages implements no such thing: it does
+     not serve _redirects at all, so on the mirror the path became a hard 404
+     and Google flagged the listing for an invalid privacy policy.
+
+     So this is a complete, self-contained copy of the current policy rather
+     than a stub: a policy scanner needs a 200 with the actual text, and a
+     meta refresh is not reliably followed. It carries no stylesheet, script or
+     root-absolute asset path, because those resolve under /ummahti-public/ on
+     the mirror and would not load. The canonical above points at /privacy/ so
+     search engines keep one copy.
+
+     Keep it in step with privacy/index.html, which remains the source of truth.
+     It can be deleted once the Play listing points at
+     https://ummahtiofficial.com/privacy/ and Google has reviewed that change. -->
+
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 2.5rem 1.25rem 4rem; max-width: 46rem;
+    font: 400 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #16181d; background: #fff;
+    -webkit-text-size-adjust: 100%;
+  }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .35rem; }
+  h2 { font-size: 1.2rem; line-height: 1.3; margin: 2.25rem 0 .6rem; }
+  h3 { font-size: 1.02rem; margin: 1.5rem 0 .4rem; }
+  p, li { margin: 0 0 .85rem; }
+  ul { padding-left: 1.3rem; }
+  a { color: #6b5200; }
+  a:focus-visible, :focus-visible { outline: 2px solid #6b5200; outline-offset: 2px; }
+  .label {
+    margin: 0 0 .5rem; font-size: .8rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: #5d626e;
+  }
+  .lede { margin: 0 0 2rem; color: #5d626e; }
+  .notice {
+    margin: 0 0 1.75rem; padding: 1rem 1.15rem;
+    border: 1px solid #e2e4ea; border-left: 3px solid #6b5200;
+    border-radius: 6px; background: #fafbfc;
+  }
+  .notice p:last-child { margin-bottom: 0; }
+  .canonical-note {
+    margin: 2.75rem 0 0; padding-top: 1.25rem;
+    border-top: 1px solid #e2e4ea; font-size: .92rem; color: #5d626e;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e8eaef; background: #0d0e11; }
+    a { color: #d8b94a; }
+    a:focus-visible, :focus-visible { outline-color: #d8b94a; }
+    .label, .lede, .canonical-note { color: #9aa0ad; }
+    .notice { border-color: #272a31; border-left-color: #d8b94a; background: #14161a; }
+    .canonical-note { border-top-color: #272a31; }
+  }
+</style>
+</head>
+
+<body>
+<main>
+<header>
+    <p class="label">Legal</p>
+    <h1>Privacy Policy</h1>
+    <p class="lede">Last updated: September 17, 2026</p>
+  </header>
+
+  <div>
+    <article>
+<div class="notice"><p><strong>In short:</strong> Ummahti is a Quran reader that works entirely on your device. It does not require an account. It does not collect usage analytics or send crash reports unless you explicitly turn optional diagnostics on, and everything the app is for keeps working if you say no.</p></div>
+<h2>1. What we collect by default</h2><p>There is no account, no profile, no advertising identifier, and no usage tracking unless you choose to enable it.</p><p>Firebase Remote Config makes a background request for feature flags when the app starts. Google receives technical app/device identifiers needed to answer that request. It does not receive your reading activity, bookmarks, reading position or Hifz practice history, and the reader never waits for the request.</p>
+<h2>2. What stays on your device</h2><p>The app stores the following locally. Ummahti does not upload this local store as a profile:</p><ul><li>Your reading position: the last surah, ayah and page you were on</li><li>Your bookmarks</li><li>Your Hifz practice history: which ayahs you practised and the last local calendar day you completed each guided session</li><li>Your Ayah on Unlock progress, if you use that feature</li><li>Which Ummahti Guide topics you have opened, most recent first, up to the last 12. Only the topic&rsquo;s own identifier is kept, never what you typed into Guide&rsquo;s search, and it is read only to reorder Guide&rsquo;s own suggestions on this device. Guide&rsquo;s disclaimer sheet has a Reset suggestions action that clears it at once.</li><li>Your settings: theme, font size, Arabic script, reading mode, chosen reciter and translation</li><li>Quran text, and any loaded translations, transliterations, tafsir or hadith</li></ul>
+<h2>3. What we collect only if you agree</h2><p>When you first open Ummahti you are asked whether to share optional usage and crash diagnostics. <strong>The default is no.</strong></p><p>If you agree, we use Google Firebase to collect crash reports (Firebase Crashlytics) and anonymous app usage statistics (Firebase Analytics). We do <strong>not</strong> include which verses or surahs you read, your bookmarks, or your reading position.</p>
+<h2>4. Connections the app makes</h2><table><thead><tr><th>Service</th><th>When</th><th>What is sent</th></tr></thead><tbody><tr><td>alquran.cloud</td><td>Selecting a translation or transliteration</td><td>The edition chosen</td></tr><tr><td>Quran.com</td><td>Opening commentary for a verse</td><td>The verse number</td></tr><tr><td>HadeethEnc</td><td>Hadith content sync</td><td>Nothing personal</td></tr><tr><td>mp3quran.net</td><td>Playing recitation from the reciters it hosts</td><td>The surah or verse requested and the reciter chosen</td></tr><tr><td>i.ytimg.com</td><td>Showing a video thumbnail from the Ummahti channel</td><td>The video identifier</td></tr><tr><td>cdn.islamic.network</td><td>Playing audio recitation</td><td>Requested verse and reciter edition</td></tr><tr><td>Firebase Remote Config</td><td>App startup</td><td>Device and app identifiers</td></tr></tbody></table>
+<h2>5. What we never do</h2><ul><li>Sell or share your data with advertisers or data brokers</li><li>Show advertisements</li><li>Require an account to read the Quran</li><li>Track you across other apps or websites</li><li>Collect an advertising identifier</li></ul><h2>6. Contact</h2><p>Email: <a href="mailto:contact@ummahtiofficial.com">contact@ummahtiofficial.com</a></p><p>Publisher: Ummahti Quran (Zahir Mohammed)</p>
+    </article>
+  </div>
+  <p class="canonical-note">
+    This is the Ummahti Quran privacy policy, published for the Google Play listing.
+    The canonical version lives at
+    <a href="https://ummahtiofficial.com/privacy/">ummahtiofficial.com/privacy</a>.
+  </p>
+</main>
+</body>
+</html>
