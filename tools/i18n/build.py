@@ -138,6 +138,12 @@ def mask_scripts(markup):
     return re.sub(r'(?s)<script\b.*?</script>', take, markup), held
 
 
+# Attributes whose value is read by a person or a search engine, and so is
+# translated. The same list extract.py offers segments from; data-* is
+# handled beside it in mask_urls.
+PROSE_ATTRS = ('content', 'alt', 'aria-label', 'title', 'placeholder')
+
+
 def mask_urls(markup):
     """Take URLs out of the segment pass, the way script bodies already are.
 
@@ -153,8 +159,17 @@ def mask_urls(markup):
     which is a 404. Indonesian was untouched only because its table happens to
     have no bare brand key.
 
-    href/src/srcset are always held. Any other attribute is held only when its
+    href/src/srcset are always held. A prose attribute is held only when its
     value actually looks like a URL, so prose in content="..." still translates.
+
+    Every other attribute is held whatever it contains, except data-*, which
+    on this site carries the words app.js shows (data-cap, data-menu-head,
+    data-msg-*) and so still translates. A class name or an id is markup,
+    not prose, and the same substring pass reached
+    into those too: the table carries "not" (for "We do <strong>not</strong>
+    include ..."), which turned class="footer-note" into "footer-لاe" on every
+    Arabic page, and the Urdu and Indonesian equivalents, so the font-licence
+    note and every other *-note/notice lost their styling.
     """
     held = []
 
@@ -162,7 +177,7 @@ def mask_urls(markup):
         attr, value = m.group(1).lower(), m.group(2)
         is_url = attr in ('href', 'src', 'srcset', 'poster', 'action', 'cite') or \
             re.match(r'(?:https?:|mailto:|tel:)|^//|^/|^\.\./', value)
-        if not is_url:
+        if not is_url and (attr in PROSE_ATTRS or attr.startswith('data-')):
             return m.group(0)
         held.append(m.group(0))
         return f'\x00URL{len(held) - 1}\x00'
