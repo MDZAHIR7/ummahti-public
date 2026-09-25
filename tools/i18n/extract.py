@@ -31,6 +31,7 @@ def strip_ignored(markup):
     markup = re.sub(r'(?s)<style.*?</style>', blank, markup)
     markup = re.sub(r'(?s)<svg.*?</svg>', blank, markup)
     markup = re.sub(r'(?s)<!--.*?-->', blank, markup)
+    markup = re.sub(r'(?s)<(\w+)\b[^>]*\btranslate="no"[^>]*>.*?</\1>', blank, markup)
     return markup
 
 

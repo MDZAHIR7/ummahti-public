@@ -170,6 +170,29 @@ def mask_urls(markup):
     return re.sub(r'\b([A-Za-z_][\w:-]*)="([^"]*)"', take, markup), held
 
 
+def mask_notranslate(markup):
+    """Take elements marked translate="no" out of the segment pass.
+
+    The footer's copyright and trademark notice is a legal statement about
+    Latin-script marks, and is meant to read identically on every language's
+    pages. Left in the pass, the bare "Ummahti" key would rewrite
+    "Ummahti Quran\u2122" into a mark nobody uses.
+    """
+    held = []
+
+    def take(m):
+        held.append(m.group(0))
+        return f'\x00NOTR{len(held) - 1}\x00'
+
+    return re.sub(r'(?s)<(\w+)\b[^>]*\btranslate="no"[^>]*>.*?</\1>', take, markup), held
+
+
+def unmask_notranslate(markup, held):
+    for i, original in enumerate(held):
+        markup = markup.replace(f'\x00NOTR{i}\x00', original, 1)
+    return markup
+
+
 def unmask_urls(markup, held):
     for i, original in enumerate(held):
         markup = markup.replace(f'\x00URL{i}\x00', original, 1)
@@ -264,9 +287,11 @@ def build_page(src_rel, route, lang):
 
     report = {'applied': 0, 'untranslated': 0, 'missing': []}
     out, scripts = mask_scripts(src)
+    out, notr = mask_notranslate(out)
     out, urls = mask_urls(out)
     out = apply_translations(out, table, report)
     out = unmask_urls(out, urls)
+    out = unmask_notranslate(out, notr)
     out = unmask_scripts(out, scripts)
     out = localise_links(out, lang)
 

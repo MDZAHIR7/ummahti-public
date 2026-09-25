@@ -3218,6 +3218,15 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   font-size: .87rem;
   color: var(--muted);
 }
+/* "One Ummah." supports the tagline rather than competing with it: the same
+   column, a step smaller and a step dimmer, and close enough beneath it to
+   read as one signature. */
+.footer-sub {
+  grid-column: 1 / -1;
+  margin: .2rem 0 0;
+  font-size: .8rem;
+  color: var(--muted-2);
+}
 
 .footer-links {
   display: flex;
@@ -3244,6 +3253,11 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   font-size: .8rem;
   color: var(--muted-2);
 }
+/* The copyright and the trademark line, kept in English on every language's
+   pages: it is a legal notice, and the marks are the Latin names. */
+.footer-legal { max-width: 50ch; line-height: 1.6; }
+.footer-legal p { margin: 0; }
+.footer-legal p + p { margin-top: .2rem; }
 .footer-note { margin: 0; max-width: 62ch; font-size: .8rem; color: var(--muted-2); line-height: 1.6; }
 
 /* ==========================================================================
