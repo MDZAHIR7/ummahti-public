@@ -724,10 +724,12 @@
 
       const hero = document.querySelector('.hero');
       const close = document.querySelector('.close-panel');
+      const reel = document.querySelector('[data-film-screen]');
       let past = false;
       let atClose = false;
+      let atFilm = false;
 
-      const settle = () => installBar.classList.toggle('is-up', past && !atClose);
+      const settle = () => installBar.classList.toggle('is-up', past && !atClose && !atFilm);
 
       if (hero) {
         new IntersectionObserver(([e]) => {
@@ -741,6 +743,16 @@
           atClose = e.isIntersecting;
           settle();
         }, { threshold: 0 }).observe(close);
+      }
+
+      /* The film ends on its own install button, and on a phone the bar
+         would sit over the film's pause and sound controls. It steps aside
+         while the film is on screen, as it does for the closing panel. */
+      if (reel) {
+        new IntersectionObserver(([e]) => {
+          atFilm = e.isIntersecting;
+          settle();
+        }, { threshold: 0.15 }).observe(reel);
       }
 
       const away = installBar.querySelector('[data-install-dismiss]');
@@ -1164,6 +1176,451 @@
     }, { threshold: 0.4 }).observe(factGrid);
   }
 
+  /* -------------------------------------------------------------- the film */
+
+  /* Two minutes of the page going dark. Everything here is in service of
+     one rule: the reader never sees a video player, and never sees one
+     loading.
+
+     It loads about a screen before it is reached, and only plays while it is
+     mostly on screen. It opens in the dark, which is the band it sits in, so
+     until the first frame is ready there is simply nothing there yet. If it
+     cannot autoplay — reduced motion, Save-Data, a slow link, a browser that
+     refuses — or has not started three and a half seconds after it came into
+     view, it shows its most beautiful frame and a button, and waits.
+
+     A reader's pause is final. Scrolling away pauses the film and scrolling
+     back resumes it, but only if it was the page that paused it; once the
+     reader has pressed pause, nothing but the reader starts it again. It is
+     WCAG 2.2.2's rule, and it is also just manners.
+
+     The cut follows the screen: the portrait film on a portrait screen, the
+     landscape one otherwise, swapped at the same second if the phone is
+     turned mid-film, since the two cuts are frame-for-frame the same film.
+     Which codec is asked of the device rather than assumed: AV1 is a third
+     smaller, which is a third less to wait for, and it is chosen wherever the
+     device says it can decode it smoothly. Everywhere else gets H.264. */
+  const film = document.querySelector('[data-film]');
+  const filmVideo = film && film.querySelector('[data-film-video]');
+  let filmNear = false;           // close enough to the viewport to be worth drawing for
+  let filmWrite = null;           // the frame loop's hook, set once the film is wired
+
+  if (film && filmVideo) {
+    const glow = film.querySelector('[data-film-glow]');
+    const get = film.querySelector('[data-film-get]');
+    const start = film.querySelector('[data-film-start]');
+    const controls = film.querySelector('[data-film-controls]');
+    const toggle = film.querySelector('[data-film-toggle]');
+    const sound = film.querySelector('[data-film-sound]');
+    const now = film.querySelector('[data-film-now]');
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+    const sources = [...filmVideo.querySelectorAll('source')].map((s) => ({
+      src: s.getAttribute('src'),
+      type: s.getAttribute('type'),
+      media: s.getAttribute('media'),
+      cut: s.dataset.cut,
+      w: Number(s.dataset.w),
+      h: Number(s.dataset.h),
+      fps: Number(s.dataset.fps) || 30,
+    }));
+
+    // The install button is fully up from here to the end (it fades in over
+    // 106.7-107.0 in both cuts).
+    const END_CARD = 107.1;
+    const STALL_MS = 3500;
+
+    let loaded = null;            // the source in the element, once there is one
+    let onScreen = false;
+    let userPaused = false;
+    let started = false;          // the reader started it by hand at least once
+    let stallTimer = null;
+    let chapterAt = -1;
+    let glowTimer = null;
+    let pendingAt = null;         // a jump asked for before the file could take it
+
+    // The script owns it from here. The native controls, the poster and the
+    // <source> list were for a page with no script; this makes the same
+    // choice itself, and the still behind the picture is the poster now.
+    filmVideo.removeAttribute('controls');
+    filmVideo.removeAttribute('poster');
+    filmVideo.querySelectorAll('source').forEach((s) => s.remove());
+    filmVideo.muted = true;
+    filmVideo.defaultMuted = true;
+    film.classList.add('is-live');
+    if (controls) controls.hidden = false;
+
+    /* The chapter names become buttons. The name is moved rather than
+       copied, so the accessible name stays single and the translated text is
+       whatever the page shipped. */
+    const chapters = [...film.querySelectorAll('[data-film-chapters] li')].map((li) => {
+      const at = Number(li.dataset.at) || 0;
+      const label = li.querySelector('.film-ch');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'film-jump';
+      b.textContent = label ? label.textContent.trim() : '';
+      if (label) label.replaceWith(b);
+      else li.append(b);
+      b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') !== 'true') go(at); });
+      return { li, at, b };
+    });
+
+    function canAuto() {
+      if (reduced.matches) return false;
+      if (conn) {
+        if (conn.saveData) return false;
+        if (/^(slow-2g|2g|3g)$/.test(conn.effectiveType || '')) return false;
+      }
+      if (navigator.deviceMemory && navigator.deviceMemory < 2) return false;
+      return true;
+    }
+
+    function cutFor() {
+      const first = sources.find((s) => !s.media || window.matchMedia(s.media).matches);
+      return first ? first.cut : null;
+    }
+
+    function playable(cut) {
+      return sources.filter((s) => s.cut === cut && s.type && filmVideo.canPlayType(s.type));
+    }
+
+    // Synchronous, for a click: an iPhone only lets sound start inside the
+    // gesture itself, so a press cannot wait on the capability query.
+    function pickNow() {
+      return playable(cutFor())[0] || null;
+    }
+
+    async function pick() {
+      const fits = playable(cutFor());
+      if (fits.length < 2 || !(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)) return fits[0] || null;
+      for (const s of fits) {
+        try {
+          const info = await navigator.mediaCapabilities.decodingInfo({
+            type: 'file',
+            video: {
+              contentType: s.type.replace(/codecs="([^,"]+)[^"]*"/, 'codecs="$1"'),
+              width: s.w, height: s.h, bitrate: 1500000, framerate: s.fps,
+            },
+          });
+          if (info.supported && info.smooth) return s;
+        } catch (e) { /* the question itself is unsupported: try the next */ }
+      }
+      // The last is H.264, which every device decodes in hardware.
+      return fits[fits.length - 1];
+    }
+
+    // Near, it fetches only the head of the file; asked to play, the rest.
+    // A reader who never scrolls this far never pays for more than that.
+    function load(s, at, eager) {
+      if (!s) return;
+      loaded = s;
+      film.dataset.cut = s.cut;
+      filmVideo.preload = eager ? 'auto' : 'metadata';
+      filmVideo.src = s.src;
+      pendingAt = at || null;
+    }
+
+    /* Some hosts cannot jump within a file at all: they ignore byte ranges
+       and only ever hand it over from the start. Cloudflare's own preview
+       addresses (*.pages.dev) are one; the site's real domain is not. On
+       such a host every jump makes the browser start the film over, even to
+       a moment it has already downloaded, and it says so in advance:
+       `seekable` stops at nought. There a chapter does nothing rather than
+       send the reader back to the beginning, and the chapters stop looking
+       like controls. Everywhere else `seekable` is the whole film and the
+       jump is immediate. */
+    function canSeek() {
+      const s = filmVideo.seekable;
+      return s.length > 0 && s.end(s.length - 1) > 1;
+    }
+
+    function seekTo(at) {
+      pendingAt = at;
+      trySeek();
+    }
+
+    function markSeek() {
+      if (filmVideo.readyState < 1) return;
+      const no = !canSeek();
+      film.classList.toggle('no-seek', no);
+      chapters.forEach((c) => {
+        if (no) c.b.setAttribute('aria-disabled', 'true');
+        else c.b.removeAttribute('aria-disabled');
+      });
+    }
+
+    function trySeek() {
+      markSeek();
+      if (pendingAt === null || filmVideo.readyState < 1) return;
+      const at = Math.min(pendingAt, (filmVideo.duration || pendingAt) - 0.05);
+      pendingAt = null;
+      // Back to the start is the one jump a host that cannot seek can make.
+      if (canSeek() || at < 0.5) filmVideo.currentTime = canSeek() ? at : 0;
+    }
+
+    function setLabel() {
+      if (!toggle) return;
+      const state = filmVideo.ended || film.classList.contains('is-ended') ? 'again'
+        : film.classList.contains('is-playing') ? 'pause' : 'play';
+      toggle.setAttribute('aria-label', toggle.dataset[`label${state[0].toUpperCase()}${state.slice(1)}`] || '');
+    }
+
+    // The page cannot play it on its own: show the frame and the button.
+    function manual() {
+      clearTimeout(stallTimer);
+      film.classList.add('is-manual');
+      if (start && !started) start.hidden = false;
+    }
+
+    function play() {
+      clearTimeout(stallTimer);
+      filmVideo.preload = 'auto';
+      if (!film.classList.contains('is-rolling') && !started) {
+        stallTimer = setTimeout(manual, STALL_MS);
+      }
+      const p = filmVideo.play();
+      if (p && p.catch) p.catch(() => { if (!started) manual(); });
+    }
+
+    function hold() {
+      clearTimeout(stallTimer);
+      if (!filmVideo.paused) filmVideo.pause();
+    }
+
+    // Every way a reader starts it goes through here. A reader who presses
+    // play on a film that could not start itself wants to hear it.
+    function begin(at) {
+      const firstPress = !started && !film.classList.contains('is-playing');
+      started = true;
+      userPaused = false;
+      if (film.classList.contains('is-manual') && firstPress) {
+        filmVideo.muted = false;
+        if (sound) sound.setAttribute('aria-pressed', 'true');
+      }
+      if (!loaded) {
+        const s = pickNow();
+        if (!s) return;               // nothing this browser can play: the still stays
+        load(s, at, true);
+      } else if (typeof at === 'number') {
+        seekTo(at);
+      }
+      if (start && !start.hidden) {
+        // The button breathes while the first frames arrive. If they never
+        // do, it becomes a button again rather than a promise it cannot keep.
+        start.classList.add('is-waiting');
+        setTimeout(() => start.classList.remove('is-waiting'), 8000);
+      }
+      film.classList.remove('is-ended');
+      play();
+    }
+
+    function go(at) {
+      begin(at + 0.05);
+    }
+
+    if (start) start.addEventListener('click', () => begin(filmVideo.ended ? 0 : undefined));
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        if (filmVideo.ended || film.classList.contains('is-ended')) { begin(0); return; }
+        if (film.classList.contains('is-playing')) {
+          userPaused = true;
+          hold();
+          return;
+        }
+        begin();
+      });
+    }
+
+    if (sound) {
+      sound.addEventListener('click', () => {
+        filmVideo.muted = !filmVideo.muted;
+        sound.setAttribute('aria-pressed', String(!filmVideo.muted));
+        if (!loaded || (!film.classList.contains('is-playing') && !filmVideo.ended && !userPaused && !started)) {
+          begin();
+        }
+      });
+    }
+
+    /* ---- what the element reports ---- */
+
+    filmVideo.addEventListener('playing', () => {
+      clearTimeout(stallTimer);
+      film.classList.add('is-rolling', 'is-playing');
+      film.classList.remove('is-ended');
+      if (start) { start.hidden = true; start.classList.remove('is-waiting'); }
+      setLabel();
+      glowRun();
+    });
+    filmVideo.addEventListener('pause', () => {
+      film.classList.remove('is-playing');
+      setLabel();
+      glowRun();
+    });
+    filmVideo.addEventListener('ended', () => {
+      film.classList.remove('is-playing');
+      film.classList.add('is-ended');
+      setLabel();
+      glowRun();
+    });
+    // A swap or a jump while paused: the new frame is the picture now.
+    filmVideo.addEventListener('seeked', () => {
+      if (filmVideo.readyState >= 2 && (started || filmVideo.currentTime > 0)) film.classList.add('is-rolling');
+    });
+    filmVideo.addEventListener('error', () => { if (!started) manual(); });
+    filmVideo.addEventListener('loadedmetadata', trySeek);
+    filmVideo.addEventListener('loadeddata', markSeek);
+
+    filmVideo.addEventListener('timeupdate', () => {
+      if (!get) return;
+      const up = filmVideo.currentTime >= END_CARD;
+      if (up && get.hidden) {
+        get.hidden = false;
+        get.classList.remove('is-new');
+        void get.offsetWidth;
+        get.classList.add('is-new');
+      } else if (!up && !get.hidden) {
+        get.hidden = true;
+      }
+    });
+
+    /* ---- where it is on the page ---- */
+
+    if ('IntersectionObserver' in window) {
+      // Half a screen ahead: fetch the head of the film, so it is ready on arrival.
+      new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          filmNear = e.isIntersecting;
+          if (filmNear && !loaded && canAuto()) {
+            film.classList.add('is-auto');
+            pick().then((s) => { if (!loaded) load(s); if (onScreen && !userPaused) play(); });
+          }
+        }
+      }, { rootMargin: '50% 0px 50% 0px' }).observe(film);
+
+      // Mostly on screen: play. Mostly off it: pause, unless the reader chose.
+      new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          const ratio = e.intersectionRatio;
+          if (ratio >= 0.5 && !onScreen) {
+            onScreen = true;
+            if (film.classList.contains('is-auto') && loaded && !userPaused && !filmVideo.ended && !film.classList.contains('is-ended')) play();
+          } else if (ratio < 0.2) {
+            onScreen = false;
+            hold();
+          }
+        }
+      }, { threshold: [0, 0.2, 0.5] }).observe(film.querySelector('[data-film-screen]'));
+    }
+
+    if (!canAuto()) manual();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) hold();
+      else if (onScreen && loaded && !userPaused && !filmVideo.ended && (started || film.classList.contains('is-auto'))) play();
+    });
+
+    // Asked for less motion mid-film: stop, unless the reader started it.
+    reduced.addEventListener('change', () => {
+      if (reduced.matches && !started) { userPaused = true; hold(); manual(); }
+    });
+
+    // The phone turned. Same second, other cut.
+    window.matchMedia('(max-aspect-ratio: 4/5)').addEventListener('change', () => {
+      if (!loaded || cutFor() === loaded.cut) return;
+      const at = filmVideo.currentTime;
+      const wasPlaying = !filmVideo.paused;
+      film.classList.remove('is-rolling');
+      pick().then((s) => {
+        load(s, at, wasPlaying);
+        if (wasPlaying) play();
+      });
+    });
+
+    /* ---- the light it throws ---- */
+
+    /* A few times a second the frame is shrunk to sixteen pixels by nine and
+       averaged, and the glow behind the screen takes that colour. The dark
+       scenes throw nothing; a bright one lights the room. Only on devices
+       that were going to autoplay anyway, and only while it plays. */
+    const probe = document.createElement('canvas');
+    probe.width = 16;
+    probe.height = 9;
+    const probeCtx = probe.getContext('2d', { willReadFrequently: true });
+
+    async function sampleGlow() {
+      if (!probeCtx || filmVideo.readyState < 2) return;
+      try {
+        if (window.createImageBitmap) {
+          const bmp = await createImageBitmap(filmVideo, { resizeWidth: 16, resizeHeight: 9, resizeQuality: 'low' });
+          probeCtx.drawImage(bmp, 0, 0);
+          bmp.close();
+        } else {
+          probeCtx.drawImage(filmVideo, 0, 0, 16, 9);
+        }
+        const d = probeCtx.getImageData(0, 0, 16, 9).data;
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+        const n = d.length / 4;
+        r /= n; g /= n; b /= n;
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const a = Math.min(1, Math.max(0, (lum - 30) / 180));
+        glow.style.backgroundColor = `rgb(${r | 0}, ${g | 0}, ${b | 0})`;
+        glow.style.opacity = (a * 0.62).toFixed(3);
+        // A bright picture has edges worth showing; a dark one dissolves.
+        // Two thresholds, so a scene hovering near one cannot flicker.
+        if (lum > 90) film.classList.add('is-lit');
+        else if (lum < 60) film.classList.remove('is-lit');
+      } catch (e) {
+        // Nothing to light the room with; the film is the film without it.
+        clearInterval(glowTimer);
+        glowTimer = null;
+      }
+    }
+
+    function glowRun() {
+      if (!glow) return;
+      const want = film.classList.contains('is-playing') && canAuto() && (navigator.hardwareConcurrency || 4) >= 4;
+      if (want && !glowTimer) {
+        sampleGlow();
+        glowTimer = setInterval(sampleGlow, 400);
+      } else if (!want && glowTimer) {
+        clearInterval(glowTimer);
+        glowTimer = null;
+        // Paused, the light holds; at the end card it has already gone.
+        if (filmVideo.ended) sampleGlow();
+      }
+    }
+
+    /* ---- every frame, while it is near ---- */
+
+    filmWrite = () => {
+      if (!loaded) return;
+      const t = filmVideo.currentTime;
+      let at = 0;
+      for (let i = 0; i < chapters.length; i++) if (t >= chapters[i].at) at = i;
+
+      if (at !== chapterAt) {
+        chapters.forEach((c, i) => {
+          c.li.classList.toggle('is-on', i === at);
+          if (i === at) c.b.setAttribute('aria-current', 'true');
+          else c.b.removeAttribute('aria-current');
+          if (i !== at) c.li.style.setProperty('--p', i < at ? '1' : '0');
+        });
+        if (now) now.textContent = chapters[at].b.textContent;
+        chapterAt = at;
+      }
+
+      const from = chapters[at].at;
+      const to = at + 1 < chapters.length ? chapters[at + 1].at : (filmVideo.duration || from + 1);
+      const p = filmVideo.ended ? 1 : Math.min(1, Math.max(0, (t - from) / Math.max(0.1, to - from)));
+      chapters[at].li.style.setProperty('--p', p.toFixed(3));
+    };
+
+    setLabel();
+  }
+
   /* ------------------------------------------------------- the scroll loop */
 
   const header = document.querySelector('.site-header');
@@ -1341,6 +1798,8 @@
 
     /* ---- write ---- */
     if (header) header.classList.toggle('is-stuck', y > 12);
+
+    if (filmWrite && filmNear) filmWrite();
 
     root.style.setProperty('--lit', progress.toFixed(3));
     root.style.setProperty('--read', progress.toFixed(4));

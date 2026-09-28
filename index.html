@@ -102,9 +102,29 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Ummahti, in under two minutes",
+  "description": "The prayer behind the name, then the app itself: Ummahti Guide and its sources, the Mushaf page, seven calligraphy styles, the heritage themes, recitation from thirty-eight reciters, and Ayah on Unlock. No ads, no account, free.",
+  "thumbnailUrl": "https://ummahtiofficial.com/media/film/ummahti-ad-v4-land.webp",
+  "contentUrl": "https://ummahtiofficial.com/media/film/ummahti-ad-v4-land.h264.mp4",
+  "uploadDate": "2026-09-28",
+  "duration": "PT1M50S",
+  "inLanguage": "en",
+  "isFamilyFriendly": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ummahti",
+    "url": "https://ummahtiofficial.com/"
+  }
+}
+</script>
+
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260918a">
+<link rel="stylesheet" href="/styles.css?v=20260928b">
 <script src="/theme.js?v=20260918a"></script>
 </head>
 
@@ -280,6 +300,116 @@
       <div class="fact"><dt>7</dt><dd>Calligraphy styles</dd></div>
       <div class="fact"><dt>12</dt><dd>Reading themes</dd></div>
     </dl>
+  </section>
+
+  <!-- ============================================================ film -->
+
+  <!-- The film is the page going dark for two minutes, not a player set into
+       it. Three things make it read that way.
+
+       The ground the film was graded on is the ground it plays on. The band
+       is the film's own black, measured off its frame, and the frame's edges
+       are feathered into it, so no rectangle is ever drawn: the light arrives
+       out of the page. The band is always dark, whatever theme the page is
+       read in, because this is where the lights go down, so it carries
+       Obsidian's tokens for its own controls.
+
+       Nothing ever shows a loading state. The film opens in the dark, which
+       is the band, so until it is ready there is nothing to wait for; when it
+       cannot autoplay (reduced motion, Save-Data, a slow link, no script) it
+       shows its most beautiful frame and a button instead.
+
+       The film is also the words in it. They are written out beneath, with
+       the source the film itself names, so the film is never the only way to
+       read what it says. Its du'a is a different report from the one the
+       name section quotes further down, which is why the two are kept apart
+       rather than set next to each other.
+
+       The sources are in the markup, portrait first, so with no script the
+       browser picks the cut for the screen and the native controls work.
+       app.js makes the same choice itself, lazily, and asks the device which
+       codec it can decode smoothly. -->
+  <section class="film" id="film" data-theme="obsidian" aria-labelledby="film-title" data-film>
+    <h2 class="vh" id="film-title">Ummahti, in under two minutes</h2>
+    <figure class="film-frame">
+      <div class="film-screen" data-film-screen>
+        <span class="film-glow" aria-hidden="true" data-film-glow></span>
+        <div class="film-picture">
+          <picture class="film-still" data-film-still>
+            <source media="(max-aspect-ratio: 4/5)" srcset="/media/film/ummahti-ad-v4-port.webp" width="1080" height="1920">
+            <img src="/media/film/ummahti-ad-v4-land.webp" width="1920" height="1080" alt="" loading="lazy" decoding="async">
+          </picture>
+          <video class="film-video" data-film-video controls muted playsinline preload="none"
+                 poster="/media/film/ummahti-ad-v4-land.webp" disablepictureinpicture disableremoteplayback
+                 aria-label="The Ummahti film. Every word in it is also written out below.">
+            <source media="(max-aspect-ratio: 4/5)" src="/media/film/ummahti-ad-v4-port.av1.mp4" type='video/mp4; codecs="av01.0.08M.08, opus"' data-cut="port" data-w="1080" data-h="1920" data-fps="30">
+            <source media="(max-aspect-ratio: 4/5)" src="/media/film/ummahti-ad-v4-port.h264.mp4" type='video/mp4; codecs="avc1.640029, mp4a.40.2"' data-cut="port" data-w="1080" data-h="1920" data-fps="30">
+            <source src="/media/film/ummahti-ad-v4-land.av1.mp4" type='video/mp4; codecs="av01.0.09M.08, opus"' data-cut="land" data-w="1920" data-h="1080" data-fps="60">
+            <source src="/media/film/ummahti-ad-v4-land.h264.mp4" type='video/mp4; codecs="avc1.64002a, mp4a.40.2"' data-cut="land" data-w="1920" data-h="1080" data-fps="60">
+          </video>
+        </div>
+
+        <!-- The film ends on its own install button. Once that frame is up,
+             this sits exactly over it, so the button in the picture is the
+             button that works. -->
+        <a class="film-get" href="https://play.google.com/store/apps/details?id=com.ummahti.quran" data-film-get hidden><span class="vh">Get it on Google Play</span></a>
+
+        <button class="film-start" type="button" data-film-start hidden>
+          <span class="film-start-mark" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg></span>
+          <span>Play the film</span>
+          <span class="film-start-len">1:50</span>
+        </button>
+      </div>
+
+      <figcaption class="film-cap">
+        <div class="film-bar">
+          <p class="film-now" data-film-now aria-hidden="true"></p>
+          <ol class="film-chapters" data-film-chapters aria-label="Chapters">
+            <li data-at="0"><span class="film-ch">The name</span></li>
+            <li data-at="15.05"><span class="film-ch">Guide</span></li>
+            <li data-at="28.05"><span class="film-ch">The page</span></li>
+            <li data-at="32.4"><span class="film-ch">Calligraphy</span></li>
+            <li data-at="40.55"><span class="film-ch">Themes</span></li>
+            <li data-at="52.75"><span class="film-ch">Recitation</span></li>
+            <li data-at="62.7"><span class="film-ch">The reciters</span></li>
+            <li data-at="82.9"><span class="film-ch">On unlock</span></li>
+            <li data-at="90.5"><span class="film-ch">No ads</span></li>
+          </ol>
+          <div class="film-controls" data-film-controls hidden>
+            <button class="film-btn" type="button" data-film-toggle aria-label="Play the film"
+                    data-label-play="Play the film" data-label-pause="Pause the film" data-label-again="Watch the film again">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8.8 6v12M15.2 6v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+              <svg class="i-again" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.2 12a6.8 6.8 0 1 0 2-4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6.6 3.9v3.8h3.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="film-btn" type="button" data-film-sound aria-pressed="false" aria-label="Sound">
+              <svg class="i-muted" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.6 9.6h3.1l4.3-3.7v12.2l-4.3-3.7H4.6z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M16 9.6l4.8 4.8M20.8 9.6L16 14.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+              <svg class="i-sound" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.6 9.6h3.1l4.3-3.7v12.2l-4.3-3.7H4.6z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M15.6 9.2a4 4 0 0 1 0 5.6M18.3 6.6a7.8 7.8 0 0 1 0 10.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <details class="film-words">
+          <summary>Read the film</summary>
+          <ol class="film-words-list">
+            <li><b>His prayer. Our name.</b>
+              <span lang="ar" dir="rtl">اللَّهُمَّ أُمَّتِي أُمَّتِي</span> &ldquo;O Allah, my ummah, my ummah.&rdquo;
+              <small>Sahih Muslim</small></li>
+            <li><b>Guide</b> Ask in your own words. Never generated. Always a real source.</li>
+            <li><b>The page</b> Read it your way.</li>
+            <li><b>Calligraphy</b> Seven hands to read it in.</li>
+            <li><b>Themes</b> Heritage themes, from Madinah to Ahmedabad.</li>
+            <li><b>Recitation</b> Listen while you read.
+              <small>Saad Al-Ghamdi recites the opening of &#256;yat al-Kurs&#299;, 2:255.</small></li>
+            <li><b>The reciters</b> 38 reciters. Hear the ayah our name comes from.
+              <small>Yasser Al-Dosari recites Al-Anbiya 21:92.</small></li>
+            <li><b>On unlock</b> A khatm, one unlock at a time.</li>
+            <li><b>No ads</b> No ads. No account. Just the Qur&rsquo;an.</li>
+            <li><b>Ummahti</b> Seeking closeness to Allah. Make room for the Qur&rsquo;an. No ads, no account, free.</li>
+          </ol>
+        </details>
+      </figcaption>
+    </figure>
   </section>
 
   <!-- ========================================================== mushaf -->
@@ -1381,6 +1511,6 @@
 <script src="/vendor/lenis.min.js?v=20260918a" defer></script>
 <script src="/sky.js?v=20260918a" defer></script>
 <script src="/verse.js?v=20260918a" defer></script>
-<script src="/app.js?v=20260918a" defer></script>
+<script src="/app.js?v=20260928b" defer></script>
 </body>
 </html>

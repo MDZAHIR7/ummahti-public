@@ -3183,6 +3183,448 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 .close-mark img { width: 100%; height: auto; display: block; }
 
 /* ==========================================================================
+   The film
+
+   The page going dark for two minutes. The band is the film's own black,
+   measured off the edge of its frame, and the frame is feathered into it on
+   every side, so the picture has no edge to find: the light appears out of
+   the page and goes back into it. The band fades in and out of whatever theme the
+   page is in, which on a light theme reads as the lights going down.
+
+   The screen is sized to the viewport, not the column, so the whole film is
+   always on screen at once with the header and the chapter rail. Its aspect
+   ratio is the film's exactly, which is what lets the install button at the
+   end be placed over the picture in percentages and land on it at any size.
+   ========================================================================== */
+
+.film {
+  --film-ink: #020706;
+  --film-reserve: 190px;       /* header, chapter rail and a breath */
+  --film-fade: clamp(4.5rem, 16vh, 10rem);
+  position: relative;
+  z-index: 0;
+  color: var(--text);
+  padding-block: var(--film-fade);
+  /* The glow reaches past the screen, and must not reach past the page. */
+  overflow: hidden;
+  overflow: clip;
+}
+
+.film::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--film-ink);
+  /* Eased, not linear: a straight ramp from a pale page to this black
+     passes through a band of flat grey, where an eased one reads as light
+     falling away. */
+  --film-ramp:
+    transparent 0,
+    rgba(0, 0, 0, .04) calc(var(--film-fade) * .2),
+    rgba(0, 0, 0, .16) calc(var(--film-fade) * .38),
+    rgba(0, 0, 0, .4) calc(var(--film-fade) * .56),
+    rgba(0, 0, 0, .7) calc(var(--film-fade) * .74),
+    rgba(0, 0, 0, .92) calc(var(--film-fade) * .9),
+    #000 var(--film-fade),
+    #000 calc(100% - var(--film-fade)),
+    rgba(0, 0, 0, .92) calc(100% - var(--film-fade) * .9),
+    rgba(0, 0, 0, .7) calc(100% - var(--film-fade) * .74),
+    rgba(0, 0, 0, .4) calc(100% - var(--film-fade) * .56),
+    rgba(0, 0, 0, .16) calc(100% - var(--film-fade) * .38),
+    rgba(0, 0, 0, .04) calc(100% - var(--film-fade) * .2),
+    transparent 100%;
+  -webkit-mask-image: linear-gradient(to bottom, var(--film-ramp));
+          mask-image: linear-gradient(to bottom, var(--film-ramp));
+  pointer-events: none;
+}
+
+.film-frame { margin: 0; }
+
+.film-screen {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 16 / 9;
+  width: min(100%, calc((100vh - var(--film-reserve)) * 16 / 9), 1680px);
+  width: min(100%, calc((100svh - var(--film-reserve)) * 16 / 9), 1680px);
+  margin-inline: auto;
+}
+
+/* Portrait screens get the portrait cut. The same query picks the source in
+   the markup and in app.js, so the box and the picture always agree. */
+@media (max-aspect-ratio: 4/5) {
+  .film-screen {
+    aspect-ratio: 9 / 16;
+    width: min(100%, calc((100vh - var(--film-reserve)) * 9 / 16));
+    width: min(100%, calc((100svh - var(--film-reserve)) * 9 / 16));
+  }
+}
+
+/* The feather. Two ramps, intersected, so the corners fade as well as the
+   sides. Nothing in the film is set closer to its edge than this.
+
+   It follows the light. A dark picture has no edge worth showing, so it
+   dissolves into the band; a bright one would read as a vignetted box, so
+   while the picture is bright (app.js measures it) the feather closes to a
+   hairline and the corners round, and the film is a lit screen in a dark
+   room until it goes dark again. Registered, so the ramp itself animates;
+   where it cannot, it simply switches. */
+@property --film-fx { syntax: '<percentage>'; inherits: false; initial-value: 7%; }
+@property --film-fy { syntax: '<percentage>'; inherits: false; initial-value: 8%; }
+
+.film-picture {
+  --film-fx: 7%;
+  --film-fy: 8%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--film-fx), #000 calc(100% - var(--film-fx)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--film-fy), #000 calc(100% - var(--film-fy)), transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--film-fx), #000 calc(100% - var(--film-fx)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--film-fy), #000 calc(100% - var(--film-fy)), transparent 100%);
+          mask-composite: intersect;
+  transition: --film-fx 1100ms var(--ease), --film-fy 1100ms var(--ease), border-radius 1100ms var(--ease);
+}
+.film.is-lit .film-picture {
+  --film-fx: .4%;
+  --film-fy: .7%;
+  border-radius: clamp(14px, 1.5vw, 24px);
+}
+
+.film-still,
+.film-still img,
+.film-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* The video is invisible until it has drawn a frame, and never goes back out
+   once it has: paused and ended both leave the picture standing. */
+.film-video {
+  background: transparent;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+.no-js .film-video,
+.film.is-rolling .film-video { opacity: 1; }
+
+/* Autoplaying, the film opens on black, which is the band: a still would
+   only be something to cut away from. */
+.film.is-auto:not(.is-manual) .film-still { visibility: hidden; }
+
+/* The light the picture throws. app.js samples the frame a few times a second
+   and sets this to its colour, so the dark scenes throw nothing and a
+   bright one lights the room around it. */
+.film-glow {
+  position: absolute;
+  inset: -18% -14%;
+  z-index: -1;
+  opacity: 0;
+  background-color: rgb(222, 212, 192);
+  -webkit-mask-image: radial-gradient(closest-side, rgba(0, 0, 0, .6), rgba(0, 0, 0, .2) 55%, transparent 100%);
+          mask-image: radial-gradient(closest-side, rgba(0, 0, 0, .6), rgba(0, 0, 0, .2) 55%, transparent 100%);
+  transition: opacity 1200ms var(--ease), background-color 1200ms var(--ease);
+  pointer-events: none;
+}
+
+/* --- the button at the end, which is the button in the picture ---------- */
+
+.film-get {
+  position: absolute;
+  z-index: 2;
+  left: 44.58%;
+  top: 70.93%;
+  width: 10.83%;
+  height: 5.74%;
+  border-radius: 5% / 18%;
+  transition: box-shadow 300ms var(--ease);
+}
+/* Measured off the last frame of each cut: the badge's own box. */
+@media (max-aspect-ratio: 4/5) {
+  .film-get { left: 34.35%; top: 64.48%; width: 31.3%; height: 5.21%; }
+}
+.film[data-cut='land'] .film-get { left: 44.58%; top: 70.93%; width: 10.83%; height: 5.74%; }
+.film[data-cut='port'] .film-get { left: 34.35%; top: 64.48%; width: 31.3%; height: 5.21%; }
+
+.film-get:hover,
+.film-get:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--gold-rgb), .95), 0 0 42px rgba(var(--gold-rgb), .45);
+}
+/* Once, as the frame settles: enough to say it is real, not enough to nag. */
+.film-get.is-new { animation: film-beckon 1700ms var(--ease) 500ms 1 both; }
+@keyframes film-beckon {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--gold-rgb), 0), 0 0 0 rgba(var(--gold-rgb), 0); }
+  45%  { box-shadow: 0 0 0 2px rgba(var(--gold-rgb), .8), 0 0 46px rgba(var(--gold-rgb), .4); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--gold-rgb), 0), 0 0 0 rgba(var(--gold-rgb), 0); }
+}
+
+/* --- when it cannot autoplay -------------------------------------------- */
+
+.film-start {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 13%;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: .8rem;
+  min-height: 56px;
+  padding: .45rem 1.35rem .45rem .5rem;
+  border: 0;
+  border-radius: 999px;
+  font: 600 .98rem/1 'Jakarta', system-ui, sans-serif;
+  color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+  background: rgba(8, 8, 10, .5);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+          backdrop-filter: blur(12px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--glow-rgb), .14),
+    inset 0 0 0 1px rgba(var(--gold-rgb), .34),
+    0 22px 44px -22px rgba(0, 0, 0, .95);
+  transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease);
+}
+.film-start[hidden] { display: none; }
+.film-start:hover { transform: translateY(-2px); }
+.film-start:active { transform: translateY(0) scale(.98); transition-duration: 120ms; }
+.film-start:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.film-start-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--gold-ink);
+  background: linear-gradient(168deg, var(--gold-hi) 0%, var(--gold) 44%, var(--gold-deep) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 8px 20px -8px rgba(var(--gold-rgb), .7);
+}
+.film-start-mark svg { width: 20px; height: 20px; margin-inline-start: 2px; }
+.film-start-len { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* Pressed, and fetching its first frames: the mark breathes rather than a
+   spinner appearing. A spinner is a promise of waiting; this is a pause. */
+.film-start.is-waiting { pointer-events: none; }
+.film-start.is-waiting .film-start-mark { animation: film-breathe 1100ms ease-in-out infinite; }
+@keyframes film-breathe { 50% { transform: scale(.88); opacity: .7; } }
+
+/* --- the rail beneath: chapters, and the two controls ------------------- */
+
+.film-cap {
+  width: min(100% - (var(--gutter) * 2), var(--shell));
+  margin: clamp(1rem, 2.6vh, 1.6rem) auto 0;
+}
+
+.film-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+}
+
+/* The chapter being played, named once above the rail. Only used where the
+   nine names do not fit beside each other. */
+.film-now { display: none; }
+
+.film-chapters {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.film-chapters li { position: relative; padding-top: 12px; min-width: 0; }
+
+/* Each chapter fills as the film passes through it. The track is drawn only
+   once there is a film to track; without script the chapters are a plain
+   list of what is in it. */
+.film.is-live .film-chapters li::before,
+.film.is-live .film-chapters li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+}
+.film.is-live .film-chapters li::before { background: rgba(var(--gold-rgb), .2); }
+.film.is-live .film-chapters li::after {
+  background: var(--gold);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left center;
+}
+[dir='rtl'] .film.is-live .film-chapters li::after { transform-origin: right center; }
+
+.film-ch,
+.film-jump {
+  display: block;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.film-jump {
+  width: 100%;
+  min-height: 32px;
+  padding: .3rem 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: color 300ms var(--ease);
+}
+.film-jump:hover { color: var(--text); }
+.film-jump:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+.film-chapters li.is-on .film-jump { color: var(--gold-light); }
+/* A host that cannot jump within the film: the chapters still say where the
+   film is, but no longer offer to move it. */
+.film.no-seek .film-jump { cursor: default; }
+.film.no-seek .film-jump:hover { color: var(--muted-2); }
+.film.no-seek .film-chapters li.is-on .film-jump:hover { color: var(--gold-light); }
+
+.film-controls { display: flex; gap: .6rem; flex: none; }
+.film-controls[hidden] { display: none; }
+
+.film-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+  background: rgba(var(--glow-rgb), .06);
+  box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .24);
+  transition: background-color 250ms var(--ease), box-shadow 250ms var(--ease), transform 250ms var(--ease-out);
+}
+.film-btn:hover { background: rgba(var(--glow-rgb), .12); box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), .45); }
+.film-btn:active { transform: scale(.94); transition-duration: 100ms; }
+.film-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.film-btn svg { width: 19px; height: 19px; display: none; }
+
+.film-btn[data-film-toggle] .i-play,
+.film.is-playing .film-btn[data-film-toggle] .i-pause,
+.film.is-ended .film-btn[data-film-toggle] .i-again { display: block; }
+.film.is-playing .film-btn[data-film-toggle] .i-play,
+.film.is-ended .film-btn[data-film-toggle] .i-play { display: none; }
+
+.film-btn[data-film-sound] .i-muted,
+.film-btn[data-film-sound][aria-pressed='true'] .i-sound { display: block; }
+.film-btn[data-film-sound][aria-pressed='true'] .i-muted { display: none; }
+.film-btn[data-film-sound][aria-pressed='true'] { color: var(--gold-light); }
+
+/* --- the film, written out ---------------------------------------------- */
+
+.film-words { margin-top: clamp(1rem, 2.4vh, 1.4rem); }
+.film-words summary {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 32px;
+  font-size: .82rem;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+  text-underline-offset: 3px;
+}
+.film-words summary::-webkit-details-marker { display: none; }
+.film-words summary::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 250ms var(--ease);
+}
+[dir='rtl'] .film-words summary::before { transform: rotate(135deg); }
+.film-words[open] summary::before { transform: rotate(45deg); }
+.film-words summary:hover { color: var(--text); text-decoration: underline; }
+.film-words summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+.film-words-list {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  columns: 2 300px;
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+  font-size: .92rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.film-words-list li { break-inside: avoid; margin-bottom: .6rem; }
+.film-words-list b {
+  display: block;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.film-words-list small { display: block; font-size: .78rem; color: var(--muted-2); }
+.film-words-list [lang='ar'] { display: block; font-size: 1.25rem; color: var(--gold-light); }
+
+/* On a phone the nine names do not fit beside each other, and ellipses
+   would say nothing. The rail keeps its eight segments, each still a button
+   the width of its segment, and the chapter being played names itself once
+   above them. */
+@media (max-width: 760px) {
+  .film.is-live .film-bar { flex-wrap: wrap; row-gap: .55rem; }
+  .film.is-live .film-now {
+    display: block;
+    order: -1;
+    width: 100%;
+    margin: 0;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    min-height: 1.3em;
+  }
+  .film.is-live .film-chapters { gap: 4px; }
+  .film.is-live .film-chapters li { padding-top: 0; }
+  .film.is-live .film-chapters li::before,
+  .film.is-live .film-chapters li::after { top: 50%; margin-top: -1px; }
+  /* Each segment is still a button the width of its segment; its name is
+     read out, and shown once, above, as .film-now. */
+  .film.is-live .film-chapters .film-jump,
+  .film.is-live .film-chapters li.is-on .film-jump { min-height: 44px; color: transparent; text-overflow: clip; }
+  .no-js .film-chapters,
+  .film:not(.is-live) .film-chapters { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: .4rem; }
+  .film-start { bottom: 11%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-video,
+  .film-glow,
+  .film-picture { transition: none; }
+  .film-get.is-new { animation: none; }
+}
+
+/* ==========================================================================
    Footer
    ========================================================================== */
 

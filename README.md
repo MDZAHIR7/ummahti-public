@@ -108,7 +108,9 @@ media/scripts/      Al-Faatiha set once per Arabic script, WebP at 720w and 420w
 media/brand/        crescent mark, favicons, social card
 media/recitation/   the locked ayah, one clip per reciter, fetched not
                     committed by hand — see the file there
-tools/              what fetches the recitation clips; nothing the site serves
+media/film/         the film, both cuts, AV1 and H.264, and a still of each
+tools/              what fetches the recitation clips and encodes the film;
+                    nothing the site serves
 ```
 
 ## Where the assets come from
@@ -178,6 +180,89 @@ Nothing here is a mockup.
   are named as two reports and never merged, nothing claims the Prophet asked
   Allah to save everyone, and Ummahti's own reflection sits outside the
   quotation.
+- **The film** is the V4 ad from the ads repository
+  (`Videos/ummahti-ad-v4-*.mp4`, built from `ummahti-ad-v4/`), both cuts,
+  re-encoded by `tools/make_film.sh` and otherwise untouched. Its own README
+  says where every piece of it comes from: the Qur'an text from the app's
+  corpus, the recitation from MP3Quran on its published timings, the seven
+  hands in the app's own fonts, the themes from `Theme.kt`, and the 38
+  reciters in the app's order. The du'a it opens on is cited on screen as
+  Sahih Muslim, a different report from the two the name section quotes,
+  which is why the film sits near the top and the name section near the
+  bottom rather than side by side.
+
+## The film
+
+Between the numbers and the Mushaf the page goes dark for the length of the
+film: 1:50. It is built so that nobody sees a video player, and nobody sees
+one loading.
+
+**There is no edge.** The band is the film's own black (`#020706`, measured
+off the edge of its frame), and the frame is feathered into it on all four
+sides, so the words arrive out of the page rather than inside a box. The band
+fades in and out of whatever theme the page is in, on an eased ramp; on a
+light theme that reads as the lights going down. It carries Obsidian's tokens
+for its own controls, the same subtree trick the themes panel uses.
+
+**The frame follows the light.** A dark picture has no edge worth showing, so
+it dissolves. A bright one would read as a vignetted box, so while the
+picture is bright the feather closes to a hairline and the corners round,
+and the film becomes a lit screen in a dark room. A few times a second
+`app.js` shrinks the frame to sixteen pixels by nine and averages it; that
+decides the edge, and colours the glow behind the screen. V4 is dark from
+the first frame to the last (its brightest moment averages 51 of 255), so it
+never closes the edge: it is written for whatever the next cut is.
+
+**Nothing ever waits in view.** The file's head is fetched half a screen
+before the film is reached, and the rest only once it plays. The film opens
+in the dark, which is the band, so until the first frame is ready there is
+simply nothing there yet. It autoplays muted, and only while it is mostly on
+screen; it carries recitation, which is never started aloud by the page.
+When it cannot autoplay (reduced motion, Save-Data, a slow link, a browser
+that refuses, or no frame three and a half seconds after it came into view)
+it shows its most beautiful frame, the du'a at eleven seconds, and a button
+that plays it with sound. There is no spinner anywhere.
+
+**A reader's pause is final.** Scrolling away pauses it and scrolling back
+resumes it, but only if the page paused it. That is WCAG 2.2.2, and manners.
+
+**The cut follows the screen.** Portrait on a portrait screen, landscape
+otherwise, by the same query in the markup, the stylesheet and the script.
+The two cuts are the same film on the same clock, so turning a phone
+mid-film swaps the cut at the same second. The landscape cut keeps the
+film's 60 fps; the portrait cut is taken to 30, which on a phone is the same
+picture for half the data and half the decoding, and on a motion-blurred
+60 fps render is exactly the cinema shutter. The codec is asked of the
+device: `mediaCapabilities` is asked whether AV1 decodes smoothly at that
+size and rate, and where it does the file is smaller. Everywhere else gets
+H.264.
+
+**A host that cannot seek gets a film that plays, not one that restarts.**
+Cloudflare's preview addresses (`*.pages.dev`) ignore byte ranges; the real
+domain honours them. Without ranges a browser can only play a file from the
+start, and any jump, even to a moment already downloaded, starts the film
+over. The browser reports this in advance (`seekable` stops at nought), so
+there the chapters keep showing where the film is but stop offering to move
+it, and turning a phone restarts the other cut instead of matching the
+second. On the real domain both work. A branch preview is therefore right
+about how the film looks and plays through, not about jumping around in it.
+
+**The button in the picture is the button.** The film ends on its own
+install badge, which fades in over 106.7–107.0s and holds. From 107.1s an
+invisible link sits exactly over it, placed in percentages of a box whose
+aspect ratio is the film's, so it lands on the badge at every size. Focused,
+it rings the badge in gold.
+
+**The markup is the manifest.** The chapters are `<li data-at>` in seconds,
+taken from the storyboard in the V4 README; the sources are `<source>`
+elements portrait first; and every caption in the film is written out
+beneath it, with the citation it shows and the two recitations it plays. With no
+script the browser picks the cut, the native controls work and the chapters
+are a list. The film itself is English on every page; the chapters, the
+controls and the written-out film are translated like everything else.
+
+A recut is a new version and a new filename, because `/media/*` is immutable
+for a year. `tools/make_film.sh` says what else to re-measure.
 
 ## The one verse
 

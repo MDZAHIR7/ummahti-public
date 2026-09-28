@@ -101,9 +101,29 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Ummahti, in under two minutes",
+  "description": "The prayer behind the name, then the app itself: Ummahti Guide and its sources, the Mushaf page, seven calligraphy styles, the heritage themes, recitation from thirty-eight reciters, and Ayah on Unlock. No ads, no account, free.",
+  "thumbnailUrl": "https://ummahtiofficial.com/media/film/ummahti-ad-v4-land.webp",
+  "contentUrl": "https://ummahtiofficial.com/media/film/ummahti-ad-v4-land.h264.mp4",
+  "uploadDate": "2026-09-28",
+  "duration": "PT1M50S",
+  "inLanguage": "en",
+  "isFamilyFriendly": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ummahti",
+    "url": "https://ummahtiofficial.com/"
+  }
+}
+</script>
+
 <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=20260918a">
+<link rel="stylesheet" href="/styles.css?v=20260928b">
 <script src="/theme.js?v=20260918a"></script>
 </head>
 
@@ -278,6 +298,116 @@
       <div class="fact"><dt>7</dt><dd>خطوط</dd></div>
       <div class="fact"><dt>12</dt><dd>مطالعہ تھیمز</dd></div>
     </dl>
+  </section>
+
+  <!-- ============================================================ film -->
+
+  <!-- The film is the page going dark for two minutes, شامل نہیں a player set into
+       it. Three things make it read that way.
+
+       The ground the film was graded on is the ground it plays on. The band
+       is the film's own black, measured off its frame, and the frame's edges
+       are feathered into it, so no rectangle is ever drawn: the light arrives
+       out of the page. The band is always dark, whatever theme the page is
+       read in, because this is where the lights go down, so it carries
+       اوبسیڈین's tokens for its own controls.
+
+       Nothing ever shows a loading state. The film opens in the dark, which
+       is the band, so until it is ready there is شامل نہیںhing to wait for; when it
+       canشامل نہیں autoplay (reduced motion, Save-Data, a slow link, no script) it
+       shows its most beautiful frame and a button instead.
+
+       The film is also the words in it. They are written out beneath, with
+       the source the film itself names, so the film is never the only way to
+       read what it says. Its du'a is a different report from the one the
+       name section quotes further down, which is why the two are kept apart
+       rather than set next to each other.
+
+       The sources are in the markup, portrait first, so with no script the
+       browser picks the cut for the screen and the native controls work.
+       app.js makes the same choice itself, lazily, and asks the device which
+       codec it can decode smoothly. -->
+  <section class="film" id="film" data-theme="obsidian" aria-labelledby="film-title" data-film>
+    <h2 class="vh" id="film-title">اُمّتی، دو منٹ سے کم میں</h2>
+    <figure class="film-frame">
+      <div class="film-screen" data-film-screen>
+        <span class="film-glow" aria-hidden="true" data-film-glow></span>
+        <div class="film-picture">
+          <picture class="film-still" data-film-still>
+            <source media="(max-aspect-ratio: 4/5)" srcset="/media/film/ummahti-ad-v4-port.webp" width="1080" height="1920">
+            <img src="/media/film/ummahti-ad-v4-land.webp" width="1920" height="1080" alt="" loading="lazy" decoding="async">
+          </picture>
+          <video class="film-video" data-film-video controls muted playsinline preload="none"
+                 poster="/media/film/ummahti-ad-v4-land.webp" disablepictureinpicture disableremoteplayback
+                 aria-label="اُمّتی کی فلم۔ اس کا ہر لفظ نیچے لکھا ہوا بھی ہے۔">
+            <source media="(max-aspect-ratio: 4/5)" src="/media/film/ummahti-ad-v4-port.av1.mp4" type='video/mp4; codecs="av01.0.08M.08, opus"' data-cut="port" data-w="1080" data-h="1920" data-fps="30">
+            <source media="(max-aspect-ratio: 4/5)" src="/media/film/ummahti-ad-v4-port.h264.mp4" type='video/mp4; codecs="avc1.640029, mp4a.40.2"' data-cut="port" data-w="1080" data-h="1920" data-fps="30">
+            <source src="/media/film/ummahti-ad-v4-land.av1.mp4" type='video/mp4; codecs="av01.0.09M.08, opus"' data-cut="land" data-w="1920" data-h="1080" data-fps="60">
+            <source src="/media/film/ummahti-ad-v4-land.h264.mp4" type='video/mp4; codecs="avc1.64002a, mp4a.40.2"' data-cut="land" data-w="1920" data-h="1080" data-fps="60">
+          </video>
+        </div>
+
+        <!-- The film ends on its own install button. Once that frame is up,
+             this sits exactly over it, so the button in the picture is the
+             button that works. -->
+        <a class="film-get" href="https://play.google.com/store/apps/details?id=com.ummahti.quran" data-film-get hidden><span class="vh">Google Play سے حاصل کریں</span></a>
+
+        <button class="film-start" type="button" data-film-start hidden>
+          <span class="film-start-mark" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg></span>
+          <span>فلم چلائیے</span>
+          <span class="film-start-len">1:50</span>
+        </button>
+      </div>
+
+      <figcaption class="film-cap">
+        <div class="film-bar">
+          <p class="film-now" data-film-now aria-hidden="true"></p>
+          <ol class="film-chapters" data-film-chapters aria-label="ابواب">
+            <li data-at="0"><span class="film-ch">نام</span></li>
+            <li data-at="15.05"><span class="film-ch">رہنما</span></li>
+            <li data-at="28.05"><span class="film-ch">صفحہ</span></li>
+            <li data-at="32.4"><span class="film-ch">خطاطی</span></li>
+            <li data-at="40.55"><span class="film-ch">تھیمز</span></li>
+            <li data-at="52.75"><span class="film-ch">تلاوت</span></li>
+            <li data-at="62.7"><span class="film-ch">قاری حضرات</span></li>
+            <li data-at="82.9"><span class="film-ch">اَن لاک پر</span></li>
+            <li data-at="90.5"><span class="film-ch">کوئی اشتہار نہیں</span></li>
+          </ol>
+          <div class="film-controls" data-film-controls hidden>
+            <button class="film-btn" type="button" data-film-toggle aria-label="فلم چلائیے"
+                    data-label-play="فلم چلائیے" data-label-pause="فلم روکیے" data-label-again="فلم دوبارہ دیکھیے">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8.8 6v12M15.2 6v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+              <svg class="i-again" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.2 12a6.8 6.8 0 1 0 2-4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6.6 3.9v3.8h3.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="film-btn" type="button" data-film-sound aria-pressed="false" aria-label="آواز">
+              <svg class="i-muted" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.6 9.6h3.1l4.3-3.7v12.2l-4.3-3.7H4.6z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M16 9.6l4.8 4.8M20.8 9.6L16 14.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+              <svg class="i-sound" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.6 9.6h3.1l4.3-3.7v12.2l-4.3-3.7H4.6z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M15.6 9.2a4 4 0 0 1 0 5.6M18.3 6.6a7.8 7.8 0 0 1 0 10.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <details class="film-words">
+          <summary>فلم کو پڑھیے</summary>
+          <ol class="film-words-list">
+            <li><b>اُن کی دعا۔ ہمارا نام۔</b>
+              <span lang="ar" dir="rtl">اللَّهُمَّ أُمَّتِي أُمَّتِي</span> «اے اللہ! میری امت، میری امت۔»
+              <small>صحیح مسلم</small></li>
+            <li><b>رہنما</b> اپنے الفاظ میں پوچھیے۔ کچھ بھی مشین کا بنایا ہوا نہیں۔ ہمیشہ اصل ماخذ۔</li>
+            <li><b>صفحہ</b> اپنے انداز میں پڑھیے۔</li>
+            <li><b>خطاطی</b> پڑھنے کے لیے سات خط۔</li>
+            <li><b>تھیمز</b> ورثے کی تھیمز، مدینہ سے احمد آباد تک۔</li>
+            <li><b>تلاوت</b> پڑھتے ہوئے سنیے۔
+              <small>سعد الغامدی آیت الکرسی کا ابتدائی حصہ تلاوت کرتے ہیں، 2:255۔</small></li>
+            <li><b>قاری حضرات</b> 38 قاری۔ وہ آیت سنیے جس سے ہمارا نام آیا ہے۔
+              <small>یاسر الدوسری سورۃ الانبیاء 21:92 کی تلاوت کرتے ہیں۔</small></li>
+            <li><b>اَن لاک پر</b> ایک ختم، ہر اَن لاک کے ساتھ تھوڑا تھوڑا۔</li>
+            <li><b>کوئی اشتہار نہیں</b> کوئی اشتہار نہیں۔ کوئی اکاؤنٹ نہیں۔ صرف قرآن۔</li>
+            <li><b>اُمّتی</b> اللہ کا قرب چاہتے ہوئے۔ قرآن کے لیے جگہ بنائیے۔ کوئی اشتہار نہیں، کوئی اکاؤنٹ نہیں، مفت۔</li>
+          </ol>
+        </details>
+      </figcaption>
+    </figure>
   </section>
 
   <!-- ========================================================== mushaf -->
@@ -637,7 +767,7 @@
 
   <!-- ========================================================== themes -->
   <!-- This section is rendered in the app's گرم کریم palette, using its
-       real token values. The page argues that you can read in a different
+       real token values. صفحہ argues that you can read in a different
        light, so at this point it changes light. -->
   <section class="bay shell" id="themes">
     <div class="themes-panel split themes-split" data-theme="warm-cream" data-reveal>
@@ -949,7 +1079,7 @@
        rather than pretending.
 
        The Arabic is the imlaei text with full diacritics rather than the
-       عثمانی text the app draws. The page ships two latin faces and no
+       عثمانی text the app draws. صفحہ ships two latin faces and no
        Arabic one, so this line is set in whatever Arabic face the reader's
        system has, and the عثمانی orthography (the superscript alef, the
        wasla, the small high seen) is exactly what a system face is likely to
@@ -1315,6 +1445,6 @@
 <script src="/sky.js?v=20260918a" defer></script>
 <script src="/verse.js?v=20260918a" defer></script>
 <script src="/i18n/ur.js" defer></script>
-<script src="/app.js?v=20260918a" defer></script>
+<script src="/app.js?v=20260928b" defer></script>
 </body>
 </html>

@@ -30,7 +30,8 @@ KEEP = {
 # had one translated is broken structured data, which is exactly the failure
 # that reached a built page once: "FAQ" is a nav label as well as the opening
 # of "FAQPage", so the segment pass rewrote the type.
-VALID_TYPES = {'SoftwareApplication', 'FAQPage', 'Organization', 'WebSite', 'Question', 'Answer', 'Offer'}
+VALID_TYPES = {'SoftwareApplication', 'FAQPage', 'Organization', 'WebSite', 'Question', 'Answer', 'Offer',
+               'VideoObject'}
 
 
 # An external URL is not prose. Whatever a page says, it must point at the same
