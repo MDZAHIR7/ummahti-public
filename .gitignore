@@ -1,0 +1,5 @@
+# The repository root is the published site: anything committed here is
+# served. Local tooling stays out of it.
+.claude/
+__pycache__/
+*.pyc
