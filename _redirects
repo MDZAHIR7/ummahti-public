@@ -9,3 +9,18 @@
 /privacy-policy.html  /privacy/   301
 /PRIVACY_POLICY       /privacy/   301
 /PRIVACY_POLICY.html  /privacy/   301
+
+# The brand set before the October 2026 identity. /media/* is served
+# immutable for a year, so the new set lives under its own folder rather than
+# reusing these names, and a returning visitor cannot keep the old logo. These
+# keep any outside link to an old file working, and show it the new one.
+/media/brand/og.jpg                /media/brand/2026-10/og.jpg                301
+/media/brand/icon-512.png          /media/brand/2026-10/icon-512.png          301
+/media/brand/icon-192.png          /media/brand/2026-10/icon-192.png          301
+/media/brand/apple-touch-icon.png  /media/brand/2026-10/apple-touch-icon.png  301
+/media/brand/favicon.ico           /media/brand/2026-10/favicon.ico           301
+/media/brand/favicon-16.png        /media/brand/2026-10/favicon-16.png        301
+/media/brand/favicon-32.png        /media/brand/2026-10/favicon-32.png        301
+/media/brand/favicon-48.png        /media/brand/2026-10/favicon-48.png        301
+/media/brand/favicon.svg           /media/brand/2026-10/favicon-48.png        301
+/media/brand/crescent.svg          /media/brand/2026-10/crescent-1024.png     301

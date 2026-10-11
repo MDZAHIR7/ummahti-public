@@ -93,6 +93,7 @@
   --gold-hi: #f5e6b3;
   --gold-deep: #b8912b;
   --gold-ink: #07070a;
+  --brand-word: linear-gradient(180deg, #fff3cc, #e9c46b);
 
   --shadow-k: 1;
   --spec-k: 1;
@@ -410,6 +411,9 @@
 [data-theme='persian'],
 [data-theme='haramain'],
 [data-theme='jali-moon'] {
+  /* The lockup's gold, render.mjs GOLD: a brand colour, not a theme one, so
+     every dark theme carries the same. */
+  --brand-word: linear-gradient(180deg, #fff3cc, #e9c46b);
   --shadow-k: 1;
   --spec-k: 1;
   --amb-a: 1;
@@ -434,6 +438,9 @@
 [data-theme='sheikh-zayed'],
 [data-theme='classic-ink'],
 [data-theme='shiraz-dawn'] {
+  /* The lockup's pale gold vanishes into a light page, so the wordmark takes
+     the theme's own accent, light to deep, the way the install button does. */
+  --brand-word: linear-gradient(180deg, var(--gold-hi), var(--gold-deep));
   --shadow-k: .34;
   --spec-k: 3.2;
   --amb-a: .16;
@@ -635,7 +642,6 @@ a:focus-visible:not([class]),
   transform: translate3d(0, var(--sky-drift), 0);
   will-change: transform;
 }
-.sky-moon img { width: 100%; height: 100%; display: block; }
 
 /* Its halo, which brightens as the page is scrolled. */
 .sky-halo {
@@ -958,17 +964,49 @@ a.panel:active { transform: translateY(0) scale(.994); transition-duration: 120m
   color: var(--text);
 }
 .brand-mark {
+  position: relative;
   width: 34px; height: 34px;
   flex: none;
-  filter: drop-shadow(0 0 10px rgba(var(--gold-rgb), .35));
+  filter: drop-shadow(0 0 8px rgba(var(--gold-rgb), .22));
 }
-.brand-mark img { width: 100%; height: 100%; display: block; }
+/* The crescent art (media/brand/2026-10) is square, with room around the moon
+   for its own glow: the moon fills 83% of its height. So every frame that
+   holds it keeps the box the old line-art moon had, and the art is drawn at
+   120% of that box and centred on it. The moon lands exactly where it always
+   did, which is what sky.js measures, and only the glow spills past the edge. */
+.brand-mark img,
+.sky-moon img,
+.close-mark img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: auto;
+  height: 120%;
+  max-width: none;
+  translate: -50% -50%;
+  display: block;
+}
+/* The wordmark is the October 2026 lockup's: Cinzel 600, tracked wide, in the
+   lockup's own gold. That gold is pale by design and is drawn for a dark
+   ground, so a light theme sets it from its own deep accent instead -- see
+   --brand-word in the polarity blocks above. */
 .brand-name {
   font-family: 'Cinzel', Georgia, serif;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.06rem;
-  letter-spacing: .1em;
+  letter-spacing: .158em;
+  margin-inline-end: -.158em;
   line-height: 1;
+  color: var(--gold-light);
+  background: var(--brand-word);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Forced colours drop background images, and a transparent fill with no
+   background behind it is no wordmark at all. */
+@media (forced-colors: active) {
+  .brand-name { background: none; -webkit-text-fill-color: currentColor; }
 }
 
 .nav-links {
@@ -3065,19 +3103,17 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   color: var(--gold-ink);
   text-decoration: none;
 }
-/* The crescent is a fixed gold gradient rather than currentColor, so on the
-   gold button it needs the dark ground it has everywhere else or it simply
-   disappears into the plate. */
+/* The bar offers the app, so it shows the app's icon: the crescent on its own
+   emerald glass, which is the form the brand book gives anything under 64px.
+   The icon brings its own ground, so it needs no plate on the gold button. */
 .install-bar-mark {
   flex: none;
   width: 30px;
   height: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: 9px;
-  background: var(--gold-ink);
+  border-radius: 8px;
+  overflow: hidden;
 }
-.install-bar-mark img { width: 17px; height: auto; }
+.install-bar-mark img { width: 100%; height: 100%; display: block; }
 .install-bar-text { display: grid; min-width: 0; }
 .install-bar-text b {
   font-size: .98rem;
@@ -3175,12 +3211,13 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
 }
 
 .close-mark {
+  position: relative;
   display: block;
   width: 74px;
+  aspect-ratio: 891 / 941;
   margin: 0 auto;
-  filter: drop-shadow(0 0 22px rgba(var(--gold-rgb), .45));
+  filter: drop-shadow(0 0 22px rgba(var(--gold-rgb), .3));
 }
-.close-mark img { width: 100%; height: auto; display: block; }
 
 /* ==========================================================================
    The film
@@ -3653,7 +3690,7 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
   gap: .1rem .7rem;
 }
 .footer-brand .brand-mark { width: 30px; height: 30px; grid-row: 1; }
-.footer-brand .brand-name { grid-row: 1; font-size: 1rem; color: var(--text); }
+.footer-brand .brand-name { grid-row: 1; font-size: 1rem; }
 .footer-tag {
   grid-column: 1 / -1;
   margin: .55rem 0 0;
@@ -4519,7 +4556,7 @@ button.theme:focus-visible .theme-swatch i:nth-child(3) { transform: translateX(
    end the install button gives up some padding rather than the brand giving up
    its name. */
 @media (max-width: 430px) {
-  .site-header .brand-name { font-size: .92rem; letter-spacing: .055em; }
+  .site-header .brand-name { font-size: .92rem; letter-spacing: .09em; margin-inline-end: -.09em; }
   .site-header .theme-pick-btn [data-theme-label] {
     position: absolute;
     width: 1px; height: 1px;

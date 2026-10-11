@@ -105,7 +105,9 @@ vendor/lenis.min.js smooth scroll, self-hosted (the CSP forbids CDNs)
 fonts/              Cinzel + Plus Jakarta Sans, subset to latin, with licences
 media/screens/      app screenshots, WebP at 840w and 420w
 media/scripts/      Al-Faatiha set once per Arabic script, WebP at 720w and 420w
-media/brand/        crescent mark, favicons, social card
+media/brand/2026-10/ the October 2026 identity: crescent, logo, favicons,
+                    app icons, social card
+media/brand/        the Play badge and the listing's QR code
 media/recitation/   the locked ayah, one clip per reciter, fetched not
                     committed by hand — see the file there
 media/film/         the film, both cuts, AV1 and H.264, and a still of each
@@ -132,7 +134,23 @@ Nothing here is a mockup.
 - **Colours** are the Obsidian theme's own hex values, and the twelve theme
   swatches are that theme list verbatim, including the two accents deepened
   for contrast in 1.4 (`crisp-light` `#7a5e13`, `sheikh-zayed` `#6e5f2f`).
-- **The crescent** is the launcher mark from `docs/design_provenance/`.
+- **The brand set** under `media/brand/2026-10/` is the October 2026 identity
+  from `release/new-logo/` in the app repository: one emerald glass, one
+  crescent, one band. The favicons, app icons, social card and horizontal
+  logo are that pack's `5 UPLOAD - Website` files as they are, except
+  `favicon.ico`, which is rebuilt from the pack's own 16, 32 and 48 px PNGs
+  because the pack's six-size icon weighs 118 KB. The crescent is the app's
+  `ummahti_skeleton_moon` (the pack's `moon_master_2560.png`) lit the way the
+  pack's `render.mjs` lights it in the logo: a soft glow, a near glow and a
+  gamma lift, in a square with room for the glow, at 128, 512 and 1024 px.
+  The site draws that square at 120% of each frame the old line-art moon
+  had, so the moon itself lands where it always did. The folder is dated
+  because `/media/*` is served immutable for a year: a new identity gets a
+  new folder, never the old names, or returning visitors keep the old logo.
+  `_redirects` sends the retired names to their replacements.
+- **The wordmark** is set in live Cinzel 600, tracked like the logo's, in the
+  logo's own gold on the dark themes and in each light theme's deep accent,
+  because the logo's pale gold is drawn for a dark ground.
 - **Search examples** are documented behaviours of the real search engine.
   Surah names use the spellings in `app/src/main/assets/quran_data.json`.
 - **The four script pages** were rendered by `make_script_pages.py`, which no
