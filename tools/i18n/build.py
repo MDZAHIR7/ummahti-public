@@ -23,7 +23,9 @@ HERE = os.path.join(ROOT, 'tools', 'i18n')
 
 # The pages, as (source file, route).
 PAGES = [
-    ('index.html', ''),
+    # The existing /ar/, /ur/ and /id/ roots are draft Quran app pages.
+    # Their English source now lives at /quran/, not the umbrella homepage.
+    ('quran/index.html', ''),
     ('privacy/index.html', 'privacy'),
     ('terms/index.html', 'terms'),
     ('support/index.html', 'support'),
@@ -71,6 +73,10 @@ def localise_links(markup, lang):
         attr, path = m.group(1), m.group(2)
         if ASSET.match(path):
             return m.group(0)
+        if path == '/quran/':
+            return f'{attr}="/{lang}/"'
+        if path.startswith('/quran/#'):
+            return f'{attr}="/{lang}/{path[len("/quran/"):]}"'
         if path == '/':
             return f'{attr}="/{lang}/"'
         return f'{attr}="/{lang}{path}"'
@@ -85,7 +91,7 @@ def hreflang_block(route):
     written without the slash names a URL that redirects — which is the one
     thing a self-referential canonical must not do.
     """
-    tail = f'/{route}/' if route else '/'
+    tail = f'/{route}/' if route else '/quran/'
     rows = [f'<link rel="alternate" hreflang="en" href="{SITE}{tail}">']
     for code in LANGS:
         rows.append(f'<link rel="alternate" hreflang="{code}" '
@@ -106,7 +112,7 @@ def switcher(lang, route, label='Language'):
     translated — each names itself in its own language, which is the one form
     a reader who wants it can recognise on a page they cannot read.
     """
-    tail = f'/{route}/' if route else '/'
+    tail = f'/{route}/' if route else '/quran/'
     out = ['<div class="lang-pick">',
            f'  <span class="lang-pick-label">{label}</span>']
     entries = [('en', 'English', tail)]
@@ -318,7 +324,7 @@ def build_page(src_rel, route, lang):
     # them. The English page carries its own alternates block, written by
     # wire_english.py; it is dropped here and rewritten rather than left to
     # sit alongside this one, which would list every language twice.
-    tail = f'/{route}/' if route else '/'
+    tail = f'/{route}/' if route else '/quran/'
     here = f'{SITE}/{lang}/{route + "/" if route else ""}'
     out = re.sub(r'<!-- hreflang: written by tools/i18n/wire_english\.py -->.*?<!-- /hreflang -->\n?',
                  '', out, flags=re.S)
@@ -363,6 +369,11 @@ def build_page(src_rel, route, lang):
 
 
 if __name__ == '__main__':
+    if 'v15-page' in open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read():
+        sys.path.insert(0, os.path.join(ROOT, 'tools'))
+        from build_v15 import build
+        build(sys.argv[1:] or None)
+        sys.exit(0)
     wanted = sys.argv[1:] or list(LANGS)
     for lang in wanted:
         if lang not in LANGS:

@@ -118,4 +118,8 @@ def main():
 
 
 if __name__ == '__main__':
+    if 'v15-page' in open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read():
+        import runpy
+        runpy.run_path(os.path.join(ROOT, 'tools', 'check_v15.py'), run_name='__main__')
+        sys.exit(0)
     sys.exit(main())

@@ -1,0 +1,302 @@
+{
+  "en": {
+    "items": [
+      {
+        "id": "v15_khatm_planner",
+        "title": "Plan a khatm",
+        "summary": "Choose a date or a length, and Ummahti divides the Qur'an into daily readings. Home shows today's portion and one way into it, and nothing is ever marked read unless you say so."
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "A library of du'as",
+        "summary": "The du’as in Guide have grown into a library of 55 supplications on eleven shelves, for hardship, healing, protection, family, travel, sleep and every ordinary day. Every one names its source, and every narration its grading."
+      },
+      {
+        "id": "v15_offline_recitation",
+        "title": "Recitation you can keep",
+        "summary": "Download surahs in your chosen reciter's voice and listen with no connection at all. You can see what is stored, how much room it takes, and remove any of it whenever you like."
+      },
+      {
+        "id": "v15_home_arrangement",
+        "title": "Arrange Home the way you read",
+        "summary": "Home cards can now be moved, put away, or paired with the card beside it, including My Khatm, which no longer holds a fixed place. Continue Reading always stays first. Press and hold a card to arrange it, and Undo takes back any step."
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "Pass On the Light",
+        "summary": "Invite one person to the Qur’an in a couple of taps. Choose whether they should install Ummahti, see the website first, or simply listen on YouTube, and send a card that carries its own address so it still works where a caption is thrown away."
+      },
+      {
+        "id": "v15_guide_expansion",
+        "title": "More answers in Guide",
+        "summary": "Guide now answers more of what people ask: wudu, the words after the adhan and after each prayer, everyday du’as, family ties and longing for a child. Ramadan, travel, illness and loss are fuller, and each topic now carries the du’as from the library that belong to it."
+      },
+      {
+        "id": "v15_translation_notes",
+        "title": "New translations, with their notes",
+        "summary": "Rowwad Translation Center’s English and Rachid Maach’s French join the translations you can choose, each with the translator’s explanatory notes kept on your phone. Set your translation language to English or French to choose one, then tap a note number in a verse, or open the verse’s options, to read a note. Translations you download now stay in a library, so switching between them needs no connection."
+      },
+      {
+        "id": "v15_english_transliteration",
+        "title": "A new English transliteration",
+        "summary": "English transliteration now comes from MuslimNet's edition, carried inside the app. Its underlined and bold letters show how each word is said, and the key sits under the language list."
+      },
+      {
+        "id": "v15_juz_navigation",
+        "title": "Open any juz, by the name you call it",
+        "summary": "The reading picker now has a Juz / Para list beside the surahs. Browse all thirty, see exactly where each one begins and ends, and open it there. Search finds them too, by number or by the para name you were taught: Juz 30, Para 30 and Amma all reach the same place."
+      },
+      {
+        "id": "v15_surah_discovery",
+        "title": "Find a surah by the name you know it by",
+        "summary": "Search now understands what each surah is called in the languages Ummahti speaks. Bakara, Аль-Бакара and আল-বাকারা all reach Surah 2, alongside every spelling that already worked."
+      },
+      {
+        "id": "v15_screens_adaptive",
+        "title": "Ummahti fits the screen you are on",
+        "summary": "On a tablet, an unfolded foldable or a phone turned sideways, the reading keeps a column you can comfortably follow and the navigation stays centred within easy reach at the foot of the screen. Settings opens each page beside its list, the Qur'an can keep the surah and juz list open next to the text, and your saved verses and downloads fill the width instead of a single narrow strip."
+      },
+      {
+        "id": "v15_reading_tile",
+        "title": "Carry on reading from anywhere",
+        "summary": "Add a Continue reading tile to the panel you pull down from the top of your screen, and one tap opens Ummahti where you left off. You can add it from Settings."
+      }
+    ],
+    "improvements": [
+      "Type a reference such as 2:255 into the surah picker and it offers to open that verse.",
+      "Settings has a search box, so any option is a few letters away.",
+      "A shared verse now names its translator, and you can choose whether to include the translation.",
+      "The play button shows when recitation is still loading, and offers to try again if it cannot start.",
+      "Changing the app’s language no longer changes the translation you read.",
+      "Anything you can swipe away can now also be removed with TalkBack, Switch Access or a keyboard.",
+      "The navigation bar keeps every label whole at the largest text size.",
+      "If Help & FAQ doesn’t answer your question, you can send it to us straight from there.",
+      "Reflection of the Moment now takes turns between a verse and a hadith, draws on more of both, and names who graded each narration from Jamiʽ at-Tirmidhi."
+    ]
+  },
+  "ar": {
+    "items": [
+      {
+        "id": "v15_khatm_planner",
+        "title": "خطّط لختمة",
+        "summary": "اختر تاريخًا أو مدة، وتقسم أمتي القرآن إلى أوراد يومية. تعرض الصفحة الرئيسية ورد اليوم وطريقًا واحدًا إليه، ولا يُسجَّل شيء كمقروء إلا إن قلت ذلك."
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "مكتبة من الأدعية",
+        "summary": "نمت الأدعية التي في الدليل حتى صارت مكتبةً من 55 دعاءً على أحد عشر رفًّا: للشدّة، والشفاء، والحفظ، والأهل، والسفر، والنوم، ولكلّ يوم عاديّ. وكلّ دعاء يذكر مصدره، وكلّ رواية تذكر درجتها."
+      },
+      {
+        "id": "v15_offline_recitation",
+        "title": "تلاوة تبقى معك",
+        "summary": "نزِّل السور بصوت القارئ الذي اخترته، واستمع دون أيّ اتصال. ترى ما هو محفوظ وكم يشغل من مساحة، ولك أن تحذف منه ما شئت متى شئت."
+      },
+      {
+        "id": "v15_home_arrangement",
+        "title": "رتّب الصفحة الرئيسية كما تقرأ",
+        "summary": "يمكن الآن تحريك بطاقات الصفحة الرئيسية أو إخفاؤها أو وضعها بجانب بطاقة أخرى، بما في ذلك «ختمتي» التي لم تعد في موضع ثابت. وتبقى بطاقة «مواصلة القراءة» أولى البطاقات دائمًا. اضغط مطوّلًا على بطاقة لترتيبها، و«تراجع» يلغي أي خطوة."
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "مرِّر النور",
+        "summary": "ادعُ شخصًا واحدًا إلى القرآن بنقرتين. اختر أيثبّت أمتي، أم ينظر إلى الموقع أولًا، أم يستمع على يوتيوب فحسب، وأرسل بطاقة تحمل عنوانها بنفسها لتظل نافعة حيث يُهمل النص المرافق."
+      },
+      {
+        "id": "v15_guide_expansion",
+        "title": "إجابات أكثر في الدليل",
+        "summary": "يجيب الدليل الآن عن مزيد ممّا يسأل عنه الناس: الوضوء، والذكر بعد الأذان وبعد كلّ صلاة، وأدعية الحياة اليومية، وصلة الرحم، والشوق إلى الولد. وصارت موضوعات رمضان والسفر والمرض والفقد أوفى، وكلّ موضوع يحمل الآن الأدعية التي تخصّه من المكتبة."
+      },
+      {
+        "id": "v15_translation_notes",
+        "title": "ترجمات جديدة مع حواشيها",
+        "summary": "تنضمّ ترجمة Rowwad Translation Center الإنجليزية وترجمة Rachid Maach الفرنسية إلى الترجمات التي يمكنك اختيارها، ومع كلٍّ منهما حواشي مترجمها التوضيحية محفوظةً في هاتفك. اجعل لغة الترجمة الإنجليزية أو الفرنسية لتختار إحداهما، ثمّ اضغط رقم الحاشية في الآية، أو افتح خيارات الآية، لتقرأ الحاشية. وصارت الترجمات التي تنزّلها تبقى في مكتبة، فلا يحتاج التنقّل بينها إلى اتصال."
+      },
+      {
+        "id": "v15_english_transliteration",
+        "title": "نقل حرفي إنجليزي جديد",
+        "summary": "أصبح النقل الحرفي الإنجليزي يأتي من طبعة MuslimNet، وهي مضمّنة في التطبيق. الحروف التي تحتها خط والحروف العريضة تبيّن نطق كل كلمة، والمفتاح تحت قائمة اللغات."
+      },
+      {
+        "id": "v15_juz_navigation",
+        "title": "افتح أي جزء بالاسم الذي تعرفه",
+        "summary": "صار في قائمة اختيار القراءة قائمة للأجزاء بجانب السور. تصفّح الثلاثين كلها، وانظر أين يبدأ كل جزء وأين ينتهي بالضبط، وافتحه من هناك. والبحث يجدها أيضاً، بالرقم أو باسم الجزء المعروف: «الجزء 30» و«عمّ» يصلان إلى المكان نفسه."
+      },
+      {
+        "id": "v15_surah_discovery",
+        "title": "اعثر على السورة بالاسم الذي تعرفها به",
+        "summary": "صار البحث يعرف كيف تُسمّى كلّ سورة في اللغات التي تتحدّثها أمتي. فـ Bakara و Аль-Бакара و আল-বাকারা كلّها تبلغ السورة الثانية، إلى جانب كلّ كتابة كانت تعمل من قبل."
+      },
+      {
+        "id": "v15_screens_adaptive",
+        "title": "أُمَّتِي تتكيّف مع الشاشة التي بين يديك",
+        "summary": "على جهاز لوحي أو هاتف قابل للطي مفتوح أو هاتف بالوضع الأفقي، تبقى القراءة في عمود مريح للمتابعة، ويبقى شريط التنقل متوسّطًا أسفل الشاشة في متناول يدك. تفتح الإعدادات كل صفحة بجوار قائمتها، ويمكن للمصحف أن يُبقي قائمة السور والأجزاء مفتوحة بجانب النص، وتملأ آياتك المحفوظة وتنزيلاتك العرض بدل شريط ضيّق واحد."
+      },
+      {
+        "id": "v15_reading_tile",
+        "title": "تابع القراءة من أيّ مكان",
+        "summary": "أضِف مربّع «متابعة القراءة» إلى اللوحة التي تسحبها من أعلى الشاشة، فتفتح نقرة واحدة أمتي من حيث توقّفت. ويمكنك إضافته من الإعدادات."
+      }
+    ],
+    "improvements": [
+      "اكتب مرجعًا مثل 2:255 في قائمة السور، فتعرض عليك فتح تلك الآية.",
+      "في الإعدادات حقل للبحث، فأيّ خيار لا يبعد عنك سوى بضعة أحرف.",
+      "صارت الآية التي تشاركها تذكر اسم مترجمها، ولك أن تختار هل تُضمّن الترجمة أم لا.",
+      "يُظهر زرّ التشغيل متى كانت التلاوة لا تزال قيد التحميل، ويعرض عليك إعادة المحاولة إن تعذّر بدؤها.",
+      "لم يعد تغيير لغة التطبيق يغيّر الترجمة التي تقرؤها.",
+      "كلّ ما تستطيع إزالته بالسحب صار يمكن إزالته أيضًا عبر TalkBack أو Switch Access أو لوحة المفاتيح.",
+      "يُبقي شريط التنقل كل تسمية كاملة عند أكبر حجم للنص.",
+      "إن لم تجد في المساعدة والأسئلة الشائعة إجابة سؤالك، فيمكنك إرساله إلينا من هناك مباشرةً.",
+      "صار «انعكاس اللحظة» يتناوب بين آية وحديث، ويستقي من عدد أكبر منهما، ويذكر من حكم على كل رواية من جامع الترمذي."
+    ]
+  },
+  "ur": {
+    "items": [
+      {
+        "id": "v15_khatm_planner",
+        "title": "ایک ختم کا منصوبہ",
+        "summary": "ایک تاریخ یا مدت منتخب کریں، اور امتی قرآن کو روزانہ کے اسباق میں تقسیم کر دے گی۔ ہوم آج کا حصہ اور اس تک جانے کا ایک راستہ دکھاتا ہے، اور جب تک آپ نہ کہیں کچھ بھی پڑھا ہوا درج نہیں ہوتا۔"
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "دعاؤں کی ایک لائبریری",
+        "summary": "رہنما میں موجود دعائیں بڑھ کر اب گیارہ خانوں میں 55 دعاؤں کی ایک لائبریری بن گئی ہیں: مصیبت، شفا، حفاظت، گھر والے، سفر، نیند اور ہر عام دن کے لیے۔ ہر دعا اپنا ماخذ بتاتی ہے، اور ہر روایت اپنا درجہ بھی۔"
+      },
+      {
+        "id": "v15_offline_recitation",
+        "title": "تلاوت جو آپ کے پاس رہے",
+        "summary": "اپنے منتخب قاری کی آواز میں سورتیں ڈاؤن لوڈ کریں اور بغیر کسی کنکشن کے سنیں۔ آپ دیکھ سکتے ہیں کہ کیا محفوظ ہے اور کتنی جگہ لے رہا ہے، اور جب چاہیں جو چاہیں ہٹا سکتے ہیں۔"
+      },
+      {
+        "id": "v15_home_arrangement",
+        "title": "ہوم کو اپنے پڑھنے کے مطابق ترتیب دیں",
+        "summary": "اب ہوم کے کارڈ منتقل کیے، چھپائے یا ساتھ والے کارڈ کے برابر رکھے جا سکتے ہیں، بشمول میرا ختم، جس کی اب کوئی مقررہ جگہ نہیں۔ «مطالعہ جاری رکھیں» کا کارڈ ہمیشہ سب سے پہلے رہتا ہے۔ ترتیب دینے کے لیے کارڈ دبا کر رکھیں؛ واپس کسی بھی قدم کو منسوخ کر دیتا ہے۔"
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "روشنی آگے بڑھائیں",
+        "summary": "دو ٹیپ میں کسی ایک شخص کو قرآن کی دعوت دیں۔ طے کریں کہ وہ Ummahti انسٹال کریں، پہلے ویب سائٹ دیکھیں، یا صرف یوٹیوب پر سنیں، اور ایسا کارڈ بھیجیں جو اپنا پتہ خود لیے ہوئے ہو، تاکہ وہاں بھی کام آئے جہاں کیپشن ضائع ہو جاتا ہے۔"
+      },
+      {
+        "id": "v15_guide_expansion",
+        "title": "رہنما میں مزید جوابات",
+        "summary": "رہنما اب لوگوں کے مزید سوالوں کا جواب دیتا ہے: وضو، اذان کے بعد اور ہر نماز کے بعد کا ذکر، روزمرہ کی دعائیں، صلہ رحمی اور اولاد کی آرزو۔ رمضان، سفر، بیماری اور غم کے موضوعات زیادہ مکمل ہو گئے ہیں، اور ہر موضوع اب لائبریری سے اپنی دعائیں ساتھ رکھتا ہے۔"
+      },
+      {
+        "id": "v15_translation_notes",
+        "title": "نئے تراجم، اپنے حواشی کے ساتھ",
+        "summary": "Rowwad Translation Center کا انگریزی ترجمہ اور Rachid Maach کا فرانسیسی ترجمہ اب اُن تراجم میں شامل ہیں جنہیں آپ چن سکتے ہیں، اور ہر ایک کے ساتھ مترجم کے وضاحتی حواشی آپ کے فون پر محفوظ رہتے ہیں۔ اِن میں سے کوئی ایک چننے کے لیے ترجمے کی زبان انگریزی یا فرانسیسی پر رکھیں، پھر حاشیہ پڑھنے کے لیے آیت میں حاشیے کے نمبر پر ٹیپ کریں، یا آیت کے اختیارات کھولیں۔ جو تراجم آپ اب ڈاؤن لوڈ کرتے ہیں وہ ایک لائبریری میں رہتے ہیں، اِس لیے اُن کے درمیان بدلنے کے لیے کنکشن کی ضرورت نہیں۔"
+      },
+      {
+        "id": "v15_english_transliteration",
+        "title": "نئی انگریزی نقل حرفی",
+        "summary": "انگریزی نقل حرفی اب MuslimNet کے ایڈیشن سے آتی ہے، جو ایپ کے اندر شامل ہے۔ زیر خط اور موٹے حروف بتاتے ہیں کہ ہر لفظ کیسے ادا ہوتا ہے، اور وضاحت زبانوں کی فہرست کے نیچے ہے۔"
+      },
+      {
+        "id": "v15_juz_navigation",
+        "title": "جو پارہ چاہیں، اُسی نام سے کھولیں",
+        "summary": "پڑھنے کی فہرست میں اب سورتوں کے ساتھ پاروں کی فہرست بھی ہے۔ تیسوں دیکھیں، ہر ایک کا آغاز اور اختتام بالکل ٹھیک دیکھیں، اور وہیں سے کھولیں۔ تلاش بھی انہیں پا لیتی ہے، نمبر سے یا اُسی پارے کے نام سے جو آپ نے پڑھا ہے: پارہ 30، جزو 30 اور عمّ، تینوں ایک ہی جگہ پہنچاتے ہیں۔"
+      },
+      {
+        "id": "v15_surah_discovery",
+        "title": "سورت کو اُسی نام سے ڈھونڈیں جو آپ جانتے ہیں",
+        "summary": "تلاش اب جانتی ہے کہ ہر سورت کو اُن زبانوں میں کیا کہا جاتا ہے جو امتی بولتی ہے۔ Bakara، Аль-Бакара اور আল-বাকারা سب سورت 2 تک پہنچتے ہیں، اور وہ ہر ہجے بھی جو پہلے سے کام کرتے تھے۔"
+      },
+      {
+        "id": "v15_screens_adaptive",
+        "title": "اُمّتی اُس اسکرین کے مطابق ڈھل جاتی ہے جو آپ کے پاس ہے",
+        "summary": "ٹیبلٹ پر، کھلے ہوئے فولڈ ایبل فون پر یا پہلو کے رخ رکھے فون پر، پڑھائی ایک ایسے کالم میں رہتی ہے جسے آپ آرام سے پڑھ سکیں اور نیویگیشن اسکرین کے نیچے بیچوں بیچ رہتی ہے، جہاں تک ہاتھ آسانی سے پہنچ جائے۔ ترتیبات ہر صفحہ اپنی فہرست کے ساتھ کھولتی ہیں، قرآن سورتوں اور پاروں کی فہرست متن کے پہلو میں کھلی رکھ سکتا ہے، اور آپ کی محفوظ آیات اور ڈاؤن لوڈ ایک تنگ پٹی کی بجائے پوری چوڑائی میں پھیل جاتے ہیں۔"
+      },
+      {
+        "id": "v15_reading_tile",
+        "title": "کہیں سے بھی پڑھنا جاری رکھیں",
+        "summary": "اسکرین کے اوپر سے کھینچے جانے والے پینل میں «مطالعہ جاری رکھیں» کا ٹائل شامل کریں، ایک ٹیپ امتی کو وہیں کھول دے گا جہاں آپ نے چھوڑا تھا۔ اسے ترتیبات سے شامل کیا جا سکتا ہے۔"
+      }
+    ],
+    "improvements": [
+      "سورتوں کی فہرست میں 2:255 جیسا حوالہ لکھیں تو وہ اُس آیت کو کھولنے کی پیشکش کرتی ہے۔",
+      "ترتیبات میں تلاش کا خانہ ہے، اِس لیے ہر اختیار بس چند حروف کے فاصلے پر ہے۔",
+      "شیئر کی گئی آیت اب اپنے مترجم کا نام بتاتی ہے، اور آپ چن سکتے ہیں کہ ترجمہ شامل کریں یا نہیں۔",
+      "تلاوت ابھی لوڈ ہو رہی ہو تو پلے بٹن یہ ظاہر کرتا ہے، اور اگر وہ شروع نہ ہو سکے تو دوبارہ کوشش کرنے کی پیشکش کرتا ہے۔",
+      "ایپ کی زبان بدلنے سے اب وہ ترجمہ نہیں بدلتا جو آپ پڑھتے ہیں۔",
+      "جو کچھ آپ سوائپ کر کے ہٹا سکتے ہیں، اب اُسے TalkBack، Switch Access یا کی بورڈ سے بھی ہٹایا جا سکتا ہے۔",
+      "متن کے سب سے بڑے سائز پر بھی نیویگیشن بار ہر لیبل کو پورا رکھتی ہے۔",
+      "اگر مدد اور عمومی سوالات میں آپ کے سوال کا جواب نہ ملے تو آپ وہیں سے اسے سیدھا ہمیں بھیج سکتے ہیں۔",
+      "«روزانہ حکمت» اب باری باری ایک آیت اور ایک حدیث دکھاتی ہے، دونوں کے زیادہ ذخیرے سے لیتی ہے، اور جامع ترمذی کی ہر روایت کے ساتھ بتاتی ہے کہ اس کا درجہ کس نے مقرر کیا۔"
+    ]
+  },
+  "id": {
+    "items": [
+      {
+        "id": "v15_khatm_planner",
+        "title": "Rencanakan khatam",
+        "summary": "Pilih tanggal atau lama waktunya, dan Ummahti membagi Al-Qur'an menjadi bacaan harian. Beranda menampilkan bagian hari ini dan satu jalan masuk ke dalamnya, dan tidak ada yang ditandai terbaca kecuali Anda mengatakannya."
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "Perpustakaan doa",
+        "summary": "Doa-doa di Panduan kini tumbuh menjadi perpustakaan berisi 55 doa dalam sebelas rak, untuk kesulitan, kesembuhan, perlindungan, keluarga, perjalanan, tidur, dan setiap hari biasa. Masing-masing menyebut sumbernya, dan setiap riwayat menyebut derajatnya."
+      },
+      {
+        "id": "v15_offline_recitation",
+        "title": "Lantunan yang bisa Anda simpan",
+        "summary": "Unduh surah dengan suara qari pilihan Anda dan dengarkan tanpa koneksi sama sekali. Anda bisa melihat apa yang tersimpan, berapa ruang yang dipakainya, dan menghapus bagian mana pun kapan saja."
+      },
+      {
+        "id": "v15_home_arrangement",
+        "title": "Atur Beranda sesuai cara Anda membaca",
+        "summary": "Kartu Beranda kini bisa dipindahkan, disembunyikan, atau disandingkan dengan kartu di sebelahnya, termasuk Khatam Saya, yang tidak lagi menempati posisi tetap. Kartu Lanjutkan Membaca selalu berada di urutan pertama. Tekan lama sebuah kartu untuk mengaturnya; Urungkan membatalkan langkah apa pun."
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "Teruskan Cahayanya",
+        "summary": "Ajak satu orang kepada Al-Qur’an hanya dengan beberapa ketukan. Pilih apakah ia sebaiknya memasang Ummahti, melihat situsnya dulu, atau cukup mendengarkan di YouTube, lalu kirim kartu yang membawa alamatnya sendiri sehingga tetap berguna di tempat keterangan gambar dibuang."
+      },
+      {
+        "id": "v15_guide_expansion",
+        "title": "Lebih banyak jawaban di Panduan",
+        "summary": "Panduan kini menjawab lebih banyak hal yang orang tanyakan: wudu, zikir setelah azan dan setelah setiap salat, doa sehari-hari, silaturahmi, dan kerinduan akan anak. Ramadan, perjalanan, sakit, dan duka kini lebih lengkap, dan setiap topik kini membawa doa-doa dari perpustakaan yang menjadi miliknya."
+      },
+      {
+        "id": "v15_translation_notes",
+        "title": "Terjemahan baru, beserta catatannya",
+        "summary": "Terjemahan bahasa Inggris dari Rowwad Translation Center dan terjemahan bahasa Prancis dari Rachid Maach kini ada di antara terjemahan yang bisa Anda pilih, masing-masing dengan catatan penjelasan penerjemahnya yang tersimpan di ponsel Anda. Atur bahasa terjemahan Anda ke Inggris atau Prancis untuk memilih salah satunya, lalu ketuk nomor catatan di sebuah ayat, atau buka opsi ayat itu, untuk membaca catatannya. Terjemahan yang Anda unduh kini tetap tersimpan dalam sebuah perpustakaan, jadi beralih di antaranya tidak memerlukan koneksi."
+      },
+      {
+        "id": "v15_english_transliteration",
+        "title": "Transliterasi bahasa Inggris yang baru",
+        "summary": "Transliterasi bahasa Inggris kini berasal dari edisi MuslimNet, yang dibawa di dalam aplikasi. Huruf bergaris bawah dan tebalnya menunjukkan cara mengucapkan setiap kata, dan keterangannya ada di bawah daftar bahasa."
+      },
+      {
+        "id": "v15_juz_navigation",
+        "title": "Buka juz mana pun, dengan nama yang Anda kenal",
+        "summary": "Pemilih bacaan kini punya daftar Juz di samping surah. Telusuri ketiga puluhnya, lihat persis di mana masing-masing dimulai dan berakhir, lalu buka di sana. Pencarian juga menemukannya, lewat nomor atau nama juz yang Anda kenal: Juz 30 dan Amma sama-sama menuju tempat yang sama."
+      },
+      {
+        "id": "v15_surah_discovery",
+        "title": "Temukan surah dengan nama yang Anda kenal",
+        "summary": "Pencarian kini mengerti sebutan setiap surah dalam bahasa-bahasa yang dipakai Ummahti. Bakara, Аль-Бакара, dan আল-বাকারা semuanya sampai ke surah 2, begitu pula setiap ejaan yang selama ini sudah bekerja."
+      },
+      {
+        "id": "v15_screens_adaptive",
+        "title": "Ummahti menyesuaikan diri dengan layar Anda",
+        "summary": "Di tablet, ponsel lipat yang terbuka, atau ponsel yang dimiringkan, bacaan tetap dalam kolom yang nyaman diikuti, dan navigasi tetap berada di tengah bagian bawah layar, mudah dijangkau. Pengaturan membuka setiap halaman di samping daftarnya, Al-Qur'an dapat membiarkan daftar surah dan juz terbuka di samping teks, dan ayat tersimpan serta unduhan Anda mengisi lebar layar alih-alih satu jalur sempit."
+      },
+      {
+        "id": "v15_reading_tile",
+        "title": "Lanjutkan membaca dari mana saja",
+        "summary": "Tambahkan pintasan Lanjutkan membaca ke panel yang Anda tarik dari atas layar, lalu satu ketukan membuka Ummahti di tempat Anda berhenti. Anda bisa menambahkannya dari Pengaturan."
+      }
+    ],
+    "improvements": [
+      "Ketik rujukan seperti 2:255 di pemilih surah, dan pemilih itu menawarkan untuk membuka ayat tersebut.",
+      "Pengaturan punya kotak pencarian, jadi opsi apa pun hanya berjarak beberapa huruf.",
+      "Ayat yang dibagikan kini menyebut penerjemahnya, dan Anda bisa memilih apakah terjemahannya ikut disertakan.",
+      "Tombol putar menunjukkan saat lantunan masih dimuat, dan menawarkan untuk mencoba lagi jika lantunan tidak dapat dimulai.",
+      "Mengganti bahasa aplikasi tidak lagi mengubah terjemahan yang Anda baca.",
+      "Apa pun yang bisa Anda singkirkan dengan menggeser kini juga bisa dihapus dengan TalkBack, Switch Access, atau keyboard.",
+      "Bilah navigasi menampilkan setiap labelnya secara utuh pada ukuran teks terbesar.",
+      "Jika Bantuan & FAQ tidak menjawab pertanyaan Anda, Anda bisa langsung mengirimkannya kepada kami dari sana.",
+      "“Renungan Harian” kini bergantian antara ayat dan hadis, mengambil dari lebih banyak keduanya, dan menyebut siapa yang menilai setiap riwayat dari Jamiʽ at-Tirmidzi."
+    ]
+  }
+}

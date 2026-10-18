@@ -17,6 +17,27 @@
 /styles.css
   Cache-Control: public, max-age=600, must-revalidate
 
+/hub.css
+  Cache-Control: public, max-age=600, must-revalidate
+
+/hub.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/editorial.css
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15.css
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-moon.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/i18n/v15-*.js
+  Cache-Control: public, max-age=600, must-revalidate
+
 /app.js
   Cache-Control: public, max-age=600, must-revalidate
 
@@ -38,4 +59,16 @@
 /youtube/*
   Cache-Control: no-store
 /sky.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-slides.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-guide.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-library.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-flow.js
   Cache-Control: public, max-age=600, must-revalidate

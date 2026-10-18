@@ -28,6 +28,11 @@ SW_END = '<!-- /language switcher -->'
 
 
 def main():
+    if 'v15-page' in io.open(os.path.join(ROOT,'index.html'),encoding='utf-8').read():
+        sys.path.insert(0,os.path.join(ROOT,'tools'))
+        from build_v15 import build
+        build()
+        return
     for src_rel, route in PAGES:
         p = os.path.join(ROOT, src_rel)
         s = io.open(p, encoding='utf-8').read()
@@ -51,11 +56,15 @@ def main():
         io.open(p, 'w', encoding='utf-8').write(s)
         print(f'{src_rel:<22} alternates + switcher written')
 
-    rows = []
+    # The umbrella homepage is English until its own translations are reviewed.
+    rows = [f'  <url><loc>{SITE}/</loc></url>']
     for _, route in PAGES:
-        tail = f'/{route}/' if route else '/'
+        tail = f'/{route}/' if route else '/quran/'
         rows.append(f'  <url><loc>{SITE}{tail}</loc></url>')
         for code in LANGS:
+            # Draft/noindex translations should not be submitted for indexing.
+            if not LANGS[code]['reviewed']:
+                continue
             rows.append(f'  <url><loc>{SITE}/{code}/{route + "/" if route else ""}</loc></url>')
 
     io.open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8').write(

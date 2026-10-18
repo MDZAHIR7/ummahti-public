@@ -848,6 +848,24 @@
       let onScreen = false;
       let held = false;   /* pointer over it, or a dot focused */
       let taken = false;  /* a dot was pressed: the run is over */
+      let paused = false;
+      const pause = document.createElement('button');
+      pause.type = 'button';
+      pause.className = 'stage-pause';
+      pause.textContent = 'Pause previews';
+      pause.setAttribute('aria-label', 'Pause app screen previews');
+      pause.hidden = reduced.matches;
+      stageRail.append(pause);
+      function updatePause() {
+        const stopped = paused || taken;
+        pause.textContent = stopped ? 'Resume previews' : 'Pause previews';
+        pause.setAttribute('aria-label', stopped ? 'Resume app screen previews' : 'Pause app screen previews');
+      }
+      pause.addEventListener('click', () => {
+        if (paused || taken) { paused = false; taken = false; run(); }
+        else { paused = true; stop(); }
+        updatePause();
+      });
 
       const buttons = frames.map((frame, i) => {
         const b = document.createElement('button');
@@ -855,7 +873,7 @@
         b.setAttribute('role', 'tab');
         b.setAttribute('aria-selected', String(i === 0));
         b.setAttribute('aria-label', frame.dataset.cap || `Screen ${i + 1}`);
-        b.addEventListener('click', () => { taken = true; stop(); show(i); });
+        b.addEventListener('click', () => { taken = true; stop(); show(i); updatePause(); });
         b.addEventListener('focus', () => { held = true; stop(); });
         b.addEventListener('blur', () => { held = false; run(); });
         dots.append(b);
@@ -897,7 +915,7 @@
 
       function run() {
         stop();
-        if (taken || held || !onScreen || reduced.matches) return;
+        if (taken || paused || held || !onScreen || reduced.matches) return;
         timer = setInterval(tick, 3200);
       }
       function stop() { clearInterval(timer); timer = null; }
@@ -909,6 +927,10 @@
       screens.addEventListener('focusin', () => { held = true; stop(); });
       screens.addEventListener('focusout', () => { held = false; run(); });
       document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
+      reduced.addEventListener('change', () => {
+        pause.hidden = reduced.matches;
+        if (reduced.matches) stop(); else run();
+      });
 
       if ('IntersectionObserver' in window) {
         new IntersectionObserver((entries) => {

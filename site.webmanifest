@@ -1,15 +1,30 @@
 {
-  "name": "Ummahti Quran",
+  "name": "Ummahti",
   "short_name": "Ummahti",
-  "description": "An offline-first Qur'an reader for Android. No ads, no account, nothing in the way.",
+  "description": "One Ummah, connected by the Quran. Our free Quran app, recitations and reminders.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#08080a",
   "theme_color": "#08080a",
   "icons": [
-    { "src": "/media/brand/2026-10/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/media/brand/2026-10/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/media/brand/2026-10/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/media/brand/2026-10/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/media/brand/2026-10/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/media/brand/2026-10/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

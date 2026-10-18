@@ -1,0 +1,153 @@
+{
+  "facts": {
+    "guideTopics": 86,
+    "recitations": 37,
+    "themes": [
+      "OBSIDIAN_DARK",
+      "WARM_CREAM",
+      "CRISP_LIGHT",
+      "MADINAH_MUSHAF",
+      "OTTOMAN_MANUSCRIPT",
+      "ANDALUSIAN",
+      "PERSIAN_ILLUMINATION",
+      "SHEIKH_ZAYED",
+      "HARAMAIN",
+      "CLASSIC_INK",
+      "SHIRAZ_DAWN",
+      "JALI_MOON"
+    ],
+    "translations": 18,
+    "translationLanguages": 9,
+    "duaEntries": 55,
+    "surahs": 114,
+    "ayahs": 6236,
+    "reflections": 338
+  },
+  "verses": {
+    "93:1": {
+      "reference": "93:1",
+      "surah": "Ad-Dhuhaa",
+      "arabic": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ وَٱلضُّحَىٰ",
+      "translation": "By the morning brightness"
+    },
+    "93:2": {
+      "reference": "93:2",
+      "surah": "Ad-Dhuhaa",
+      "arabic": "وَٱلَّيْلِ إِذَا سَجَىٰ",
+      "translation": "And [by] the night when it covers with darkness,"
+    },
+    "93:3": {
+      "reference": "93:3",
+      "surah": "Ad-Dhuhaa",
+      "arabic": "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+      "translation": "Your Lord has not taken leave of you, [O Muhammad], nor has He detested [you]."
+    },
+    "13:28": {
+      "reference": "13:28",
+      "surah": "Ar-Ra'd",
+      "arabic": "ٱلَّذِينَ ءَامَنُوا۟ وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ ٱللَّهِ ۗ أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ",
+      "translation": "Those who have believed and whose hearts are assured by the remembrance of Allah. Unquestionably, by the remembrance of Allah hearts are assured.\""
+    },
+    "39:53": {
+      "reference": "39:53",
+      "surah": "Az-Zumar",
+      "arabic": "۞ قُلْ يَٰعِبَادِىَ ٱلَّذِينَ أَسْرَفُوا۟ عَلَىٰٓ أَنفُسِهِمْ لَا تَقْنَطُوا۟ مِن رَّحْمَةِ ٱللَّهِ ۚ إِنَّ ٱللَّهَ يَغْفِرُ ٱلذُّنُوبَ جَمِيعًا ۚ إِنَّهُۥ هُوَ ٱلْغَفُورُ ٱلرَّحِيمُ",
+      "translation": "Say, \"O My servants who have transgressed against themselves [by sinning], do not despair of the mercy of Allah. Indeed, Allah forgives all sins. Indeed, it is He who is the Forgiving, the Merciful.\""
+    },
+    "94:5": {
+      "reference": "94:5",
+      "surah": "Ash-Sharh",
+      "arabic": "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+      "translation": "For indeed, with hardship [will be] ease."
+    },
+    "94:6": {
+      "reference": "94:6",
+      "surah": "Ash-Sharh",
+      "arabic": "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًۭا",
+      "translation": "Indeed, with hardship [will be] ease."
+    },
+    "2:286": {
+      "reference": "2:286",
+      "surah": "Al-Baqara",
+      "arabic": "لَا يُكَلِّفُ ٱللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا ٱكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَآ إِن نَّسِينَآ أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَآ إِصْرًۭا كَمَا حَمَلْتَهُۥ عَلَى ٱلَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِۦ ۖ وَٱعْفُ عَنَّا وَٱغْفِرْ لَنَا وَٱرْحَمْنَآ ۚ أَنتَ مَوْلَىٰنَا فَٱنصُرْنَا عَلَى ٱلْقَوْمِ ٱلْكَٰفِرِينَ",
+      "translation": "Allah does not charge a soul except [with that within] its capacity. It will have [the consequence of] what [good] it has gained, and it will bear [the consequence of] what [evil] it has earned. \"Our Lord, do not impose blame upon us if we have forgotten or erred. Our Lord, and lay not upon us a burden like that which You laid upon those before us. Our Lord, and burden us not with that which we have no ability to bear. And pardon us; and forgive us; and have mercy upon us. You are our protector, so give us victory over the disbelieving people.\""
+    },
+    "4:110": {
+      "reference": "4:110",
+      "surah": "An-Nisaa",
+      "arabic": "وَمَن يَعْمَلْ سُوٓءًا أَوْ يَظْلِمْ نَفْسَهُۥ ثُمَّ يَسْتَغْفِرِ ٱللَّهَ يَجِدِ ٱللَّهَ غَفُورًۭا رَّحِيمًۭا",
+      "translation": "And whoever does a wrong or wrongs himself but then seeks forgiveness of Allah will find Allah Forgiving and Merciful."
+    },
+    "66:8": {
+      "reference": "66:8",
+      "surah": "At-Tahrim",
+      "arabic": "يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ تُوبُوٓا۟ إِلَى ٱللَّهِ تَوْبَةًۭ نَّصُوحًا عَسَىٰ رَبُّكُمْ أَن يُكَفِّرَ عَنكُمْ سَيِّـَٔاتِكُمْ وَيُدْخِلَكُمْ جَنَّٰتٍۢ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ يَوْمَ لَا يُخْزِى ٱللَّهُ ٱلنَّبِىَّ وَٱلَّذِينَ ءَامَنُوا۟ مَعَهُۥ ۖ نُورُهُمْ يَسْعَىٰ بَيْنَ أَيْدِيهِمْ وَبِأَيْمَٰنِهِمْ يَقُولُونَ رَبَّنَآ أَتْمِمْ لَنَا نُورَنَا وَٱغْفِرْ لَنَآ ۖ إِنَّكَ عَلَىٰ كُلِّ شَىْءٍۢ قَدِيرٌۭ",
+      "translation": "O you who have believed, repent to Allah with sincere repentance. Perhaps your Lord will remove from you your misdeeds and admit you into gardens beneath which rivers flow [on] the Day when Allah will not disgrace the Prophet and those who believed with him. Their light will proceed before them and on their right; they will say, \"Our Lord, perfect for us our light and forgive us. Indeed, You are over all things competent.\""
+    },
+    "2:153": {
+      "reference": "2:153",
+      "surah": "Al-Baqara",
+      "arabic": "يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱسْتَعِينُوا۟ بِٱلصَّبْرِ وَٱلصَّلَوٰةِ ۚ إِنَّ ٱللَّهَ مَعَ ٱلصَّٰبِرِينَ",
+      "translation": "O you who have believed, seek help through patience and prayer. Indeed, Allah is with the patient."
+    },
+    "2:255": {
+      "reference": "2:255",
+      "surah": "Al-Baqara",
+      "arabic": "ٱللَّهُ لَآ إِلَٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌۭ وَلَا نَوْمٌۭ ۚ لَّهُۥ مَا فِى ٱلسَّمَٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍۢ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
+      "translation": "Allah - there is no deity except Him, the Ever-Living, the Sustainer of [all] existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is [presently] before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."
+    },
+    "67:1": {
+      "reference": "67:1",
+      "surah": "Al-Mulk",
+      "arabic": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ تَبَٰرَكَ ٱلَّذِى بِيَدِهِ ٱلْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَىْءٍۢ قَدِيرٌ",
+      "translation": "Blessed is He in whose hand is dominion, and He is over all things competent -"
+    },
+    "67:10": {
+      "reference": "67:10",
+      "surah": "Al-Mulk",
+      "arabic": "وَقَالُوا۟ لَوْ كُنَّا نَسْمَعُ أَوْ نَعْقِلُ مَا كُنَّا فِىٓ أَصْحَٰبِ ٱلسَّعِيرِ",
+      "translation": "And they will say, \"If only we had been listening or reasoning, we would not be among the companions of the Blaze.\""
+    },
+    "12:1": {
+      "reference": "12:1",
+      "surah": "Yusuf",
+      "arabic": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الٓر ۚ تِلْكَ ءَايَٰتُ ٱلْكِتَٰبِ ٱلْمُبِينِ",
+      "translation": "Alif, Lam, Ra. These are the verses of the clear Book."
+    },
+    "12:10": {
+      "reference": "12:10",
+      "surah": "Yusuf",
+      "arabic": "قَالَ قَآئِلٌۭ مِّنْهُمْ لَا تَقْتُلُوا۟ يُوسُفَ وَأَلْقُوهُ فِى غَيَٰبَتِ ٱلْجُبِّ يَلْتَقِطْهُ بَعْضُ ٱلسَّيَّارَةِ إِن كُنتُمْ فَٰعِلِينَ",
+      "translation": "Said a speaker among them, \"Do not kill Joseph but throw him into the bottom of the well; some travelers will pick him up - if you would do [something].\""
+    },
+    "21:92": {
+      "reference": "21:92",
+      "surah": "Al-Anbiyaa",
+      "arabic": "إِنَّ هَٰذِهِۦٓ أُمَّتُكُمْ أُمَّةًۭ وَٰحِدَةًۭ وَأَنَا۠ رَبُّكُمْ فَٱعْبُدُونِ",
+      "translation": "Indeed this, your religion, is one religion, and I am your Lord, so worship Me."
+    }
+  },
+  "hifzExamples": [
+    {
+      "id": "mulk",
+      "label": "Al-Mulk 1–10",
+      "count": 10,
+      "first": "67:1",
+      "last": "67:10"
+    },
+    {
+      "id": "kursi",
+      "label": "Ayat al-Kursi",
+      "count": 1,
+      "first": "2:255",
+      "last": "2:255"
+    },
+    {
+      "id": "yusuf",
+      "label": "Yusuf 1–10",
+      "count": 10,
+      "first": "12:1",
+      "last": "12:10"
+    }
+  ]
+}

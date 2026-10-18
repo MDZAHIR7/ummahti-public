@@ -1,0 +1,1 @@
+(window.UMMAHTI_AYAT=window.UMMAHTI_AYAT||{})[108]=[["إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ","Indeed, We have granted you, [O Muhammad], al-Kawthar."],["فَصَلِّ لِرَبِّكَ وَٱنْحَرْ","So pray to your Lord and sacrifice [to Him alone]."],["إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ","Indeed, your enemy is the one cut off."]];
