@@ -339,7 +339,6 @@
 .v15-page .v-film-story>.v-story-film{width:min(100%,400px);position:relative}
 .v15-page .v-film-story>.v-story-film::before{content:"";position:absolute;inset:-14% -30%;background:radial-gradient(closest-side,rgba(var(--gold-rgb),.16),rgba(19,60,48,.25) 50%,transparent 75%);z-index:-1;pointer-events:none}
 .v15-page .v-logo-film.v-story-film>div{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent),linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent),linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect;border-radius:0}
-.r-dark .v15-page .v-logo-film video,.r-dark .v15-page .v-logo-film img,.v15-page.r-dark .v-logo-film video,.v15-page.r-dark .v-logo-film img{mix-blend-mode:screen}
 
 /* ---------- Hero phone scenes: Guide, Ayah on Unlock, Recite to add, Read and listen ---------- */
 .r-gh-screen>.r-scene{position:absolute;inset:0;display:flex;flex-direction:column;padding:13cqw 6.5cqw 18cqw;opacity:0;visibility:hidden;transition:opacity .7s var(--r-ease),visibility 0s .7s;}
@@ -404,3 +403,15 @@
 .r-sc-player em{display:block;height:100%;width:100%;transform:scaleX(var(--p,0));transform-origin:left;background:var(--r-app-gold);transition:transform 1.6s linear}
 @media(prefers-reduced-motion:reduce){.r-sc-recite.is-live .r-sc-wave i,.r-sc-recite.is-live .r-sc-mic{animation:none}}
 .r-sc-card p.r-sc-chip{margin:4cqw auto 1cqw!important}
+/* With screen blending the poster would show through the playing film (doubled frames): hide it while the film plays. */
+.v15-page .v-logo-film img{transition:opacity .4s}
+.v15-page .v-logo-film.is-playing img{opacity:0}
+
+/* Keyed films (dark themes): the canvas carries the film with its dark ground made transparent. */
+.v-logo-film .r-keyed{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none;pointer-events:none}
+.v15-page.r-dark .v-logo-film.r-keyable .r-keyed{display:block}
+.v15-page.r-dark .v-logo-film.r-keyable video,.v15-page.r-dark .v-logo-film.r-keyable img{opacity:0!important}
+.v15-page.r-dark .v-logo-film.r-keyable>div{-webkit-mask-image:none;mask-image:none}
+.r-sound{font-size:11px}
+.v15-page .v-logo-film .r-keyed{-webkit-mask-image:radial-gradient(closest-side,#000 58%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,transparent 100%)}
+.v15-page .v-story-film .r-keyed{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent),linear-gradient(to right,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent),linear-gradient(to right,transparent,#000 16%,#000 84%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}

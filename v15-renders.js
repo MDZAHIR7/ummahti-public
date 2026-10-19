@@ -2,7 +2,7 @@
    No network beyond this origin. Reduced motion and the page's motion toggle are respected. */
 (() => {
   'use strict';
-  const VERSION = '20261019o';
+  const VERSION = '20261019r';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const I18N = window.UMMAHTI_V15_I18N || {};
   const t = (k, vars) => { let s = I18N[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b); return s; };
@@ -588,8 +588,61 @@
     set(); new MutationObserver(() => requestAnimationFrame(set)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
   }
 
+
+  /* ---------------- Films without a box: their dark ground is keyed out on the GPU ----------------
+     The films were made on near-black. On a dark theme each frame is drawn to a WebGL canvas whose
+     alpha follows brightness, so the crescent and the app float on the page's own sky. (CSS blending
+     cannot reach the fixed sky behind the page.) Light themes and missing WebGL keep the plain film. */
+  function keyFilms() {
+    const VS = 'attribute vec2 p;varying vec2 v;void main(){v=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}';
+    const FS = 'precision mediump float;varying vec2 v;uniform sampler2D t;uniform vec2 k;void main(){vec4 c=texture2D(t,v);float l=max(c.r,max(c.g,c.b));float a=smoothstep(k.x,k.y,l);gl_FragColor=vec4(c.rgb*a,a);}';
+    $$('[data-logo-film]').forEach(film => {
+      const video = $('video', film), poster = $('img', film), box = video && video.parentElement;
+      if (!video || !box) return;
+      const canvas = document.createElement('canvas'); canvas.className = 'r-keyed'; canvas.setAttribute('aria-hidden', 'true');
+      const gl = canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false });
+      if (!gl) return;
+      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+      gl.useProgram(prog);
+      const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(p => gl.texParameteri(gl.TEXTURE_2D, p, gl.CLAMP_TO_EDGE));
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.uniform2f(gl.getUniformLocation(prog, 'k'), .045, .16);
+      gl.clearColor(0, 0, 0, 0);
+      box.append(canvas); film.classList.add('r-keyable');
+      let raf = 0;
+      const draw = src => {
+        const w = src.videoWidth || src.naturalWidth, h = src.videoHeight || src.naturalHeight; if (!w || !h) return;
+        if (canvas.width !== w) { canvas.width = w; canvas.height = h; }
+        gl.viewport(0, 0, w, h); gl.clear(gl.COLOR_BUFFER_BIT);
+        try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); } catch (_) { film.classList.remove('r-keyable'); return; }
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      };
+      const loop = () => { if (video.paused || video.ended) { raf = 0; return; } draw(video); raf = requestAnimationFrame(loop); };
+      video.addEventListener('playing', () => { if (!raf) raf = requestAnimationFrame(loop); });
+      video.addEventListener('seeked', () => draw(video));
+      video.addEventListener('pause', () => draw(video));
+      const showPoster = () => { if (poster && poster.complete && (video.paused && !video.currentTime)) draw(poster); };
+      if (poster) { if (poster.complete) showPoster(); else poster.addEventListener('load', showPoster, { once: true }); }
+      // Sound: the film's own controls are hidden with the video, so the page offers the choice.
+      if (film.classList.contains('v-story-film')) {
+        video.removeAttribute('controls');
+        const cap = $('figcaption', film), b = document.createElement('button');
+        b.type = 'button'; b.className = 'v-quiet r-sound'; b.setAttribute('aria-pressed', 'false');
+        const label = () => { b.textContent = video.muted ? t('rSoundOn') : t('rSoundOff'); b.setAttribute('aria-pressed', String(!video.muted)); };
+        b.addEventListener('click', () => { video.muted = !video.muted; if (!video.muted && video.paused) video.play().catch(() => {}); label(); });
+        label(); if (cap) cap.append(b);
+      }
+    });
+  }
+
   function init() {
     themeTone();
+    keyFilms();
     heroAyah();
     const gh = $('[data-r-guide-hero]'); if (gh) guideHero(gh);
     const u = $('[data-r-unlock]'); if (u) unlockDemo(u);

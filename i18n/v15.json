@@ -241,7 +241,7 @@
     "filmKicker": "A closer look",
     "filmTitle": "See how it<br><em>comes together.</em>",
     "filmLead": "A short journey through Ummahti: the reading, the recitation and the care that connects them, ending in our new identity.",
-    "filmNote": "Starts silently when in view. Sound is your choice in the video controls. Pause or replay whenever you like.",
+    "filmNote": "Starts silently when in view. Turn the sound on whenever you like, or pause and come back to it.",
     "filmAlt": "A film exploring Ummahti Quran, its reading and recitation, and the new app identity.",
     "watchFilm": "Watch the film",
     "everydayDetails": "The details that make returning easier.",
@@ -471,7 +471,9 @@
     "rSceneUnlockCap": "A verse at every unlock, toward a khatm",
     "rSceneReciteCap": "Recite, and it finds the passage",
     "rSceneRead": "Read and listen",
-    "rSceneReadCap": "Follow each ayah as it is recited"
+    "rSceneReadCap": "Follow each ayah as it is recited",
+    "rSoundOn": "Turn sound on",
+    "rSoundOff": "Turn sound off"
   },
   "ar": {
     "pageTitle": "Ummahti: أمة واحدة يجمعها القرآن",
@@ -715,7 +717,7 @@
     "filmKicker": "نظرة أقرب",
     "filmTitle": "شاهد كيف<br><em>تتصل التجربة.</em>",
     "filmLead": "جولة قصيرة من Ummahti: القراءة والتلاوة والميزات التي تجمعها، وصولًا إلى تشكّل هويتنا الجديدة.",
-    "filmNote": "يبدأ صامتًا عند ظهوره. الصوت اختيارك عبر أدوات الفيديو، ويمكنك الإيقاف أو الإعادة في أي وقت.",
+    "filmNote": "يبدأ صامتًا حين يظهر. شغّل الصوت متى شئت، أو أوقفه مؤقتًا وعُد إليه لاحقًا.",
     "filmAlt": "جولة فيلمية في Ummahti Quran، مع القراءة والتلاوة وشعار التطبيق الجديد.",
     "watchFilm": "شاهد الفيلم",
     "everydayDetails": "تفاصيل تسهّل العودة إلى القرآن.",
@@ -945,7 +947,9 @@
     "rSceneUnlockCap": "آية مع كل فتح للقفل، نحو ختمة",
     "rSceneReciteCap": "اتلُ، فيجد المقطع",
     "rSceneRead": "اقرأ واستمع",
-    "rSceneReadCap": "تابع كل آية وهي تُتلى"
+    "rSceneReadCap": "تابع كل آية وهي تُتلى",
+    "rSoundOn": "شغّل الصوت",
+    "rSoundOff": "أوقف الصوت"
   },
   "ur": {
     "pageTitle": "Ummahti: ایک امت، قرآن سے جڑی ہوئی",
@@ -1189,7 +1193,7 @@
     "filmKicker": "ایک قریبی نظر",
     "filmTitle": "دیکھیں یہ سب<br><em>کیسے جڑتا ہے۔</em>",
     "filmLead": "Ummahti کی ایک مختصر سیر: پڑھنا، تلاوت اور انہیں یکجا کرنے والی سہولتیں، آخر میں ہماری نئی شناخت کی تشکیل۔",
-    "filmNote": "نظر آنے پر خاموش چلتا ہے۔ ویڈیو کے کنٹرول سے آواز آپ کی مرضی پر ہے، اور جب چاہیں روک یا دوبارہ چلا سکتے ہیں۔",
+    "filmNote": "نظر آتے ہی خاموشی سے شروع ہوتی ہے۔ جب چاہیں آواز چلائیں، یا روک کر بعد میں واپس آئیں۔",
     "filmAlt": "Ummahti Quran کی فلمی سیر، پڑھنے، تلاوت اور نئے ایپ لوگو کے ساتھ۔",
     "watchFilm": "فلم دیکھیں",
     "everydayDetails": "وہ تفصیلات جو قرآن کی طرف لوٹنا آسان بنائیں۔",
@@ -1419,7 +1423,9 @@
     "rSceneUnlockCap": "ہر بار فون کھولنے پر ایک آیت، ختم کی طرف",
     "rSceneReciteCap": "پڑھیں، اور یہ حصہ ڈھونڈ لیتا ہے",
     "rSceneRead": "پڑھیں اور سنیں",
-    "rSceneReadCap": "ہر آیت کو تلاوت کے ساتھ دیکھیں"
+    "rSceneReadCap": "ہر آیت کو تلاوت کے ساتھ دیکھیں",
+    "rSoundOn": "آواز چلائیں",
+    "rSoundOff": "آواز بند کریں"
   },
   "id": {
     "pageTitle": "Ummahti: Satu umat, dipersatukan Al-Qur’an",
@@ -1663,7 +1669,7 @@
     "filmKicker": "Lihat lebih dekat",
     "filmTitle": "Lihat bagaimana<br><em>semuanya terhubung.</em>",
     "filmLead": "Perjalanan singkat melalui Ummahti: membaca, tilawah, dan fitur yang menghubungkannya, hingga terbentuknya identitas baru kami.",
-    "filmNote": "Mulai tanpa suara saat terlihat. Aktifkan suara melalui kontrol video, dan jeda atau ulangi kapan saja.",
+    "filmNote": "Dimulai tanpa suara saat terlihat. Nyalakan suara kapan saja, atau jeda dan kembali nanti.",
     "filmAlt": "Film pengenalan Ummahti Quran, dengan bacaan, tilawah, dan logo aplikasi baru.",
     "watchFilm": "Tonton film",
     "everydayDetails": "Detail yang memudahkan Anda kembali.",
@@ -1893,6 +1899,8 @@
     "rSceneUnlockCap": "Satu ayat setiap membuka kunci, menuju khatam",
     "rSceneReciteCap": "Bacakan, dan ia menemukan bagiannya",
     "rSceneRead": "Baca dan dengarkan",
-    "rSceneReadCap": "Ikuti setiap ayat saat dibacakan"
+    "rSceneReadCap": "Ikuti setiap ayat saat dibacakan",
+    "rSoundOn": "Nyalakan suara",
+    "rSoundOff": "Matikan suara"
   }
 }

@@ -232,7 +232,7 @@ privacyModel	تحتاج التلاوة للإضافة إلى تنزيل اختي
 filmKicker	نظرة أقرب	ایک قریبی نظر	Lihat lebih dekat
 filmTitle	شاهد كيف<br><em>تتصل التجربة.</em>	دیکھیں یہ سب<br><em>کیسے جڑتا ہے۔</em>	Lihat bagaimana<br><em>semuanya terhubung.</em>
 filmLead	جولة قصيرة من Ummahti: القراءة والتلاوة والميزات التي تجمعها، وصولًا إلى تشكّل هويتنا الجديدة.	Ummahti کی ایک مختصر سیر: پڑھنا، تلاوت اور انہیں یکجا کرنے والی سہولتیں، آخر میں ہماری نئی شناخت کی تشکیل۔	Perjalanan singkat melalui Ummahti: membaca, tilawah, dan fitur yang menghubungkannya, hingga terbentuknya identitas baru kami.
-filmNote	يبدأ صامتًا عند ظهوره. الصوت اختيارك عبر أدوات الفيديو، ويمكنك الإيقاف أو الإعادة في أي وقت.	نظر آنے پر خاموش چلتا ہے۔ ویڈیو کے کنٹرول سے آواز آپ کی مرضی پر ہے، اور جب چاہیں روک یا دوبارہ چلا سکتے ہیں۔	Mulai tanpa suara saat terlihat. Aktifkan suara melalui kontrol video, dan jeda atau ulangi kapan saja.
+filmNote	يبدأ صامتًا حين يظهر. شغّل الصوت متى شئت، أو أوقفه مؤقتًا وعُد إليه لاحقًا.	نظر آتے ہی خاموشی سے شروع ہوتی ہے۔ جب چاہیں آواز چلائیں، یا روک کر بعد میں واپس آئیں۔	Dimulai tanpa suara saat terlihat. Nyalakan suara kapan saja, atau jeda dan kembali nanti.
 filmAlt	جولة فيلمية في Ummahti Quran، مع القراءة والتلاوة وشعار التطبيق الجديد.	Ummahti Quran کی فلمی سیر، پڑھنے، تلاوت اور نئے ایپ لوگو کے ساتھ۔	Film pengenalan Ummahti Quran, dengan bacaan, tilawah, dan logo aplikasi baru.
 watchFilm	شاهد الفيلم	فلم دیکھیں	Tonton film
 everydayDetails	تفاصيل تسهّل العودة إلى القرآن.	وہ تفصیلات جو قرآن کی طرف لوٹنا آسان بنائیں۔	Detail yang memudahkan Anda kembali.
@@ -470,3 +470,5 @@ rSceneUnlockCap	آية مع كل فتح للقفل، نحو ختمة	ہر بار
 rSceneReciteCap	اتلُ، فيجد المقطع	پڑھیں، اور یہ حصہ ڈھونڈ لیتا ہے	Bacakan, dan ia menemukan bagiannya
 rSceneRead	اقرأ واستمع	پڑھیں اور سنیں	Baca dan dengarkan
 rSceneReadCap	تابع كل آية وهي تُتلى	ہر آیت کو تلاوت کے ساتھ دیکھیں	Ikuti setiap ayat saat dibacakan
+rSoundOn	شغّل الصوت	آواز چلائیں	Nyalakan suara
+rSoundOff	أوقف الصوت	آواز بند کریں	Matikan suara
