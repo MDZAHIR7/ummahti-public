@@ -448,8 +448,8 @@ rRecLink	استمع في الأعلى	اوپر سنیں	Dengarkan di atas
 rLaneRecitations	تلاوات نشرناها على يوتيوب	یوٹیوب پر شیئر کی گئی تلاوتیں	Tilawah yang dibagikan di YouTube
 rLaneStudio	مقالات مرئية من استوديو Ummahti	Ummahti اسٹوڈیو کے بصری مضامین	Esai visual dari studio Ummahti
 rWallNote	أشر إلى مقطع لتشاهد ثواني صامتة منه. كل مقطع يُفتح على يوتيوب أو إنستغرام.	کسی ویڈیو پر پوائنٹر رکھیں تو چند خاموش لمحے چلیں گے۔ ہر ویڈیو یوٹیوب یا انسٹاگرام پر کھلتی ہے۔	Arahkan ke sebuah film untuk memutar beberapa detik tanpa suara. Masing-masing terbuka di YouTube atau Instagram.
-rHeroNoteKicker	دليل Ummahti	Ummahti Guide	Ummahti Guide
-rHeroNote	اسأل سؤالك، وخذ معك مصدره.	سوال لائیں، حوالہ لے کر جائیں۔	Bawa pertanyaan, pulang dengan sumbernya.
+rHeroNoteKicker	Ummahti Quran، مباشرة	Ummahti Quran، براہ راست	Ummahti Quran, langsung
+rHeroNote	الدليل، وآية عند فتح القفل، وسجل الحفظ، والتلاوة، تعمل هنا أمامك.	Guide، Ayah on Unlock، My Hifz اور تلاوت، یہیں چلتے ہوئے۔	Guide, Ayah on Unlock, My Hifz, dan tilawah, berjalan di sini.
 rGuideLabel	دليل Ummahti، معاينة حية	Ummahti Guide، براہ راست جھلک	Ummahti Guide, pratinjau langsung
 rGuideSub	مهما كان ما تواجهه، فله مصدر.	آپ جس بات کا بھی سامنا کر رہے ہوں، اس کا ایک ماخذ ہے۔	Apa pun yang Anda hadapi, ada sumbernya.
 rGuidePlaceholder	صِفه بكلماتك	اپنے الفاظ میں بیان کریں	Jelaskan dengan kata-kata Anda
@@ -465,3 +465,8 @@ rGuideFound	وُجد {n} مصدرًا	{n} ماخذ ملے	{n} sumber ditemukan
 rGuideMoreAyat	+{n} آيات أخرى	+{n} مزید آیات	+{n} ayat lagi
 rGuideDua	دعاء لذلك	اس کے لیے دعا	Doa untuknya
 rDayLegend	ساعة من ٢٤ ساعة: كل علامة فتحٌ للقفل في يوم مثالي، والمضيئة منها تأتي بآية.	24 گھنٹے کی گھڑی: ہر نشان ایک مثالی دن میں فون کھولنا ہے؛ روشن نشان آیت لاتے ہیں۔	Jam 24 jam: setiap garis adalah satu kali membuka kunci dalam contoh sehari. Garis yang menyala menghadirkan ayat.
+rSceneNext	اللحظة التالية	اگلا لمحہ	Momen berikutnya
+rSceneUnlockCap	آية مع كل فتح للقفل، نحو ختمة	ہر بار فون کھولنے پر ایک آیت، ختم کی طرف	Satu ayat setiap membuka kunci, menuju khatam
+rSceneReciteCap	اتلُ، فيجد المقطع	پڑھیں، اور یہ حصہ ڈھونڈ لیتا ہے	Bacakan, dan ia menemukan bagiannya
+rSceneRead	اقرأ واستمع	پڑھیں اور سنیں	Baca dan dengarkan
+rSceneReadCap	تابع كل آية وهي تُتلى	ہر آیت کو تلاوت کے ساتھ دیکھیں	Ikuti setiap ayat saat dibacakan

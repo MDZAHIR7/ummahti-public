@@ -2,7 +2,7 @@
    No network beyond this origin. Reduced motion and the page's motion toggle are respected. */
 (() => {
   'use strict';
-  const VERSION = '20261019k';
+  const VERSION = '20261019n';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const I18N = window.UMMAHTI_V15_I18N || {};
   const t = (k, vars) => { let s = I18N[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b); return s; };
@@ -472,7 +472,7 @@
     }
     const kickGlobe = () => requestAnimationFrame(globe);
     const wait = (ms, r) => new Promise(ok => setTimeout(ok, still() ? Math.min(ms, 40) : ms)).then(() => { if (r !== run) throw new Error('stop'); });
-    async function play(r) {
+    async function playGuide(r) {
       scene = (scene + 1) % scenes.length; const [qKey, id] = scenes[scene], tp = byId[id];
       card.classList.remove('is-on'); screen.classList.remove('is-searching', 'is-found');
       typed.textContent = ''; ph.hidden = false; status.textContent = ''; flyers.textContent = '';
@@ -506,14 +506,70 @@
       card.classList.add('is-on');
       await wait(6400, r);
     }
-    async function loop(r) { try { while (r === run && !paused && visible) await play(r); } catch (_) {} }
+    // ---- More than the Guide: the phone moves between the app's main moments.
+    const sceneEls = Object.fromEntries($$('[data-scene]', root).map(el => [el.dataset.scene, el]));
+    const nameEl = $('[data-r-sc-name]', root), capEl = $('[data-r-sc-cap]', root);
+    const SCENE_TEXT = { guide: ['Ummahti Guide', 'rGuideCaption'], unlock: ['Ayah on Unlock', 'rSceneUnlockCap'], recite: ['My Hifz · ' + t('rSheetRecite'), 'rSceneReciteCap'], read: [t('rSceneRead'), 'rSceneReadCap'] };
+    function showScene(id) {
+      Object.entries(sceneEls).forEach(([k, el]) => { const on = k === id; el.classList.toggle('is-on', on); if (on) el.removeAttribute('aria-hidden'); else el.setAttribute('aria-hidden', 'true'); });
+      if (nameEl && nameEl.firstChild) nameEl.firstChild.textContent = SCENE_TEXT[id][0];
+      if (capEl) capEl.textContent = t(SCENE_TEXT[id][1]);
+    }
+    let unlockAt = 0, unlockDone = 0;
+    async function playUnlock(r) {
+      const el = sceneEls.unlock; showScene('unlock'); el.classList.remove('is-open');
+      const now = new Date();
+      $('[data-r-sc-time]', el).textContent = now.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: false });
+      $('[data-r-sc-date]', el).textContent = now.toLocaleDateString(lang, { weekday: 'long', day: 'numeric', month: 'long' });
+      const list = await surah(93).catch(() => null); if (!list || r !== run) return;
+      const fill = () => { const [ar, en] = list[unlockAt % 11]; $('[data-r-sc-ref]', el).textContent = t('rSurahChip', { name: name(93), ref: '93:' + (unlockAt % 11 + 1) }); $('[data-r-sc-ar]', el).textContent = ar; $('[data-r-sc-en]', el).textContent = '“' + en + '”'; $('[data-r-sc-pct]', el).textContent = Math.floor(unlockDone / 6236 * 100) + '%'; };
+      fill(); await wait(1500, r);
+      el.classList.add('is-open'); await wait(3000, r);
+      const star = $('[data-r-sc-tamam]', el); star.classList.add('is-press'); await wait(450, r); star.classList.remove('is-press');
+      unlockAt++; unlockDone++; el.classList.add('is-turn'); await wait(380, r); fill(); el.classList.remove('is-turn');
+      await wait(3200, r);
+    }
+    async function playRecite(r) {
+      const el = sceneEls.recite, D = window.UMMAHTI_RENDERS; showScene('recite'); if (!D) return;
+      const count = $('[data-r-sc-count]', el), found = $('[data-r-sc-found]', el);
+      el.classList.remove('is-found'); el.classList.add('is-live'); count.textContent = fmt(6236); found.textContent = '';
+      const heard = words($('[data-r-sc-heard]', el), D.ayah.arabic);
+      await wait(900, r);
+      for (let k = 0; k < heard.length; k++) { heard[k].classList.add('is-in'); count.textContent = fmt(D.narrow[k].length); await wait(520, r); }
+      el.classList.remove('is-live'); el.classList.add('is-found');
+      found.textContent = '✓ ' + name(21) + ' 21:92 · ' + t('rSaved');
+      await wait(3400, r);
+    }
+    async function playRead(r) {
+      const el = sceneEls.read; showScene('read');
+      const list = await surah(1).catch(() => null); if (!list || r !== run) return;
+      const lines = $('[data-r-sc-lines]', el), tr = $('[data-r-sc-tr]', el), prog = $('[data-r-sc-prog]', el);
+      lines.textContent = '';
+      const spans = list.map(([ar], i) => { const s = document.createElement('span'); s.textContent = ar + ' ﴿' + (i + 1).toLocaleString('ar-EG') + '﴾ '; lines.append(s); return s; });
+      for (let i = 0; i < spans.length; i++) {
+        spans.forEach((s, j) => s.classList.toggle('is-now', j === i));
+        tr.textContent = list[i][1]; prog.style.width = ((i + 1) / spans.length * 100).toFixed(0) + '%';
+        await wait(1700, r);
+      }
+      await wait(600, r);
+    }
+    const ORDER = ['guide', 'unlock', 'guide', 'recite', 'guide', 'read'];
+    let step = -1;
+    async function playNext(r) {
+      step = (step + 1) % ORDER.length; const id = ORDER[step];
+      if (id === 'guide') { showScene('guide'); await playGuide(r); }
+      else if (id === 'unlock') await playUnlock(r);
+      else if (id === 'recite') await playRecite(r);
+      else await playRead(r);
+    }
+    async function loop(r) { try { while (r === run && !paused && visible) await playNext(r); } catch (_) {} }
     const restart = () => { const r = ++run; if (visible && !paused) loop(r); };
     pauseBtn.addEventListener('click', () => {
       paused = !paused; pauseBtn.textContent = paused ? '▶' : 'Ⅱ';
       pauseBtn.setAttribute('aria-label', t(paused ? 'resumeScreens' : 'pauseScreens'));
       if (paused) run++; else restart();
     });
-    $('[data-r-gh-next]', root).addEventListener('click', () => { if (paused) { const r = ++run; play(r).catch(() => {}); } else restart(); });
+    $('[data-r-gh-next]', root).addEventListener('click', () => { if (paused) { const r = ++run; playNext(r).catch(() => {}); } else restart(); });
     new IntersectionObserver(es => {
       const was = visible; visible = es[0].isIntersecting;
       if (visible && !was) { lastT = performance.now(); kickGlobe(); if (!paused) restart(); }

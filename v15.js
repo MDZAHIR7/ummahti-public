@@ -223,7 +223,8 @@
    video.addEventListener('pause',()=>{if(!programmaticPause&&!video.ended)paused=true;programmaticPause=false;label(finished||video.ended?'replayAnimation':'continueAnimation');});
    video.addEventListener('ended',()=>{finished=true;label('replayAnimation');});
    video.addEventListener('error',()=>{film.classList.remove('is-playing');control.hidden=true;});
-   if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:.35}).observe(film);
+   // Coming back to a film that has finished plays it again from the start; nobody should need a replay button.
+   if('IntersectionObserver'in window)new IntersectionObserver(entries=>{const was=visible;visible=entries[0].isIntersecting;if(visible&&!was&&finished&&!paused){video.currentTime=0;finished=false;}sync();},{threshold:.35}).observe(film);
    document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',()=>{if(reduced.matches){stopForVisibility();film.classList.remove('is-playing');label(initialLabel);}else sync();});connection?.addEventListener('change',()=>{if(connection.saveData)stopForVisibility();else sync();});
  });
 })();

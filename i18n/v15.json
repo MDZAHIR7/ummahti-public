@@ -450,8 +450,8 @@
     "rLaneRecitations": "Recitations shared on YouTube",
     "rLaneStudio": "Visual essays from the Ummahti studio",
     "rWallNote": "Point at a film to play a few silent seconds. Each one opens on YouTube or Instagram.",
-    "rHeroNoteKicker": "Ummahti Guide",
-    "rHeroNote": "Bring a question. Leave with a source.",
+    "rHeroNoteKicker": "Ummahti Quran, live",
+    "rHeroNote": "The Guide, Ayah on Unlock, My Hifz and recitation, running here.",
     "rGuideLabel": "Ummahti Guide, a live preview",
     "rGuideSub": "Whatever you are facing, there is a source for it.",
     "rGuidePlaceholder": "Describe it in your own words",
@@ -466,7 +466,12 @@
     "rGuideFound": "{n} sources found",
     "rGuideMoreAyat": "+{n} more ayat",
     "rGuideDua": "A du'a for it",
-    "rDayLegend": "A 24-hour clock: each tick is one unlock in an example day. Lit ticks bring an ayah."
+    "rDayLegend": "A 24-hour clock: each tick is one unlock in an example day. Lit ticks bring an ayah.",
+    "rSceneNext": "Next moment",
+    "rSceneUnlockCap": "A verse at every unlock, toward a khatm",
+    "rSceneReciteCap": "Recite, and it finds the passage",
+    "rSceneRead": "Read and listen",
+    "rSceneReadCap": "Follow each ayah as it is recited"
   },
   "ar": {
     "pageTitle": "Ummahti: أمة واحدة يجمعها القرآن",
@@ -919,8 +924,8 @@
     "rLaneRecitations": "تلاوات نشرناها على يوتيوب",
     "rLaneStudio": "مقالات مرئية من استوديو Ummahti",
     "rWallNote": "أشر إلى مقطع لتشاهد ثواني صامتة منه. كل مقطع يُفتح على يوتيوب أو إنستغرام.",
-    "rHeroNoteKicker": "دليل Ummahti",
-    "rHeroNote": "اسأل سؤالك، وخذ معك مصدره.",
+    "rHeroNoteKicker": "Ummahti Quran، مباشرة",
+    "rHeroNote": "الدليل، وآية عند فتح القفل، وسجل الحفظ، والتلاوة، تعمل هنا أمامك.",
     "rGuideLabel": "دليل Ummahti، معاينة حية",
     "rGuideSub": "مهما كان ما تواجهه، فله مصدر.",
     "rGuidePlaceholder": "صِفه بكلماتك",
@@ -935,7 +940,12 @@
     "rGuideFound": "وُجد {n} مصدرًا",
     "rGuideMoreAyat": "+{n} آيات أخرى",
     "rGuideDua": "دعاء لذلك",
-    "rDayLegend": "ساعة من ٢٤ ساعة: كل علامة فتحٌ للقفل في يوم مثالي، والمضيئة منها تأتي بآية."
+    "rDayLegend": "ساعة من ٢٤ ساعة: كل علامة فتحٌ للقفل في يوم مثالي، والمضيئة منها تأتي بآية.",
+    "rSceneNext": "اللحظة التالية",
+    "rSceneUnlockCap": "آية مع كل فتح للقفل، نحو ختمة",
+    "rSceneReciteCap": "اتلُ، فيجد المقطع",
+    "rSceneRead": "اقرأ واستمع",
+    "rSceneReadCap": "تابع كل آية وهي تُتلى"
   },
   "ur": {
     "pageTitle": "Ummahti: ایک امت، قرآن سے جڑی ہوئی",
@@ -1388,8 +1398,8 @@
     "rLaneRecitations": "یوٹیوب پر شیئر کی گئی تلاوتیں",
     "rLaneStudio": "Ummahti اسٹوڈیو کے بصری مضامین",
     "rWallNote": "کسی ویڈیو پر پوائنٹر رکھیں تو چند خاموش لمحے چلیں گے۔ ہر ویڈیو یوٹیوب یا انسٹاگرام پر کھلتی ہے۔",
-    "rHeroNoteKicker": "Ummahti Guide",
-    "rHeroNote": "سوال لائیں، حوالہ لے کر جائیں۔",
+    "rHeroNoteKicker": "Ummahti Quran، براہ راست",
+    "rHeroNote": "Guide، Ayah on Unlock، My Hifz اور تلاوت، یہیں چلتے ہوئے۔",
     "rGuideLabel": "Ummahti Guide، براہ راست جھلک",
     "rGuideSub": "آپ جس بات کا بھی سامنا کر رہے ہوں، اس کا ایک ماخذ ہے۔",
     "rGuidePlaceholder": "اپنے الفاظ میں بیان کریں",
@@ -1404,7 +1414,12 @@
     "rGuideFound": "{n} ماخذ ملے",
     "rGuideMoreAyat": "+{n} مزید آیات",
     "rGuideDua": "اس کے لیے دعا",
-    "rDayLegend": "24 گھنٹے کی گھڑی: ہر نشان ایک مثالی دن میں فون کھولنا ہے؛ روشن نشان آیت لاتے ہیں۔"
+    "rDayLegend": "24 گھنٹے کی گھڑی: ہر نشان ایک مثالی دن میں فون کھولنا ہے؛ روشن نشان آیت لاتے ہیں۔",
+    "rSceneNext": "اگلا لمحہ",
+    "rSceneUnlockCap": "ہر بار فون کھولنے پر ایک آیت، ختم کی طرف",
+    "rSceneReciteCap": "پڑھیں، اور یہ حصہ ڈھونڈ لیتا ہے",
+    "rSceneRead": "پڑھیں اور سنیں",
+    "rSceneReadCap": "ہر آیت کو تلاوت کے ساتھ دیکھیں"
   },
   "id": {
     "pageTitle": "Ummahti: Satu umat, dipersatukan Al-Qur’an",
@@ -1857,8 +1872,8 @@
     "rLaneRecitations": "Tilawah yang dibagikan di YouTube",
     "rLaneStudio": "Esai visual dari studio Ummahti",
     "rWallNote": "Arahkan ke sebuah film untuk memutar beberapa detik tanpa suara. Masing-masing terbuka di YouTube atau Instagram.",
-    "rHeroNoteKicker": "Ummahti Guide",
-    "rHeroNote": "Bawa pertanyaan, pulang dengan sumbernya.",
+    "rHeroNoteKicker": "Ummahti Quran, langsung",
+    "rHeroNote": "Guide, Ayah on Unlock, My Hifz, dan tilawah, berjalan di sini.",
     "rGuideLabel": "Ummahti Guide, pratinjau langsung",
     "rGuideSub": "Apa pun yang Anda hadapi, ada sumbernya.",
     "rGuidePlaceholder": "Jelaskan dengan kata-kata Anda",
@@ -1873,6 +1888,11 @@
     "rGuideFound": "{n} sumber ditemukan",
     "rGuideMoreAyat": "+{n} ayat lagi",
     "rGuideDua": "Doa untuknya",
-    "rDayLegend": "Jam 24 jam: setiap garis adalah satu kali membuka kunci dalam contoh sehari. Garis yang menyala menghadirkan ayat."
+    "rDayLegend": "Jam 24 jam: setiap garis adalah satu kali membuka kunci dalam contoh sehari. Garis yang menyala menghadirkan ayat.",
+    "rSceneNext": "Momen berikutnya",
+    "rSceneUnlockCap": "Satu ayat setiap membuka kunci, menuju khatam",
+    "rSceneReciteCap": "Bacakan, dan ia menemukan bagiannya",
+    "rSceneRead": "Baca dan dengarkan",
+    "rSceneReadCap": "Ikuti setiap ayat saat dibacakan"
   }
 }

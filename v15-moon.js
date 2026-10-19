@@ -336,7 +336,11 @@
       const fbox = { x: finBox.x, y: finBox.y - scrollY, s: finBox.s };
       const fkey = fbox.x.toFixed(1) + fbox.y.toFixed(1) + fbox.s.toFixed(1);
       if (fkey !== placedF) { boxes.F = fbox; place(K.F, fbox); placedF = fkey; }
-      const fr = clamp((vh - (closeRect.y - scrollY)) / (vh * 0.78));
+      /* Forms from when the closing words enter until they sit high on the screen, or until the
+         page can scroll no further: tall screens (a phone in desktop mode) still see it complete. */
+      const maxY = document.documentElement.scrollHeight - vh;
+      const fEnd = Math.min(closeRect.y - vh * 0.22, maxY - 2), fStart = Math.min(closeRect.y - vh, fEnd - vh * 0.25);
+      const fr = clamp((scrollY - fStart) / (fEnd - fStart));
       let u = follow('f', fr, performance.now());
       if (Math.abs(fr - u) > 0.0004) gliding = true;
       if (reduced.matches) u = u < 0.5 ? 0 : 1;
@@ -594,7 +598,7 @@
     if (swirl) {
       ctx.strokeStyle = gold; ctx.lineWidth = Math.max(0.6, dot * 0.6); ctx.lineCap = 'round';
       if (!light) ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = s.alpha * 0.22 * Math.sin(Math.PI * s.u); ctx.stroke(trails);
+      if (s.b !== 'F') { ctx.globalAlpha = s.alpha * 0.22 * Math.sin(Math.PI * s.u); ctx.stroke(trails); }
       ctx.globalCompositeOperation = 'source-over';
     }
     ctx.fillStyle = gold;
