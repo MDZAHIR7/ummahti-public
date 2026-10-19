@@ -24,7 +24,7 @@ HEAD=snippets['head'].replace('\r\n','\n').replace('\r','\n')
 HEAD=re.sub(r'<script type="application/ld\+json">\s*\{\s*"@context": "https://schema.org",\s*"@type": "VideoObject".*?</script>','',HEAD,flags=re.S)
 HEAD=re.sub(r'<link rel="stylesheet" href="/(?:hub|editorial)\.css[^>]+>','',HEAD)
 HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
-HEAD+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019n">\n'
+HEAD+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019o">\n'
 
 def render(text,c):
     def sub(match):
@@ -181,8 +181,8 @@ def hero_ayah(lang):
             'heroAyahRef':html.escape(name)+f' {s}:{a}'}
 
 def scripts(lang,moon=False):
-    extra=f'\n<script src="/media/v15/moon-data.js?v=20261019f" defer></script>\n<script src="/v15-moon.js?v=20261019n" defer></script>\n<script src="/v15-slides.js?v=20261019f" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-guide.js?v=20261019n" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-library.js?v=20261019n" defer></script>\n<script src="/v15-flow.js?v=20261019f" defer></script>\n<script src="/media/v15/renders-data.js?v=20261019n" defer></script>\n<script src="/v15-renders.js?v=20261019n" defer></script>' if moon else ''
-    return f'<script src="/i18n/v15-{lang}.js?v=20261019f" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20260918a" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261019n" defer></script>{extra}'
+    extra=f'\n<script src="/media/v15/moon-data.js?v=20261019f" defer></script>\n<script src="/v15-moon.js?v=20261019o" defer></script>\n<script src="/v15-slides.js?v=20261019f" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-guide.js?v=20261019o" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-library.js?v=20261019o" defer></script>\n<script src="/v15-flow.js?v=20261019f" defer></script>\n<script src="/media/v15/renders-data.js?v=20261019o" defer></script>\n<script src="/v15-renders.js?v=20261019o" defer></script>' if moon else ''
+    return f'<script src="/i18n/v15-{lang}.js?v=20261019f" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20260918a" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261019o" defer></script>{extra}'
 
 def write_page(path,text):
     text=text.replace('\r\n','\n').replace('\r','\n')
@@ -194,7 +194,7 @@ def document(lang,c,route,main,document_head):
     old=document_head
     old=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',old)
     old=re.sub(r'<link rel="stylesheet" href="/v15(?:-renders)?.css[^>]*>','',old)
-    old+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019n">\n'
+    old+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019o">\n'
     note='<p class="v-locale-note">'+html.escape(c['localeNote'])+'</p>' if lang!='en' else ''
     return f'<!doctype html>\n<html lang="{lang}" dir="{LANGS[lang][1]}" class="no-js v15-page"><head>{old}</head><body>{sky}{header(c,lang,route)}{note}{main}{footer(c,lang)}{scripts(lang)}</body></html>'
 

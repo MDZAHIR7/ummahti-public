@@ -2,7 +2,7 @@
    No network beyond this origin. Reduced motion and the page's motion toggle are respected. */
 (() => {
   'use strict';
-  const VERSION = '20261019n';
+  const VERSION = '20261019o';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const I18N = window.UMMAHTI_V15_I18N || {};
   const t = (k, vars) => { let s = I18N[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b); return s; };
@@ -548,7 +548,7 @@
       const spans = list.map(([ar], i) => { const s = document.createElement('span'); s.textContent = ar + ' ﴿' + (i + 1).toLocaleString('ar-EG') + '﴾ '; lines.append(s); return s; });
       for (let i = 0; i < spans.length; i++) {
         spans.forEach((s, j) => s.classList.toggle('is-now', j === i));
-        tr.textContent = list[i][1]; prog.style.width = ((i + 1) / spans.length * 100).toFixed(0) + '%';
+        tr.textContent = list[i][1]; prog.style.setProperty('--p', ((i + 1) / spans.length).toFixed(3));
         await wait(1700, r);
       }
       await wait(600, r);

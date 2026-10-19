@@ -401,6 +401,6 @@
 .r-sc-player>div{flex:1;display:grid;gap:1.4cqw}
 .r-sc-player b{font-weight:500;font-size:3.2cqw;color:#fff}
 .r-sc-player i{display:block;height:3px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
-.r-sc-player em{display:block;height:100%;width:0;background:var(--r-app-gold);transition:width 1.6s linear}
+.r-sc-player em{display:block;height:100%;width:100%;transform:scaleX(var(--p,0));transform-origin:left;background:var(--r-app-gold);transition:transform 1.6s linear}
 @media(prefers-reduced-motion:reduce){.r-sc-recite.is-live .r-sc-wave i,.r-sc-recite.is-live .r-sc-mic{animation:none}}
 .r-sc-card p.r-sc-chip{margin:4cqw auto 1cqw!important}
