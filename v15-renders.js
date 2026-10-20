@@ -8,6 +8,9 @@
   const t = (k, vars) => { let s = I18N[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b); return s; };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const still = () => reduced.matches || document.querySelector('[data-motion-toggle]')?.getAttribute('aria-pressed') === 'true';
+  /* Phones draw canvases at 1.5x: sharp on their dense panels, and under half the pixels of 2x. */
+  const touch = matchMedia('(hover: none) and (pointer: coarse)');
+  const canvasDpr = () => Math.min(devicePixelRatio || 1, touch.matches ? 1.5 : 2);
   const lang = document.documentElement.lang || 'en';
   const fmt = n => n.toLocaleString(lang === 'ar' ? 'ar-EG' : lang === 'ur' ? 'ur-PK' : lang === 'id' ? 'id-ID' : 'en-US');
   const sleep = ms => new Promise(r => setTimeout(r, still() ? Math.min(ms, 60) : ms));
@@ -194,7 +197,7 @@
     const ctx = canvas.getContext('2d'); let W = 0, H = 0, dpr = 1, pts = null, cx = 0, cy = 0, R = 0, rot = 0;
     const ROWS = 8;
     function layout() {
-      const r = canvas.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
+      const r = canvas.getBoundingClientRect(); dpr = canvasDpr();
       W = r.width; H = r.height; canvas.width = W * dpr; canvas.height = H * dpr;
       const dev = device.getBoundingClientRect(); cx = dev.left + dev.width / 2 - r.left; cy = dev.top + dev.height / 2 - r.top;
       R = Math.min(Math.max(dev.height * .62, 200), Math.min(W, H) * .49);
@@ -209,7 +212,9 @@
     const rebuildStates = () => { stateMap = new Uint8Array(TOTAL); for (let k = 0; k < TOTAL; k++) { const s = stateOf(k); stateMap[k] = s === 'mem' ? 1 : s === 'learn' ? 2 : s === 'rev' ? 3 : 0; } };
     rebuildStates();
     let candSet = null, last = 0, visible = false;
+    let ringFrame = 0;
     function draw(now) {
+      ringFrame = 0;
       if (!pts) layout();
       const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
       if (!still()) rot += dt * .012;
@@ -236,9 +241,9 @@
       }
       if (flare) { const f = (now - flare.t) / 1100; if (f < 1) { const k = Math.round((flare.a + flare.b) / 2), a = pts[k * 2] + rot, r = pts[k * 2 + 1], tx = cx + Math.cos(a) * r, ty = cy + Math.sin(a) * r, e = 1 - Math.pow(1 - f, 3);
         const x = cx + (tx - cx) * e, y = cy + (ty - cy) * e - Math.sin(f * Math.PI) * 60; ctx.fillStyle = 'rgba(245,230,179,' + (1 - f * .5) + ')'; ctx.shadowColor = 'rgba(' + G + ',1)'; ctx.shadowBlur = 18; ctx.beginPath(); ctx.arc(x, y, 4, 0, 7); ctx.fill(); ctx.shadowBlur = 0; } }
-      if (visible && !still()) requestAnimationFrame(draw);
+      if (visible && !still()) ringFrame = requestAnimationFrame(draw);
     }
-    const kick = () => { if (visible && !still()) requestAnimationFrame(draw); else requestAnimationFrame(t0 => { draw(t0); }); };
+    const kick = () => { if (!ringFrame) ringFrame = requestAnimationFrame(draw); };
     new IntersectionObserver(es => { const was = visible; visible = es[0].isIntersecting; if (visible && !was) { last = performance.now(); kick(); } }).observe(root);
     new ResizeObserver(() => { pts = null; kick(); }).observe(root);
 
@@ -382,8 +387,9 @@
     lanes.forEach(ul => { [...ul.children].forEach(li => { const c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); $$('a', c).forEach(a => a.tabIndex = -1); ul.append(c); }); });
     const state = lanes.map((ul, i) => ({ ul, x: i % 2 ? -ul.scrollWidth / 4 : 0, dir: i % 2 ? 1 : -1, hover: false }));
     state.forEach(s => { s.ul.addEventListener('pointerenter', () => s.hover = true); s.ul.addEventListener('pointerleave', () => s.hover = false); s.ul.addEventListener('focusin', () => s.hover = true); s.ul.addEventListener('focusout', () => s.hover = false); });
-    let on = false, last = 0, lastY = scrollY, boost = 0;
+    let on = false, last = 0, lastY = scrollY, boost = 0, laneFrame = 0;
     function frame(now) {
+      laneFrame = 0;
       const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
       const dy = scrollY - lastY; lastY = scrollY; boost = boost * .9 + Math.abs(dy) * .6;
       state.forEach(s => {
@@ -391,9 +397,9 @@
         s.x += s.dir * speed * dt; if (s.x <= -half) s.x += half; if (s.x > 0) s.x -= half;
         s.ul.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
       });
-      if (on && !still()) requestAnimationFrame(frame);
+      if (on && !still()) laneFrame = requestAnimationFrame(frame);
     }
-    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was) { last = performance.now(); requestAnimationFrame(frame); } }).observe(root);
+    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was && !laneFrame) { last = performance.now(); laneFrame = requestAnimationFrame(frame); } }).observe(root);
     // Hover plays a tile's six-second loop; on touch, a spotlight walks along the wall.
     const play = tile => { const v = $('video', tile); if (!v) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => tile.classList.add('is-playing')).catch(() => {}); };
     const stop = tile => { const v = $('video', tile); tile.classList.remove('is-playing'); if (v) v.pause(); };
@@ -449,10 +455,11 @@
     // The globe: sources as points on a turning sphere.
     const N = 260, P = [];
     for (let i = 0; i < N; i++) { const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963; P.push([Math.cos(th) * r, y, Math.sin(th) * r]); }
-    const ctx = canvas.getContext('2d'); let rot = 0, lastT = 0;
+    const ctx = canvas.getContext('2d'); let rot = 0, lastT = 0, globeFrame = 0;
     function globe(now) {
-      const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
-      if (!w || !h) { if (visible) requestAnimationFrame(globe); return; }
+      globeFrame = 0;
+      const w = canvas.clientWidth, h = canvas.clientHeight, dpr = canvasDpr();
+      if (!w || !h) { if (visible) kickGlobe(); return; }
       if (canvas.width !== Math.round(w * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); }
       const dt = Math.min(.05, (now - lastT) / 1000 || 0); lastT = now; if (!still()) rot += dt * speed;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
@@ -468,9 +475,10 @@
         ctx.fillStyle = f ? 'rgba(245,230,179,' + (.5 + f * .5) + ')' : 'rgba(212,175,55,' + (.12 + depth * .55) + ')';
         const sz = (.6 + depth * 1.1) + f * 2.4; ctx.fillRect(cx + x1 * R - sz / 2, cy + y1 * R - sz / 2, sz, sz);
       }
-      if (visible && !still()) requestAnimationFrame(globe);
+      if (visible && !still()) kickGlobe();
     }
-    const kickGlobe = () => requestAnimationFrame(globe);
+    /* One owned frame: returning to the tab must not start a second globe beside the first. */
+    const kickGlobe = () => { if (!globeFrame) globeFrame = requestAnimationFrame(globe); };
     const wait = (ms, r) => new Promise(ok => setTimeout(ok, still() ? Math.min(ms, 40) : ms)).then(() => { if (r !== run) throw new Error('stop'); });
     async function playGuide(r) {
       scene = (scene + 1) % scenes.length; const [qKey, id] = scenes[scene], tp = byId[id];

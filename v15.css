@@ -36,6 +36,8 @@
 .v-play-badge{display:inline-block;line-height:0}
 .v-play-badge img{width:160px;height:auto}
 .v-header{position:sticky!important;top:0;border-bottom:1px solid var(--v-rule);background:rgba(var(--ink-rgb),.76);backdrop-filter:blur(20px);z-index:30!important}
+/* The moon and the room move under the header on every frame, so a blurred header is re-blurred on every frame. On phones it is simply near-opaque: the same ink, none of that work. */
+@media(hover:none) and (pointer:coarse){.v-header{background:rgba(var(--ink-rgb),.94);backdrop-filter:none}}
 .v-nav{display:flex;flex-wrap:wrap;align-items:center;gap:24px;min-height:80px;width:min(1320px,calc(100% - 64px));margin:auto}
 .v-brand{display:inline-flex;gap:12px;align-items:center;text-decoration:none;margin-inline-end:auto;flex-shrink:0}
 .v-brand img{width:40px;height:40px;object-fit:contain}

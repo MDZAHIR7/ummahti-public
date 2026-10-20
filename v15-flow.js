@@ -84,14 +84,14 @@
   /* Any [data-form] visual (the Guide sky, the du'a rosette, the reflection mosaic) gets --f
      from 0 to 1 over its own stretch of scroll (data-form = how many screens it takes), and
      hears a 'v-form' event so it can count up. */
-  const forms = () => [...main.querySelectorAll('[data-form]')];
+  let forms = [];
 
   /* ------------------------------------------------------- one frame */
   /* Scroll sets targets; every value glides toward its target with a time constant, so a
      sharp wheel step or flick still unfolds as a slow, even movement. */
   const TAU = 0.45;
   let frame = 0, vh = innerHeight, docH = 1, last = 0;
-  const measure = () => { vh = innerHeight; docH = Math.max(1, root.scrollHeight - vh); };
+  const measure = () => { vh = innerHeight; docH = Math.max(1, root.scrollHeight - vh); forms = [...main.querySelectorAll('[data-form]')]; };
   const glide = (el, key, target, k, calm) => {
     const g = el._flow || (el._flow = {});
     const cur = g[key] === undefined || calm ? target : g[key] + (target - g[key]) * k;
@@ -105,47 +105,54 @@
     const k = 1 - Math.exp(-dt / TAU);
     const calm = still();
     let moving = false;
-    const set = (el, prop, key, target, digits = 3) => {
-      const v = glide(el, key, target, k, calm);
+    /* Every position is read before anything is written. Reading a box after a style write
+       forces a fresh layout, and interleaving the two over a few hundred elements meant a
+       few hundred layouts a frame on a phone. A value that would print the same is not
+       written at all, so an element at rest costs no style work. */
+    const put = (el, prop, text) => {
+      const out = el._flowOut || (el._flowOut = {});
+      if (out[prop] !== text) { out[prop] = text; el.style.setProperty(prop, text); }
+    };
+    /* Off screen nothing is seen to glide, so it arrives at once: a jump down the page (a
+       menu link, a flick) settles in one frame instead of easing hundreds of hidden things. */
+    const unseen = r => r.bottom < -vh * 0.25 || r.top > vh * 1.25;
+    const set = (el, prop, key, target, digits = 3, r) => {
+      const v = glide(el, key, target, k, calm || (r && unseen(r)));
       if (v !== target) moving = true;
-      el.style.setProperty(prop, v.toFixed(digits));
+      put(el, prop, v.toFixed(digits));
       return v;
     };
+    const rects = list => list.map(el => el.getBoundingClientRect());
+    const hR = rects(headings), sR = rects(sequenced), cR = rects(chapters), dR = rects(depthItems), fR = rects(forms);
+    const tTop = ticks.map(({ section }) => section.getBoundingClientRect().top + scrollY);
     root.classList.toggle('v-flow-still', calm);
-    for (const h of headings) {
-      const r = h.getBoundingClientRect();
+    headings.forEach((h, i) => {
+      const r = hR[i];
       const target = r.top > vh + 40 ? 0 : r.bottom < -40 ? 1 : clamp((vh * 0.94 - r.top) / (vh * 0.5));
-      set(h, '--k', 'k', calm ? 1 : target);
-    }
-    for (const el of sequenced) {
-      const r = el.getBoundingClientRect();
-      set(el, '--k', 'k', calm ? 1 : clamp((vh * 1.02 - r.top) / (vh * 0.38)));
-    }
-    for (const s of chapters) {
-      const r = s.getBoundingClientRect();
-      set(s, '--k', 'k', calm ? 1 : clamp((vh * 0.98 - r.top) / (vh * 0.8)));
-    }
-    for (const el of depthItems) {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > vh + 200) continue;
+      set(h, '--k', 'k', calm ? 1 : target, 3, r);
+    });
+    sequenced.forEach((el, i) => set(el, '--k', 'k', calm ? 1 : clamp((vh * 1.02 - sR[i].top) / (vh * 0.38)), 3, sR[i]));
+    chapters.forEach((s, i) => set(s, '--k', 'k', calm ? 1 : clamp((vh * 0.98 - cR[i].top) / (vh * 0.8)), 3, cR[i]));
+    depthItems.forEach((el, i) => {
+      const r = dR[i];
+      if (r.bottom < -200 || r.top > vh + 200) return;
       const off = (r.top + r.height / 2 - vh / 2) / vh;
       const v = glide(el, 'py', calm ? 0 : off * -46, k, calm);
       if (Math.abs(v - (calm ? 0 : off * -46)) > 0.2) moving = true;
-      el.style.setProperty('--py', v.toFixed(1) + 'px');
-    }
-    for (const el of forms()) {
-      const r = el.getBoundingClientRect();
+      put(el, '--py', v.toFixed(1) + 'px');
+    });
+    forms.forEach((el, i) => {
       const span = Number((innerWidth < 900 && el.dataset.formPhone) || el.dataset.form) || 1;
       const before = el._flow && el._flow.f;
-      const f = set(el, '--f', 'f', calm ? 1 : clamp((vh * 0.9 - r.top) / (vh * span)), 4);
+      const f = set(el, '--f', 'f', calm ? 1 : clamp((vh * 0.9 - fR[i].top) / (vh * span)), 4, fR[i]);
       if (f !== before) el.dispatchEvent(new CustomEvent('v-form', { detail: f }));
-    }
+    });
     const progress = set(thread, '--p', 'p', clamp(scrollY / docH), 4);
-    for (const { section, tick } of ticks) {
-      const top = section.getBoundingClientRect().top + scrollY;
-      tick.style.setProperty('--at', clamp(top / (docH + vh * 0.3)).toFixed(4));
-      tick.classList.toggle('is-past', top - vh * 0.5 <= progress * docH);
-    }
+    ticks.forEach(({ tick }, i) => {
+      put(tick, '--at', clamp(tTop[i] / (docH + vh * 0.3)).toFixed(4));
+      const past = tTop[i] - vh * 0.5 <= progress * docH;
+      if (tick.classList.contains('is-past') !== past) tick.classList.toggle('is-past', past);
+    });
     if (moving) frame = requestAnimationFrame(update);
     else last = 0;
   }
