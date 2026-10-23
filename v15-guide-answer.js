@@ -110,9 +110,15 @@
       const groups = content.filter(word => !negatives.has(word)).map(word => {
         let options = [...new Set([word, stem(word), ...(aliases.get(word) || [])])];
         options = [...new Set(options.flatMap(term => [term, ...(stemKeys.get(stem(term)) || [])]))].filter(term => Object.hasOwn(index.terms, term));
-        if (!options.length && /^[a-z]{4,}$/.test(word)) options = dictionary.filter(term => /^[a-z]+$/.test(term) && near(word, term)).slice(0, 3);
-        return { word, options };
+        let corrected = false;
+        if (!options.length && /^[a-z]{4,}$/.test(word)) { options = dictionary.filter(term => /^[a-z]+$/.test(term) && near(word, term)).slice(0, 3); corrected = options.length > 0; }
+        return { word, options, corrected };
       });
+      // A single typo can be useful; two unknown nouns are not evidence that
+      // a place name meant an unrelated Quran word (e.g. Paris -> pairs).
+      if (groups.length > 1 && !groups.some(group => group.options.length && !group.corrected)) {
+        groups.forEach(group => { if (group.corrected) group.options = []; });
+      }
       const scores = new Map();
       groups.forEach((group, groupIndex) => {
         group.options.forEach((word, n) => {

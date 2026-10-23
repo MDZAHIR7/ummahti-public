@@ -31,6 +31,7 @@ let loads=0;const engine=w.UmmahtiGuideAnswer.create(G,moon,k=>JSON.parse(read('
   assert.equal((await engine.resolve('67:1–30')).q[0].join(':'),'67:1:10');
   for(const query of ['67:99','115:1','0:1','1:7-1'])assert.equal((await engine.resolve(query)).kind,'explore');
   for(const query of ['qzxvnonword','!!!','weather in Paris','<img src=x onerror=alert(1)>']){const a=await engine.resolve(query);assert(a.q.length>0,'No blank dead end');assert.equal(a.mode,'passages');}
+  for(const query of ['weather in Paris','football score','qzxvnonword'])assert.equal((await engine.resolve(query)).kind,'explore',query+' cannot become an unrelated typo answer');
   let fail=true;const recover=w.UmmahtiGuideAnswer.create(G,moon,k=>k,async()=>{if(fail)throw new Error('temporary');return index;});
   await assert.rejects(()=>recover.resolve('iron'));fail=false;assert.equal((await recover.resolve('iron')).kind,'search');
   const source=read('v15-guide-answer.js');assert(!/\b(?:fetch|sendBeacon|WebSocket|XMLHttpRequest|localStorage|sessionStorage)\b/.test(source),'No query transport or storage');
