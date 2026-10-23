@@ -17,9 +17,16 @@ class Page(HTMLParser):
         self.metadata = {}
         self.canonical = None
         self.scripts = []
+        self.title = ''
+        self.in_title = False
+        self.support_updates = 0
         self.feed(text)
     def handle_starttag(self, tag, attributes):
         a = dict(attributes)
+        if tag == 'title':
+            self.in_title = True
+        if tag == 'section' and 'v-support-current' in a.get('class', '').split():
+            self.support_updates += 1
         if a.get('id'):
             assert a['id'] not in self.ids, f'duplicate id: {a["id"]}'
             self.ids.add(a['id'])
@@ -35,6 +42,14 @@ class Page(HTMLParser):
         if tag == 'script' and a.get('src'):
             self.scripts.append(a['src'])
 
+    def handle_data(self, data):
+        if self.in_title:
+            self.title += data
+
+    def handle_endtag(self, tag):
+        if tag == 'title':
+            self.in_title = False
+
 pages = {}
 for path in ROOT.rglob('index.html'):
     if any(part.startswith('.') for part in path.relative_to(ROOT).parts):
@@ -43,6 +58,12 @@ for path in ROOT.rglob('index.html'):
     page = Page(text)
     pages[path] = page
     assert page.canonical and page.canonical.startswith(SITE + '/'), path
+    assert page.metadata.get('og:url') == page.canonical, f'Link-preview URL differs from canonical: {path}'
+    assert page.metadata.get('og:title') == page.title.strip(), f'Link-preview title differs from page: {path}'
+    if path.relative_to(ROOT).parts[0] in ('ar', 'ur', 'id'):
+        assert 'noindex' in page.metadata.get('robots', '').lower(), f'Draft locale is indexable: {path}'
+    if path.parent.name == 'support':
+        assert page.support_updates == 1, f'Generated support guidance repeated or missing: {path}'
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S):
         data = json.loads(block)
         assert data.get('@context') == 'https://schema.org', path

@@ -220,6 +220,14 @@ counts from overlapping Hifz saves. The regression fixtures execute these
 actual controller paths. Incoming mobile performance work from `936d3f2`
 is preserved when integrating the release; generated pages are rebuilt after
 integration and the combined candidate is verified before the production push.
+The live audit also found Contact sharing metadata inherited from Terms and
+three missing draft robots tags. The document generator now keeps share titles
+and URLs aligned with their own page and enforces noindex for every localized
+document. The 32-page checker verifies those contracts on all routes.
+Repeated builds also exposed duplicate translated Support guidance because
+the old cleanup matched only an exact single-class attribute. Cleanup now
+handles the generated extra class; all four Support pages contain one update
+section, and two consecutive builds produce identical pages.
 
 No standards change required. This refines the existing website architecture;
 it does not amend Android engineering or release standards.

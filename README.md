@@ -126,7 +126,9 @@ Browser comparison and movement samples are recorded in the shared brain.
 On 23 October the owner authorised release after a bug and breakage check.
 That audit also added recovery for failed Guide sources, preserved focused
 search ownership through phone placement, and corrected stale Hifz reference
-results and overlapping passage counts. Physical-device performance is a
+results and overlapping passage counts. Preserved document heads now retain
+their own sharing title/URL, and every draft locale page remains noindex.
+Physical-device performance is a
 separate validation surface from browser samples and fixtures.
 
 The repository root is Cloudflare Pages' output directory. There is no build

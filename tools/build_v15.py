@@ -227,6 +227,17 @@ def write_page(path,text):
 
 def document(lang,c,route,main,document_head):
     old=document_head
+    # Preserved document heads may carry another page's old share metadata.
+    # Keep the document's own title/copy and its actual route authoritative.
+    title=html.unescape(re.search(r'<title>(.*?)</title>',old,re.S)[1]).strip()
+    old=re.sub(r'(<meta property="og:title" content=")[^"]*',lambda m:m[1]+html.escape(title,quote=True),old)
+    old=re.sub(r'(<meta property="og:url" content=")[^"]*',lambda m:m[1]+SITE+link(lang,route),old)
+    if route=='contact':
+        description=html.unescape(re.search(r'<meta name="description" content="([^"]*)"',old)[1])
+        old=re.sub(r'(<meta property="og:description" content=")[^"]*',lambda m:m[1]+html.escape(description,quote=True),old)
+    if lang!='en':
+        old=re.sub(r'<meta\b[^>]*name="robots"[^>]*>\s*','',old)
+        old+='\n<meta name="robots" content="noindex,follow">\n'
     old=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',old)
     old=re.sub(r'<link rel="stylesheet" href="/v15[^"\s]*\.css[^>]*>','',old)
     old+=STYLES
@@ -271,12 +282,12 @@ def build(languages=None):
             main_doc=re.sub(r'<section\b[^>]*aria-labelledby="shots-title".*?</section>',fresh_captures,main_doc,flags=re.S)
         if route=='whats-new':
             main_doc=re.sub(r'<section class="v-release-current".*?</section>','',main_doc,flags=re.S)
-            main_doc=re.sub(r'<section class="v-local-update".*?</section>','',main_doc,flags=re.S)
+            main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
             block=render('<section class="v-release-current" id="v1-5"><p class="v-kicker">{{releaseHeading}}</p><h2>1.5.0</h2><h3>My Hifz</h3><p>{{hifzBody}}</p><p>{{reciteDescription}} {{spokenDescription}} {{bulkDescription}}</p>',c)
             block+=release_items(lang)+'<h3>'+html.escape(c['refinements'])+'</h3><ul>'+''.join('<li>'+html.escape(value)+'</li>' for value in RELEASE[lang]['improvements'])+'</ul><p>'+html.escape(c['reflectionBody'])+'</p><p><a href="'+link(lang,'quran')+'#catalogue">'+html.escape(c['allFeatures'])+' ↗</a></p><hr></section>'
             main_doc=re.sub(r'(<article\b[^>]*>)',lambda m:m[1]+block,main_doc,count=1)
         if lang!='en':
-            main_doc=re.sub(r'<section class="v-local-update".*?</section>','',main_doc,flags=re.S)
+            main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
             block=''
             if route=='support':
                 block=render('''<section class="v-local-update v-support-current"><h2>{{supportCurrent}}</h2><h3>My Hifz</h3><p>{{findPassageBody}} {{makeItYoursBody}}</p><details><summary>{{faqVoice}}</summary><p>{{spokenDescription}}</p><p>{{reciteDescription}}</p><p>{{privacyModel}}</p></details><h3>My Khatm</h3><p>{{khatmBody}}</p><p>{{khatmHonesty}}</p><h3>Ayah on Unlock</h3><p>{{unlockBody}} {{placeSafe}}</p><p>{{everyUnlock}} · {{hourly}} · {{daily}}</p><h3>{{recitation}}</h3><p>{{offlineBody}} {{audioLimit}}</p><hr></section>''',c)
