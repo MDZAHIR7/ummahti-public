@@ -13,7 +13,20 @@ and open http://127.0.0.1:4173/. No package installation or build is needed.
 Run `python tools/build_v15.py` after changing the shared template or copy.
 Run `python tools/check_v15.py` and `python tools/check_site.py` for source,
 identity, locale, asset, fragment, structured-data and canonical checks.
-`node --check v15.js` checks the interaction script syntax.
+Run `python tools/check_experience.py` for the eight home/app pages' capture
+dimensions, preview hooks, localized search controls and local-query guards
+(this independent image check needs Pillow). The focused regression fixtures
+execute the shipped controllers and local content:
+
+- `node tools/test_guide_search.cjs`: reviewed Guide search and explicit selection.
+- `node tools/test_phone_handoff.cjs`: the single phone owner, scroll restoration,
+  interruption, reversal, focus and resize behavior.
+- `node tools/test_hifz_preview.cjs`: explicit example review, typed references,
+  actual Quran boundaries, cancellation and audio/microphone traps.
+
+Check changed interaction scripts with `node --check`, including
+`node --check v15-phone-handoff.js` and `node --check v15-field-light.js`
+when the phone or shared light helper changes.
 
 The existing localization entry points delegate to the V1.5 generator, so an
 older translation command cannot put the previous page back over this design.
@@ -43,6 +56,32 @@ Do not replace them with refresh stubs: the mirror does not read `_redirects`.
 - `v15.css`: editorial composition, responsive layout, controls and sheets.
 - `v15.js`: examples, native-scroll navigation, themes, gallery, media lifecycle
   and interruptible detail sheets. No new framework or animation dependency.
+- `v15-renders.js`, `v15-renders.css`: sized phone walkthroughs, named app
+  moments and bounded preview interactions.
+- `v15-phone-handoff.js`: the single owner of the retained hero-to-demo phone.
+  Home/dock controls stay in their layout positions; the actual phone reparents
+  first, then follows a bowed, gently banked, damped inverse-transform path
+  over 680–850 ms. Reversal retains its current affine pose. A visible source
+  waits until at least 64 px of the receiving slot is in view. Scroll
+  hysteresis, restored anchors, top returns and resize use the same controller.
+- `v15-handoff-craft.css`: the finite placement glint, receiving light cradle
+  and source-backdrop recession, coordinated with that controller. Reduced
+  motion and forced colors suppress the decorative flight light.
+- `v15-hifz-refinement.css`: compact Hifz sheets and the explicit website
+  walkthrough. It neither plays a reciter recording nor listens. Visitors
+  review a known Quran passage or type a validated reference before saving in
+  this page's example.
+- `v15-guide.js`: reviewed local-topic search and explicit answer selection.
+- `v15-field-light.js`, `v15-guide-light.css`: shared hero/full-Guide feedback
+  following the inspected Frames mechanism: a masked full conic-gradient rim
+  and matching blurred bloom. The current treatment uses a 2 px rim, 18 px
+  bloom blur and 3.2 s rotation in theme-derived gold, warm white and emerald.
+  Focus/typing keep it flowing; submit surges for 1,100 ms before a static
+  settled rim. Blur, no match, offscreen/hidden state and reduced motion have
+  explicit lifecycle handling. Local results never wait for the decoration;
+  no AI backend is implied. This supersedes the earlier SVG dash passes.
+- `v15-flow.js`, `v15-experience.css`: viewport-triggered arrivals that finish
+  by time, responsive composition, header utilities and theme-aware light.
 - `styles.css`: the existing twelve app palettes and original reciter system.
 - `theme.js`: restores the validated theme before paint using `ummahti:theme`.
 - `sky.js`: the approved ambient room, called by V1.5's single lifecycle loop.
@@ -78,6 +117,17 @@ Owned film derivatives are prepared separately; provenance is in
 `V15-REVIEW.md` records actual verification and remaining limits.
 `brand-spec.md` describes the current identity and visual rules.
 `SEARCH-AND-IDENTITY.md` records the entity corrections and free rollout work.
+`WEBSITE-EXPERIENCE-20261021.md` records the current implementation, checks,
+preserved boundaries and remaining release verification.
+The owner rejected the earlier interaction finish on 22 October. The current
+local iteration replaces the rejected travelling dash with a flowing full
+colour rim and develops the phone placement beyond a straight transform.
+Browser comparison and movement samples are recorded in the shared brain.
+On 23 October the owner authorised release after a bug and breakage check.
+That audit also added recovery for failed Guide sources, preserved focused
+search ownership through phone placement, and corrected stale Hifz reference
+results and overlapping passage counts. Physical-device performance is a
+separate validation surface from browser samples and fixtures.
 
 The repository root is Cloudflare Pages' output directory. There is no build
 command. Pushing main deploys; push only when the owner asks for a release.

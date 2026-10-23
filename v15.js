@@ -34,7 +34,7 @@
  document.addEventListener('keydown',event=>{
    if(event.key!=='Escape')return;
    const open=menus.find(item=>item.open);
-   if(open){open.open=false;$('summary',open).focus();}
+   if(open){open.open=false;$('summary',open).focus({preventScroll:true});}
  });
 
  const themeButtons=$$('[data-v-theme]');
@@ -46,11 +46,33 @@
    const active=themeButtons.find(b=>b.dataset.vTheme===id);
    const summary=$('.v-theme-menu>summary');
    if(summary)summary.setAttribute('aria-label',t('readingTheme')+': '+active.textContent.trim());
+   // Light surfaces need darker edge light; do not infer this from a theme name.
+   const rgb=getComputedStyle(root).getPropertyValue('--ink').trim().replace('#','');
+   if(/^[0-9a-f]{6}$/i.test(rgb)){
+     const channels=[0,2,4].map(i=>parseInt(rgb.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);
+     root.classList.toggle('v-light',channels[0]*.2126+channels[1]*.7152+channels[2]*.0722>.4);
+   }
    const meta=$('meta[name="theme-color"]');
    if(meta)meta.content=getComputedStyle(root).getPropertyValue('--ink').trim();
  }
- themeButtons.forEach(button=>button.addEventListener('click',()=>setTheme(button.dataset.vTheme,true)));
+ themeButtons.forEach(button=>button.addEventListener('click',()=>{
+   setTheme(button.dataset.vTheme,true);
+   const menu=button.closest('.v-theme-menu');
+   if(menu){menu.open=false;$('summary',menu)?.focus({preventScroll:true});}
+ }));
  setTheme(root.dataset.theme||'obsidian');
+
+ // This control owns only the long app film's audio, never recitation or background sound.
+ const siteSound=$('[data-site-sound]'),soundFilm=$('.v-story-film [data-logo-video]');
+ if(siteSound&&soundFilm){
+   siteSound.hidden=false;
+   const syncSound=()=>{
+     siteSound.setAttribute('aria-pressed',String(!soundFilm.muted));
+     siteSound.setAttribute('aria-label',t('filmSound')+': '+t(soundFilm.muted?'rSoundOn':'rSoundOff'));
+   };
+   siteSound.addEventListener('click',()=>{soundFilm.muted=!soundFilm.muted;syncSound();});
+   soundFilm.addEventListener('volumechange',syncSound);syncSound();
+ }
 
  // Restore the useful copy controls on the contact and creator pages.
  if(navigator.clipboard&&window.isSecureContext)$$('[data-copy-block]').forEach(block=>{

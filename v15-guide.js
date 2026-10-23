@@ -16,6 +16,8 @@
   const T = window.UMMAHTI_V15_I18N || {};
   const t = (k, f) => T[k] || f;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const motionToggle = document.querySelector('[data-motion-toggle]');
+  const still = () => reduced.matches || motionToggle?.getAttribute('aria-pressed') === 'true' || document.hidden;
   const M = window.UMMAHTI_MOON;
   const digits = new Intl.NumberFormat(root.lang || 'en');
   const sky = section.querySelector('[data-guide-sky]');
@@ -66,7 +68,7 @@
     b.tabIndex = -1;
     b.dataset.k = tp.k;
     b.innerHTML = '<i aria-hidden="true"></i>';
-    b.addEventListener('click', () => select(i, true));
+    b.addEventListener('click', () => select(i, true, 'reader'));
     b.addEventListener('pointerenter', () => preview(i));
     b.addEventListener('pointerleave', () => preview(-1));
     b.addEventListener('focus', () => preview(i));
@@ -134,7 +136,10 @@
     if (!loading[n]) loading[n] = new Promise((resolve, reject) => {
       const tag = document.createElement('script');
       tag.src = '/media/v15/quran/s' + String(n).padStart(3, '0') + '.js?v=20261019f';
-      tag.onload = () => (window.UMMAHTI_AYAT && window.UMMAHTI_AYAT[n] ? resolve(window.UMMAHTI_AYAT[n]) : reject());
+      tag.onload = () => {
+        if (window.UMMAHTI_AYAT && window.UMMAHTI_AYAT[n]) resolve(window.UMMAHTI_AYAT[n]);
+        else { delete loading[n]; reject(); }
+      };
       tag.onerror = () => { delete loading[n]; reject(); };
       document.head.append(tag);
     });
@@ -144,26 +149,38 @@
   const refText = ([s, a, e]) => surahName(s) + ' ' + digits.format(s) + ':' + digits.format(a) + (e > a ? '–' + digits.format(e) : '');
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
 
-  let current = -1, passage = 0;
+  let current = -1, passage = 0, passageRequest = 0, passageFailed = false, readerAnimation = null;
+  reader.setAttribute('aria-live', 'off');
+  reader.id ||= 'guide-reader';
+  $r('[data-guide-title]').tabIndex = -1;
   function showPassage(tp, k) {
     passage = k;
+    passageFailed = false;
+    const request = ++passageRequest;
     const box = $r('[data-guide-ayah]');
     const ref = tp.q[k];
     $r('[data-guide-refs]').querySelectorAll('button').forEach((b, n) => b.setAttribute('aria-pressed', String(n === k)));
     if (!ref) { box.hidden = true; return; }
     box.hidden = false;
     box.classList.add('is-loading');
+    box.setAttribute('aria-busy', 'true');
+    $r('[data-guide-ayah-ar]').textContent = '';
+    $r('[data-guide-ayah-en]').textContent = '';
     $r('[data-guide-ayah-ref]').textContent = refText(ref);
     surah(ref[0]).then(ayat => {
-      if (current < 0 || topics[current] !== tp || passage !== k) return;
+      if (request !== passageRequest || current < 0 || topics[current] !== tp || passage !== k) return;
       const [s, a, e] = ref, slice = ayat.slice(a - 1, e);
       const ar = $r('[data-guide-ayah-ar]'), en = $r('[data-guide-ayah-en]');
       ar.textContent = slice.map((v, n) => v[0] + ' ﴿' + digits.format(a + n) + '﴾').join(' ');
       en.textContent = slice.map(v => v[1]).join(' ');
       box.classList.remove('is-loading');
+      box.setAttribute('aria-busy', 'false');
     }, () => {
+      if (request !== passageRequest || current < 0 || topics[current] !== tp || passage !== k) return;
+      passageFailed = true;
       $r('[data-guide-ayah-en]').textContent = t('verseFailed', 'This verse could not load. Check your connection and try again.');
       box.classList.remove('is-loading');
+      box.setAttribute('aria-busy', 'false');
     });
   }
   function fill(i) {
@@ -218,27 +235,32 @@
     next.replaceChildren(...tp.f.map(id => {
       const j = byId.get(id), b = el('button', '', topics[j].t);
       b.type = 'button';
-      b.addEventListener('click', () => select(j, true, true));
+      b.addEventListener('click', () => select(j, true, 'reader'));
       return b;
     }));
     $r('[data-guide-next-wrap]').hidden = !tp.f.length;
     $r('[data-guide-count]').textContent = t('guideSourcesCount', '{n} sources').replace('{n}', digits.format(sources(tp)));
   }
-  function select(i, user, follow) {
-    if (i === current) return;
-    const was = current;
-    current = i;
-    stars.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.tabIndex = k === i ? 0 : -1; s.setAttribute('aria-pressed', String(k === i)); });
-    edges.forEach(e => e.p.classList.toggle('is-on', e.i === i || e.j === i));
-    const swap = () => fill(i);
-    if (user && !reduced.matches && reader.animate && was >= 0) {
-      reader.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(6px)' }], { duration: 140, easing: 'ease-in' }).onfinish = () => {
-        swap();
-        reader.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' });
-      };
-    } else swap();
-    if (follow) stars[i].focus({ preventScroll: true });
-    if (user && innerWidth < 900) reader.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' });
+  function select(i, user, focusTarget) {
+    if (!topics[i]) return;
+    readerAnimation?.cancel();
+    readerAnimation = null;
+    if (i !== current) {
+      current = i;
+      stars.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.tabIndex = k === i ? 0 : -1; s.setAttribute('aria-pressed', String(k === i)); });
+      edges.forEach(e => e.p.classList.toggle('is-on', e.i === i || e.j === i));
+      /* Content is ready immediately. A superseded animation can never fill an old topic. */
+      fill(i);
+      if (user && !still() && reader.animate) {
+        readerAnimation = reader.animate([{ opacity: .7, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.22,1,.36,1)' });
+      }
+    } else if (user && passageFailed) showPassage(topics[i], passage);
+    if (focusTarget === 'star') stars[i].focus({ preventScroll: true });
+    if (focusTarget === 'reader' || focusTarget === 'search-answer') {
+      if (status) status.textContent = t('guideResultReady', 'Ready: {topic}').replace('{topic}', topics[i].t);
+      $r('[data-guide-title]').focus({ preventScroll: true });
+      (focusTarget === 'search-answer' ? form : reader).scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+    }
   }
 
   /* --------------------------------------------------- preview, focus */
@@ -259,9 +281,11 @@
     const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
     if (!(event.key in keys)) return;
     event.preventDefault();
-    const order = groups.flat(), at = order.indexOf(current);
+    const order = groups.flat().filter(i => !stars[i].disabled);
+    if (!order.length) return;
+    const at = order.indexOf(stars.indexOf(event.target.closest('.v-star')));
     const step = keys[event.key] * (rtl && (event.key === 'ArrowRight' || event.key === 'ArrowLeft') ? -1 : 1);
-    select(order[(at + step + order.length) % order.length], true, true);
+    select(order[(at + step + order.length) % order.length], true, 'star');
   });
 
   /* ------------------------------------------------- subjects, search */
@@ -274,34 +298,204 @@
   function filterSubject(k) {
     subject = k;
     chipButtons.forEach((b, n) => b.setAttribute('aria-pressed', String(n - 1 === k)));
+    stopLight();
     apply();
-    if (k >= 0 && (current < 0 || topics[current].k !== k)) select(groups[k][0], true);
   }
-  const fold = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ًͯ-ٰٟ]/g, '');
-  const haystack = topics.map(tp => fold([tp.t, tp.s, tp.e, ...tp.w].join(' ')));
+  const fold = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ًͯ-ٰٟ]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+  const stopWords = new Set('i my me the a an to for is am what how do does can with and in'.split(' '));
+  const index = topics.map(tp => ({ title: fold(tp.t), question: fold(tp.s), phrases: tp.w.map(fold), all: fold([tp.t, tp.s, tp.e, ...tp.w].join(' ')) }));
+  let matches = topics.map((_, i) => i);
+
+  /* The real query remains local. Matching never changes selection, focus, or document scroll. */
+  const form = search?.closest('form');
+  const field = el('div', 'v-guide-field');
+  const suggestions = el('div', 'v-guide-queries');
+  const resultList = el('ul', 'v-guide-results');
+  resultList.id = 'guide-matches';
+  resultList.setAttribute('aria-label', t('guideResultsLabel', 'Matching Guide topics'));
+  const clear = el('button', 'v-guide-clear', '×');
+  clear.type = 'button';
+  clear.setAttribute('aria-label', t('guideSearchClear', 'Clear search'));
+  const submit = el('button', 'v-guide-submit');
+  submit.type = 'submit';
+  submit.append(el('span', '', t('guideSearchSubmit', 'Find a topic')));
+  const submitMark = el('i', '', '→');
+  submitMark.setAttribute('aria-hidden', 'true');
+  submit.append(submitMark);
+  const hint = el('p', 'v-guide-search-hint', t('guideSearchHint', 'Search reviewed topics. Choose a match to read its sources.'));
+  hint.id = 'guide-search-hint';
+  let fieldLight, lightAfterArrival = false;
+  if (form && search) {
+    form.classList.add('has-guide-field');
+    const icon = form.querySelector(':scope > span[aria-hidden]');
+    if (icon) {
+      icon.className = 'v-guide-search-mark';
+      icon.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>';
+      field.append(icon);
+    }
+    field.append(search, clear, submit);
+    form.insertBefore(field, status || null);
+    form.insertBefore(hint, status || null);
+    form.append(suggestions, resultList);
+    search.setAttribute('aria-controls', resultList.id);
+    search.setAttribute('aria-describedby', hint.id);
+    fieldLight = window.UmmahtiFieldLight.create(field, { still });
+    const examples = ['anxiety_and_worry', 'waking_for_fajr', 'forgiveness_and_repentance'].map(id => byId.get(id)).filter(i => i !== undefined);
+    suggestions.append(el('span', 'v-guide-query-label', t('guideTryQuestion', 'Try a question')));
+    examples.forEach(i => {
+      const b = el('button', '', topics[i].s);
+      b.type = 'button';
+      b.addEventListener('click', () => {
+        search.value = topics[i].s;
+        subject = -1;
+        chipButtons.forEach((chip, n) => chip.setAttribute('aria-pressed', String(n === 0)));
+        apply();
+        openMatch(i);
+      });
+      suggestions.append(b);
+    });
+  }
+  function stopLight(retain = false) { fieldLight?.stop({ retain }); }
+  function illuminate(kind) {
+    fieldLight?.activate(kind);
+  }
+  function acknowledge() {
+    field.dataset.state = 'matched';
+    illuminate('matched');
+  }
+  function openMatch(i) {
+    if (i < 0 || !topics[i]) return;
+    // Keep the query and accepted sources in one reading composition. The old
+    // reader jump immediately scrolled its own acknowledgement out of view.
+    section.classList.add('is-search-answer');
+    resultList.hidden = true;
+    lightAfterArrival = !window.UmmahtiFieldLight.inViewport(field);
+    acknowledge();
+    select(i, true, 'search-answer');
+  }
   function apply() {
-    const q = fold(search ? search.value.trim() : '');
-    const words = q.split(/\s+/).filter(w => w.length > 1);
-    let shown = 0, first = -1;
+    section.classList.remove('is-search-answer');
+    lightAfterArrival = false;
+    const q = fold(search?.value || '');
+    const words = q.split(' ').filter(w => w.length > 1 && !stopWords.has(w));
+    const ranked = [];
     stars.forEach((s, i) => {
       const inSubject = subject < 0 || topics[i].k === subject;
-      const match = !words.length || words.every(w => haystack[i].includes(w));
+      const item = index[i];
+      const match = !q || (words.length > 0 && words.every(w => item.all.includes(w)));
       const on = inSubject && match;
       s.classList.toggle('is-dim', !on);
-      if (on) { shown++; if (first < 0) first = i; }
+      s.disabled = !on;
+      if (on) {
+        const score = q ? (item.title === q ? 1000 : 0) + (item.question === q ? 900 : 0) + (item.phrases.includes(q) ? 800 : 0) + (item.title.includes(q) ? 250 : 0) + (item.question.includes(q) ? 180 : 0) + words.reduce((sum, w) => sum + (item.title.includes(w) ? 30 : 0) + (item.question.includes(w) ? 20 : 0) + (item.phrases.some(p => p.includes(w)) ? 8 : 0), 0) : 0;
+        ranked.push({ i, score });
+      }
     });
+    matches = ranked.sort((a, b) => b.score - a.score || a.i - b.i).map(row => row.i);
+    const tabStop = matches.includes(current) ? current : matches[0];
+    stars.forEach((s, i) => { s.tabIndex = i === tabStop ? 0 : -1; });
     sky.querySelectorAll('.v-sky-label').forEach(l => l.classList.toggle('is-dim', subject >= 0 && Number(l.dataset.k) !== subject));
-    if (status) status.textContent = words.length ? (shown ? (shown === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(shown))) : t('guideNoMatch', 'Nothing matched. Try other words, or choose a subject.')) : '';
-    return first;
+    if (status) status.textContent = q || subject >= 0 ? (matches.length ? (matches.length === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(matches.length))) : t('guideNoMatch', 'Nothing matched. Try other words, or choose a subject.')) : '';
+    clear.hidden = !search?.value;
+    submit.disabled = !q || !matches.length;
+    suggestions.hidden = Boolean(q || subject >= 0);
+    resultList.hidden = !matches.length || (!q && subject < 0);
+    resultList.replaceChildren(...(q || subject >= 0 ? matches.slice(0, 6).map(i => {
+      const tp = topics[i], li = el('li'), b = el('button', '');
+      b.type = 'button';
+      b.dataset.guideResult = tp.id;
+      b.setAttribute('aria-controls', reader.id);
+      b.setAttribute('aria-label', t('guideBrowseTopic', 'Read this topic') + ': ' + tp.t);
+      b.append(el('b', '', tp.t), el('span', '', tp.s), el('small', '', G.categories[tp.k] + ' · ' + t('guideSourcesCount', '{n} sources').replace('{n}', digits.format(sources(tp)))));
+      b.addEventListener('click', () => openMatch(i));
+      li.append(b);
+      return li;
+    }) : []));
+    field.dataset.state = q ? (matches.length ? 'typing' : 'empty') : 'idle';
+    return matches[0] ?? -1;
   }
-  let typing = 0;
-  search?.addEventListener('input', () => {
-    clearTimeout(typing);
-    typing = setTimeout(() => { const first = apply(); if (first >= 0 && search.value.trim().length > 2) select(first, true); }, 160);
+  let composing = false;
+  search?.addEventListener('focus', () => {
+    if (field.dataset.state !== 'empty') illuminate('focus');
   });
-  search?.closest('form')?.addEventListener('submit', event => { event.preventDefault(); const first = apply(); if (first >= 0) select(first, true, true); });
+  search?.addEventListener('blur', event => {
+    /* A submitted pass can settle while its sources receive focus. The field observer
+       cancels it as soon as scrolling takes the actual control out of view. */
+    if (!field.contains?.(event.relatedTarget) && field.dataset.light !== 'matched') stopLight(field.dataset.state === 'matched');
+  });
+  search?.addEventListener('input', () => {
+    readerAnimation?.cancel();
+    if (!composing) apply();
+    if (search.value.trim() && (composing || matches.length)) illuminate('typing');
+    else stopLight();
+  });
+  search?.addEventListener('compositionstart', () => { composing = true; });
+  search?.addEventListener('compositionend', () => {
+    composing = false; apply();
+    if (search.value.trim() && matches.length) illuminate('typing');
+    else stopLight();
+  });
+  search?.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && search.value) {
+      event.preventDefault(); clearQuery();
+    } else if (event.key === 'ArrowDown' && !composing) {
+      const firstResult = resultList.querySelector('button');
+      if (firstResult) { event.preventDefault(); firstResult.focus({ preventScroll: true }); }
+    }
+  });
+  function clearQuery() {
+    stopLight();
+    search.value = '';
+    apply();
+    search.focus({ preventScroll: true });
+  }
+  clear.addEventListener('click', clearQuery);
+  resultList.addEventListener('keydown', event => {
+    const buttons = [...resultList.querySelectorAll('button')], at = buttons.indexOf(event.target);
+    if (event.key === 'Escape' || (event.key === 'ArrowUp' && at === 0)) {
+      event.preventDefault(); search.focus({ preventScroll: true });
+    } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault(); buttons[Math.max(0, Math.min(buttons.length - 1, at + (event.key === 'ArrowDown' ? 1 : -1)))]?.focus({ preventScroll: true });
+    }
+  });
+  form?.addEventListener('submit', event => {
+    event.preventDefault();
+    if (composing) return;
+    const first = apply();
+    if (search.value.trim() && first >= 0) openMatch(first);
+  });
+  const stopMotion = () => {
+    lightAfterArrival = false;
+    stopLight(field.dataset.state === 'matched');
+    readerAnimation?.cancel();
+    readerAnimation = null;
+  };
+  reduced.addEventListener('change', stopMotion);
+  motionToggle?.addEventListener('click', stopMotion);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopMotion(); });
+  new IntersectionObserver(entries => { if (!entries[0].isIntersecting) stopMotion(); }).observe(section);
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) stopLight(field.dataset.state === 'matched');
+    else if (lightAfterArrival) { lightAfterArrival = false; illuminate('matched'); }
+    else if (document.activeElement === search && !['matched', 'empty'].includes(field.dataset.state)) {
+      if (search.value.trim() && (composing || matches.length)) illuminate('typing');
+      else if (!search.value.trim()) illuminate('focus');
+    }
+  }).observe(field);
+  document.addEventListener('ummahti:guide-open', event => {
+    const { topicId, query } = event.detail || {};
+    const i = byId.get(topicId);
+    search.value = typeof query === 'string' ? query : (topics[i]?.s || '');
+    subject = -1;
+    chipButtons.forEach((chip, n) => chip.setAttribute('aria-pressed', String(n === 0)));
+    const first = apply();
+    if (i !== undefined) openMatch(i);
+    else if (first >= 0 && search.value.trim()) openMatch(first);
+    else search.focus({ preventScroll: true });
+  });
 
   /* Start with a question almost everyone brings. */
   const start = ['anxiety_and_worry', 'delayed_dua', 'feeling_far_from_allah'].map(id => byId.get(id)).find(i => i !== undefined);
   select(start !== undefined ? start : 0, false);
+  apply();
 })();

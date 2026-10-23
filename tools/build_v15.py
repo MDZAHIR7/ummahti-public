@@ -24,7 +24,8 @@ HEAD=snippets['head'].replace('\r\n','\n').replace('\r','\n')
 HEAD=re.sub(r'<script type="application/ld\+json">\s*\{\s*"@context": "https://schema.org",\s*"@type": "VideoObject".*?</script>','',HEAD,flags=re.S)
 HEAD=re.sub(r'<link rel="stylesheet" href="/(?:hub|editorial)\.css[^>]+>','',HEAD)
 HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
-HEAD+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019r">\n'
+STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r4">\n'
+HEAD+=STYLES
 
 def render(text,c):
     def sub(match):
@@ -44,7 +45,24 @@ def language_links(lang,route=''):
 
 def header(c,lang,route=''):
     home=link(lang)
-    return render('''<a class="skip" href="#main">{{skip}}</a><header class="v-header"><nav class="v-nav" aria-label="{{pageSections}}"><a class="v-brand" href="HOME" aria-label="Ummahti"><img src="/media/brand/2026-10/crescent-128.webp" width="128" height="128" alt=""><span>UMMAHTI</span></a><div class="v-nav-links"><a href="HOME#inside">{{navQuran}}</a><a href="HOME#purpose">{{navPurpose}}</a><a href="HOME#community">{{navCommunity}}</a></div><div class="v-nav-tools"><span class="r-socials"><a href="https://www.youtube.com/@Ummahti" aria-label="YouTube @Ummahti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="https://www.instagram.com/ummahti_quran/" aria-label="Instagram @ummahti_quran"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"/></svg></a></span><details class="v-theme-menu"><summary aria-label="{{readingTheme}}"><span class="v-theme-indicator" aria-hidden="true"><i></i><i></i><i></i></span><span aria-hidden="true">⌄</span></summary><div class="v-popover">THEMES</div></details><details class="v-language"><summary aria-label="{{language}}">LANG ⌄</summary><div class="v-popover">LANGS</div></details><details class="v-menu"><summary>{{menu}} <span aria-hidden="true">＋</span></summary><div class="v-popover"><a href="HOME#inside">{{navQuran}}</a><a href="HOME#purpose">{{navPurpose}}</a><a href="HOME#community">{{navCommunity}}</a><a href="NEWS">{{whatsNew}}</a><a href="SUPPORT">{{support}}</a></div></details><a class="v-play-badge" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a></div></nav></header>''',c).replace('HOME',home).replace('THEMES',theme_buttons(c)).replace('LANGS',language_links(lang,route)).replace('LANG',lang.upper()).replace('NEWS',link(lang,'whats-new')).replace('SUPPORT',link(lang,'support'))
+    globe='<svg viewBox="0 0 24 24" data-language-globe aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z"/></svg>'
+    palette='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/></svg>'
+    caret='<svg class="v-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>'
+    sound='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4Z"/><path class="v-sound-wave" d="M15 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14"/><path class="v-sound-slash" d="m16 9 6 6m0-6-6 6"/></svg>'
+    values={**c,'globeIcon':globe,'themeIcon':palette,'caretIcon':caret,'soundIcon':sound,'currentLanguage':LANGS[lang][0],'languageCode':lang.upper()}
+    markup='''<a class="skip" href="#main">{{skip}}</a>
+<header class="v-header"><nav class="v-nav" aria-label="{{pageSections}}">
+<a class="v-brand" href="HOME" aria-label="Ummahti"><img src="/media/brand/2026-10/crescent-128.webp" width="128" height="128" alt=""><span>UMMAHTI</span></a>
+<div class="v-nav-links"><a href="HOME#inside">{{navQuran}}</a><a href="HOME#purpose">{{navPurpose}}</a><a href="HOME#community">{{navCommunity}}</a></div>
+<div class="v-nav-tools">
+<span class="r-socials"><a href="https://www.youtube.com/@Ummahti" aria-label="YouTube @Ummahti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="https://www.instagram.com/ummahti_quran/" aria-label="Instagram @ummahti_quran"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"/></svg></a></span>
+<button class="v-utility v-site-sound" type="button" data-site-sound aria-pressed="false" aria-label="{{filmSound}}: {{rSoundOn}}" hidden>{{soundIcon}}<span class="v-utility-label">{{filmSound}}</span></button>
+<details class="v-theme-menu"><summary class="v-utility" aria-label="{{readingTheme}}">{{themeIcon}}<span class="v-utility-label">{{readingTheme}}</span>{{caretIcon}}</summary><div class="v-popover">THEMES</div></details>
+<details class="v-language"><summary class="v-utility" aria-label="{{language}}">{{globeIcon}}<span class="v-language-name">{{currentLanguage}}</span><span class="v-language-code" aria-hidden="true">{{languageCode}}</span>{{caretIcon}}</summary><div class="v-popover">LANGS</div></details>
+<details class="v-menu"><summary class="v-utility">{{menu}}{{caretIcon}}</summary><div class="v-popover"><a href="HOME#inside">{{navQuran}}</a><a href="HOME#purpose">{{navPurpose}}</a><a href="HOME#community">{{navCommunity}}</a><a href="NEWS">{{whatsNew}}</a><a href="SUPPORT">{{support}}</a><a href="https://www.youtube.com/@Ummahti">YouTube @Ummahti</a><a href="https://www.instagram.com/ummahti_quran/">Instagram @ummahti_quran</a></div></details>
+<a class="v-play-badge" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>
+</div></nav></header>'''
+    return render(markup,values).replace('HOME',home).replace('THEMES',theme_buttons(c)).replace('LANGS',language_links(lang,route)).replace('NEWS',link(lang,'whats-new')).replace('SUPPORT',link(lang,'support'))
 
 def footer(c,lang):
     text=render('''<footer class="v-footer"><div class="v-shell"><div class="v-footer-main"><div><a class="v-brand" href="HOME" aria-label="Ummahti"><img src="/media/brand/2026-10/crescent-128.webp" width="128" height="128" alt=""><span>UMMAHTI</span></a><p>{{footerPurpose}}</p></div><nav aria-label="{{footerExplore}}"><p>{{footerExplore}}</p><a href="QURAN">Ummahti Quran</a><a href="NEWS">{{whatsNew}}</a><a href="PRESS">{{press}}</a></nav><nav aria-label="{{footerChannels}}"><p>{{footerChannels}}</p><a href="https://www.youtube.com/@Ummahti">YouTube @Ummahti ↗</a><a href="https://www.instagram.com/ummahti_quran/">Instagram @ummahti_quran ↗</a><a href="https://play.google.com/store/apps/details?id=com.ummahti.quran">Google Play ↗</a></nav><nav aria-label="{{footerHelp}}"><p>{{footerHelp}}</p><a href="SUPPORT">{{support}}</a><a href="CONTACT">{{contact}}</a><a href="PRIVACY">{{privacy}}</a><a href="TERMS">{{terms}}</a></nav></div><div class="v-footer-bottom"><div><p>{{copyright}}</p><p>{{trademark}}</p></div><div class="v-language-links">LANGS</div><button type="button" class="v-quiet" data-motion-toggle aria-pressed="false">{{pauseAtmosphere}}</button></div></div></footer>''',c)
@@ -118,14 +136,29 @@ SLIDES=[('home','media/screens/2026-10/home'),('mushaf','media/screens/2026-10/m
         ('audio','media/screens/2026-10/audio'),('guide','media/screens/2026-10/guide'),('unlock','media/screens/2026-10/unlock'),
         ('hifz','media/v15/hifz-overview'),('recite','media/v15/hifz-recite'),('themes','media/screens/2026-10/themes')]
 
+def webp_size(path):
+    """Read the actual WebP canvas, keeping static page generation dependency-free."""
+    with path.open('rb') as asset:
+        data=asset.read(30)
+    assert data[:4]==b'RIFF' and data[8:12]==b'WEBP',path
+    kind=data[12:16]
+    if kind==b'VP8X':
+        return 1+int.from_bytes(data[24:27],'little'),1+int.from_bytes(data[27:30],'little')
+    if kind==b'VP8L':
+        bits=int.from_bytes(data[21:25],'little')
+        return 1+(bits&0x3fff),1+((bits>>14)&0x3fff)
+    assert kind==b'VP8 ' and data[23:26]==b'\x9d\x01\x2a',path
+    return int.from_bytes(data[26:28],'little')&0x3fff,int.from_bytes(data[28:30],'little')&0x3fff
+
 def slides_html(c):
     """Real app screens, one claim and one plain sentence each."""
     items=''
     for k,(id_,path) in enumerate(SLIDES,1):
         title=c['slide_'+id_+'_title'];body=c['slide_'+id_+'_body']
+        width,height=webp_size(ROOT/(path+'-420.webp'))
         items+=(f'<li class="v-slide" data-slide aria-roledescription="slide" aria-label="{k} / {len(SLIDES)}"><figure>'
                 f'<div class="v-phone"><img src="/{path}-420.webp" srcset="/{path}-420.webp 420w, /{path}-840.webp 840w" sizes="(max-width:680px) 62vw, 300px" '
-                f'width="420" height="933" loading="lazy" decoding="async" alt="{html.escape(re.sub("<[^>]+>","",title),quote=True)}" draggable="false"></div>'
+                f'width="{width}" height="{height}" loading="lazy" decoding="async" alt="{html.escape(re.sub("<[^>]+>","",title),quote=True)}" draggable="false"></div>'
                 f'<figcaption><h3>{title}</h3><p>{body}</p></figcaption></figure></li>')
     return items
 
@@ -181,8 +214,10 @@ def hero_ayah(lang):
             'heroAyahRef':html.escape(name)+f' {s}:{a}'}
 
 def scripts(lang,moon=False):
-    extra=f'\n<script src="/media/v15/moon-data.js?v=20261019f" defer></script>\n<script src="/v15-moon.js?v=20261019r" defer></script>\n<script src="/v15-slides.js?v=20261019f" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-guide.js?v=20261019r" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261019f" defer></script>\n<script src="/v15-library.js?v=20261019r" defer></script>\n<script src="/v15-flow.js?v=20261019f" defer></script>\n<script src="/media/v15/renders-data.js?v=20261019r" defer></script>\n<script src="/v15-renders.js?v=20261019r" defer></script>' if moon else ''
-    return f'<script src="/i18n/v15-{lang}.js?v=20261019f" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20260918a" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261019r" defer></script>{extra}'
+    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r4" defer></script>\n<script src="/v15-moon.js?v=20261023r4" defer></script>\n<script src="/v15-slides.js?v=20261023r4" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r4" defer></script>\n<script src="/v15-guide.js?v=20261023r4" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r4" defer></script>\n<script src="/v15-library.js?v=20261023r4" defer></script>\n<script src="/v15-flow.js?v=20261023r4" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r4" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r4" defer></script>\n<script src="/v15-renders.js?v=20261023r4" defer></script>' if moon else ''
+    if moon:
+        extra='\n<script src="/v15-field-light.js?v=20261023r4" defer></script>'+extra
+    return f'<script src="/i18n/v15-{lang}.js?v=20261023r4" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20260918a" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261023r4" defer></script>{extra}'
 
 def write_page(path,text):
     text=text.replace('\r\n','\n').replace('\r','\n')
@@ -193,15 +228,15 @@ def write_page(path,text):
 def document(lang,c,route,main,document_head):
     old=document_head
     old=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',old)
-    old=re.sub(r'<link rel="stylesheet" href="/v15(?:-renders)?.css[^>]*>','',old)
-    old+='\n<link rel="stylesheet" href="/v15.css?v=20261019f">\n<link rel="stylesheet" href="/v15-renders.css?v=20261019r">\n'
+    old=re.sub(r'<link rel="stylesheet" href="/v15[^"\s]*\.css[^>]*>','',old)
+    old+=STYLES
     note='<p class="v-locale-note">'+html.escape(c['localeNote'])+'</p>' if lang!='en' else ''
     return f'<!doctype html>\n<html lang="{lang}" dir="{LANGS[lang][1]}" class="no-js v15-page"><head>{old}</head><body>{sky}{header(c,lang,route)}{note}{main}{footer(c,lang)}{scripts(lang)}</body></html>'
 
 def build(languages=None):
   for lang in (languages or LANGS):
     c={**COPY['en'],**COPY.get(lang,{})}
-    runtime={key:re.sub('<[^>]+>','',value) for key,value in c.items()}
+    runtime={key:re.sub('<[^>]+>','',re.sub(r'<br\s*/?>',' ',value,flags=re.I)) for key,value in c.items()}
     write_page(ROOT/f'i18n/v15-{lang}.js','window.UMMAHTI_V15_I18N = '+json.dumps(runtime,ensure_ascii=False,separators=(',',':'))+';\n')
     c={**c,'themeButtons':theme_buttons(c),'reciterWheel':reciter_wheel(lang),'nightsTable':nights_table(c,lang),'slidesList':slides_html(c),**channel_tiles(c),'guideMapLead':guide_lead(c,lang),**library_counts(c,lang),**hero_ayah(lang)}
     main=initial_examples(render(TEMPLATE,c),c)

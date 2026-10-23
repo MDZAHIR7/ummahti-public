@@ -1,0 +1,52 @@
+/* Shared experience refinement. Existing Ummahti palettes and fonts remain authoritative. */
+.v15-page .v-nav{min-height:78px;gap:22px;flex-wrap:nowrap}
+.v15-page .v-nav-tools{gap:8px;flex-wrap:nowrap}
+.v15-page .v-nav-links{gap:24px}
+.v15-page .v-utility{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;min-width:44px;padding:9px 13px;border:1px solid var(--v-rule);border-radius:999px;background:rgba(var(--surface-rgb),.34);color:var(--text);font-size:12px;line-height:1.3;white-space:nowrap;cursor:pointer;transition:border-color 160ms,background-color 160ms,box-shadow 160ms}
+.v15-page .v-utility>svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;color:var(--gold-light)}
+.v15-page .v-utility>.v-chevron{width:12px;height:12px;stroke-width:1.6;transition:rotate 180ms var(--v-ease)}
+.v15-page details[open]>.v-utility{border-color:rgba(var(--gold-rgb),.7);background:rgba(var(--gold-rgb),.09);box-shadow:0 0 20px -9px rgba(var(--gold-rgb),.38)}
+.v15-page details[open]>.v-utility>.v-chevron{rotate:180deg}
+.v15-page .v-utility:hover{border-color:rgba(var(--gold-rgb),.6);background:rgba(var(--gold-rgb),.06)}
+.v15-page .v-language-code{display:none}
+.v15-page .v-site-sound .v-sound-wave{display:none}
+.v15-page .v-site-sound[aria-pressed=true] .v-sound-wave{display:block}
+.v15-page .v-site-sound[aria-pressed=true] .v-sound-slash{display:none}
+.v15-page .v-site-sound[aria-pressed=true]{border-color:var(--gold);background:rgba(var(--gold-rgb),.1)}
+.v15-page .v-popover{top:calc(100% + 10px);padding:9px;border-radius:16px;background:var(--ink-2);box-shadow:0 18px 46px -20px rgba(0,0,0,.5);transform-origin:top center}
+.v15-page .v-popover>a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;border-radius:9px;padding:11px 14px;font-size:13px}
+.v15-page .v-popover>a:hover{background:rgba(var(--gold-rgb),.08)}
+.v15-page .v-popover>a[aria-current=page]{color:var(--gold-light);background:rgba(var(--gold-rgb),.1)}
+.v15-page .v-popover>a[aria-current=page]::after{content:'✓';font-family:Arial,sans-serif}
+.v15-page .v-theme-menu .v-popover{width:340px;gap:4px}
+.v15-page .v-theme-menu .v-theme-choice{font-size:12px;line-height:1.5;padding:10px;border-radius:10px}
+.v15-page .r-socials{margin-inline-end:5px}
+.v15-page .r-socials a{width:36px;height:44px;display:grid;place-items:center}
+.v15-page .v-hero-ayah em,.v15-page .v-night-step h2 em,.v15-page .v-flow-words em{color:var(--gold-light);text-shadow:0 0 16px rgba(var(--gold-rgb),.28),0 0 40px rgba(var(--gold-rgb),.09)}
+.v15-page.v-light .v-hero-ayah em,.v15-page.v-light .v-flow-words em,.v15-page.v-light .v-night-step h2 em{text-shadow:0 0 12px rgba(var(--gold-rgb),.08)}
+.v15-page .v-hero-ayah{border-inline-start-color:rgba(var(--gold-rgb),.65)}
+.v15-page .v-flow-words .v-word{opacity:calc(.3 + .7 * var(--w));filter:none;will-change:auto}
+.v15-page .v-flow-seq{--w:clamp(0,calc((var(--k) * 1.45 - var(--s) * .045) / 1.15),1)}
+.v15-page .v-flow-rule::before{box-shadow:0 0 12px 0 rgba(var(--gold-rgb),.15)}
+.v15-page .v-guide-subjects>button,.v15-page .v-lib-chips>button,.v15-page .v-example-options>button{opacity:1;translate:none}
+.v15-page .v-guide-body>:not(.v-guide-sky-wrap),.v15-page .v-duas-body>.v-dua-page{filter:none}
+.v15-page.v-light .v-guide-map{background:none}
+.v15-page.v-light .v-petal.is-sunnah{background:linear-gradient(to top,transparent,var(--muted));box-shadow:none}
+.v15-page.v-light .v-petal.is-quran{background:linear-gradient(to top,transparent,var(--gold) 60%,var(--gold-light));box-shadow:0 0 9px -4px rgba(var(--gold-rgb),.24)}
+.v15-page.v-light .v-petal::after{background:linear-gradient(to bottom,rgba(var(--ink-rgb),.6),transparent)}
+.v15-page.v-light .v-rosette::after{opacity:.3}
+.v15-page .v-dua-page .v-arabic{line-height:2.1;overflow-wrap:normal;word-break:normal}
+.v15-page .v-caption{line-height:1.8}
+@media(min-width:801px) and (max-height:850px){.v15-page .v-hero{padding-block:24px;gap:6%;align-items:start}.v15-page .v-hero-ayah{margin-bottom:18px}.v15-page .v-hero-ayah .v-arabic{font-size:18px;line-height:1.8}.v15-page .v-hero-ayah figcaption{font-size:12px;line-height:1.6}.v15-page .v-hero-copy>.v-kicker{margin-bottom:18px!important}.v15-page .v-hero h1{font-size:clamp(42px,4.1vw,60px);line-height:1.04}.v15-page .v-hero-lead{font-size:15px;line-height:1.7;max-width:47ch;margin-top:20px!important}.v15-page .v-hero-actions{margin-top:20px}.v15-page .v-hero-copy>.v-caption{margin-top:10px}}
+@media(max-width:1180px){.v15-page .v-nav-links{display:none}.v15-page .v-menu{display:block}.v15-page .v-nav{width:calc(100% - 40px)}}
+@media(max-width:1000px){.v15-page .v-nav{gap:10px;min-height:68px;width:calc(100% - 32px)}.v15-page .v-nav-tools{gap:6px}.v15-page .v-nav-tools>.v-play-badge,.v15-page .r-socials{display:none}.v15-page .v-utility-label,.v15-page .v-language-name{display:none}.v15-page .v-language-code{display:inline}.v15-page .v-utility{padding:9px 10px;gap:5px}.v15-page .v-theme-menu .v-chevron{display:none}.v15-page .v-brand{gap:9px}.v15-page .v-brand span{font-size:15px}.v15-page .v-brand img{width:32px;height:32px}.v15-page .v-menu>.v-popover{min-width:220px}.v15-page .v-theme-menu>.v-popover{position:fixed;top:77px;inset-inline:16px;width:auto;max-width:420px;margin-inline:auto}.v15-page .v-language>.v-popover{min-width:210px}}
+@media(max-width:390px){.v15-page .v-site-sound{display:none}.v15-page .v-nav{width:calc(100% - 24px)}.v15-page .v-brand span{display:inline;font-size:13px;letter-spacing:.12em}.v15-page .v-nav-tools{gap:5px}.v15-page .v-menu>.v-utility{font-size:11px}}
+@media(max-width:340px){.v15-page .v-brand span{display:none}}
+@media(max-width:680px){.v15-page .v-hero{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:30px}.v15-page .v-hero h1{grid-column:1;grid-row:3;max-width:15ch;font-size:clamp(40px,10.7vw,56px);line-height:1.07}.v15-page[dir=rtl] .v-hero h1{max-width:none;font-size:38px;line-height:1.45}.v15-page .v-hero-lead{grid-column:1;grid-row:4;max-width:43ch;font-size:15px;line-height:1.8;padding:0}.v15-page .v-hero-actions{grid-row:5;margin-top:4px;gap:12px;flex-wrap:wrap;justify-content:flex-start}.v15-page .v-hero-actions .v-link{font-size:12px}.v15-page .v-hero-copy>.v-caption{grid-row:6}.v15-page .r-hero-product{grid-column:1;grid-row:7;align-self:start;width:100%;max-width:400px;justify-self:center;margin-top:18px}.v15-page .r-hero-product>.r-scene-choices{gap:7px}.v15-page .r-hero-product>.r-scene-choices button{min-height:44px;font-size:12px;padding:8px}.v15-page .r-hero-product>.v-product-captures{width:100%;height:530px;aspect-ratio:auto;margin:22px 0 10px}.v15-page .r-hero-product .v-product-front.r-gh{width:min(72%,245px);inset-inline-end:2%;inset-inline-start:auto;inset-block-start:0;inset-block-end:auto}.v15-page .r-hero-product .v-product-back{display:block;width:52%;inset-inline-start:0;inset-inline-end:auto;top:72px}.v15-page .r-hero-product .v-app-label{font-size:12px}.v15-page .r-hero-product .v-app-label small{font-size:10px;max-width:none}.v15-page .r-hero-product .v-product-controls button{width:44px;height:44px;font-size:16px}.v15-page .r-preview-note{font-size:12px}.v15-page .r-take-control{font-size:14px;min-height:44px}.v15-page .r-dock-copy h2{font-size:38px}}
+@media(prefers-reduced-motion:reduce){.v15-page .v-flow-words .v-word,.v15-page .v-flow-seq{opacity:1;filter:none;translate:none}.v15-page .v-utility,.v15-page .v-chevron{transition:none}}
+@media(forced-colors:active){.v15-page .v-utility{border-color:ButtonText}.v15-page .v-utility>svg{color:ButtonText}.v15-page .v-popover>a[aria-current=page]{outline:1px solid Highlight}.v15-page .v-flow-rule::before{background:CanvasText}}
+/* The FLIP return target shares the visible phone's responsive geometry. */
+@media(max-width:680px){.v15-page .r-hero-product .v-product-front.r-home-marker{width:min(72%,245px);inset-inline-end:2%;inset-inline-start:auto;inset-block-start:0;inset-block-end:auto}}
+/* Stacked grid gaps must participate in intrinsic height. Percentage row gaps overflow it. */
+.v15-page .r-proof-dock{align-items:start}
+@media(max-width:800px){.v15-page .r-proof-dock{gap:32px}}

@@ -1,4 +1,18 @@
 description	تقرّب إلى القرآن مع Ummahti. اقرأ وافهم واستمع واحفظ مع تطبيق Ummahti Quran المجاني لأندرويد، وتابع التلاوات والتذكير عبر قنواتنا الرسمية.	Ummahti کے ساتھ قرآن کو قریب رکھیں۔ مفت اینڈرائیڈ ایپ Ummahti Quran میں پڑھیں، سمجھیں، سنیں اور حفظ کریں، اور ہمارے سرکاری چینلز پر تلاوت اور یاد دہانیاں دیکھیں۔	Dekatkan Al-Qur’an melalui Ummahti. Baca, pahami, dengarkan, dan hafalkan dengan Ummahti Quran, aplikasi Android gratis kami, serta ikuti tilawah dan pengingat di kanal resmi kami.
+filmSound	صوت الفيلم	فلم کی آواز	Suara film
+rHeroPreviewLabel	معاينة التطبيق	ایپ کا پیش منظر	Pratinjau aplikasi
+rHeroTry	جرّب بنفسك	خود آزمائیں	Coba sendiri
+rHeroResume	استأنف المعاينة	پیش منظر جاری رکھیں	Lanjutkan pratinjau
+rHeroFeatures	اختر تجربة من التطبيق	ایپ کا ایک تجربہ منتخب کریں	Pilih pengalaman aplikasi
+rHeroTryGuide	جرّب الدليل	رہنما آزمائیں	Coba Panduan
+rHeroPreviewNote	محتوى حقيقي من التطبيق وتجربة صغيرة هنا.	ایپ کے حقیقی مواد کے ساتھ یہاں ایک مختصر تجربہ۔	Konten asli aplikasi. Pengalaman singkat untuk dicoba di sini.
+guideSearchSubmit	ابحث عن موضوع	موضوع تلاش کریں	Temukan topik
+guideSearchClear	امسح البحث	تلاش صاف کریں	Hapus pencarian
+guideTryQuestion	جرّب سؤالًا	سوال آزمائیں	Coba pertanyaan
+guideSearchHint	ابحث في الموضوعات المراجعة، ثم اختر نتيجة لقراءة مصادرها.	نظرثانی شدہ موضوعات تلاش کریں۔ ماخذ پڑھنے کے لیے نتیجہ منتخب کریں۔	Cari topik yang telah ditinjau. Pilih hasil untuk membaca sumbernya.
+guideResultsLabel	موضوعات الدليل المطابقة	رہنما کے متعلقہ موضوعات	Topik Panduan yang cocok
+guideBrowseTopic	اقرأ هذا الموضوع	یہ موضوع پڑھیں	Baca topik ini
+guideResultReady	جاهز: {topic}	تیار: {topic}	Siap: {topic}
 tagline	نسعى إلى القرب من الله.	اللہ کا قرب حاصل کرنے کی کوشش۔	Mengupayakan kedekatan dengan Allah.
 explore	اكتشف التطبيق	ایپ دریافت کریں	Jelajahi aplikasi
 androidFree	Ummahti Quran · مجاني لأندرويد	Ummahti Quran · اینڈرائیڈ کے لیے مفت	Ummahti Quran · Gratis untuk Android
@@ -472,3 +486,21 @@ rSceneRead	اقرأ واستمع	پڑھیں اور سنیں	Baca dan dengarkan
 rSceneReadCap	تابع كل آية وهي تُتلى	ہر آیت کو تلاوت کے ساتھ دیکھیں	Ikuti setiap ayat saat dibacakan
 rSoundOn	شغّل الصوت	آواز چلائیں	Nyalakan suara
 rSoundOff	أوقف الصوت	آواز بند کریں	Matikan suara
+rHifzPreviewTag	تجربة على الموقع	ویب سائٹ کی مثال	Panduan di situs
+rHifzPreviewInstruction	اتلُ هذه الآية بصوت مسموع، ثم راجع المثال المحدد عندما تكون مستعدًا.	یہ آیت بلند آواز سے پڑھیں۔ تیار ہوں تو مقررہ مثال کا جائزہ لیں۔	Baca ayat ini dengan suara. Saat siap, tinjau contoh yang sudah ditentukan.
+rHifzPreviewReview	راجع هذا المثال	اس مثال کا جائزہ لیں	Tinjau contoh ini
+rHifzPreviewDisclosure	هذا الموقع لا يستمع ولا يسجل. التعرّف على التلاوة متاح في تطبيق أندرويد.	یہ ویب سائٹ نہ سنتی ہے نہ ریکارڈ کرتی ہے۔ تلاوت کی پہچان اینڈرائیڈ ایپ میں دستیاب ہے۔	Situs ini tidak mendengarkan atau merekam. Pengenalan tilawah tersedia di aplikasi Android.
+rHifzPreviewKnown	مقطع محدد لهذه التجربة.	اس مثال کے لیے مقررہ حصہ۔	Bacaan yang sudah ditentukan untuk panduan ini.
+rHifzPreviewSelected	آيات المقطع الذي اخترته.	آپ کے منتخب حصے کی آیات۔	Ayat dalam bacaan yang Anda pilih.
+rHifzPreviewMeter	الآيات المختارة	منتخب آیات	Ayat yang dipilih
+rHifzPreviewChange	غيّر المقطع	حصہ بدلیں	Ubah bacaan
+rHifzPreviewSave	احفظ في هذا المثال	اس مثال میں محفوظ کریں	Simpan di contoh ini
+rHifzPreviewSaved	حُفظ في مثال الموقع هذا.	ویب سائٹ کی اس مثال میں محفوظ ہو گیا۔	Tersimpan dalam contoh di situs ini.
+rHifzPreviewSession	يعود هذا المثال إلى بدايته عند إعادة تحميل الصفحة.	صفحہ دوبارہ کھولنے پر یہ مثال شروع سے ہو گی۔	Contoh ini diatur ulang saat halaman dimuat ulang.
+rHifzPreviewReviewStatus	راجع {ref}، واختر الحالة، ثم احفظ في هذا المثال.	{ref} کا جائزہ لیں، کیفیت منتخب کریں، پھر اس مثال میں محفوظ کریں۔	Tinjau {ref}, pilih status, lalu simpan dalam contoh ini.
+rHifzReferenceInfo	في التطبيق يمكنك نطق المرجع. هنا اكتبه لمراجعة المقطع.	ایپ میں آپ حوالہ بول سکتے ہیں۔ یہاں حصہ دیکھنے کے لیے حوالہ لکھیں۔	Di aplikasi, Anda dapat menyebutkan rujukan. Di sini, ketik rujukan untuk meninjau bacaannya.
+rHifzReferenceLabel	اكتب مرجعًا	حوالہ لکھیں	Ketik rujukan
+rHifzReferenceReview	راجع المقطع	حصے کا جائزہ لیں	Tinjau bacaan
+rHifzReferenceExample	استخدم الملك ١–١٠	الملک ۱–۱۰ استعمال کریں	Gunakan Al-Mulk 1–10
+rHifzReferenceBounds	اختر الآيات من ١ إلى {max}، واجعل الآية الأخيرة بعد الأولى أو مساوية لها.	۱ سے {max} تک آیات چنیں۔ آخری آیت پہلی کے برابر یا اس کے بعد ہو۔	Pilih ayat 1 sampai {max}, dengan ayat terakhir sama atau setelah ayat pertama.
+rHifzReferenceHelp	استخدم رقم السورة أو اسمها مع نطاق الآيات، مثل 67:1–10.	سورت کا نمبر یا نام اور آیات کی حد لکھیں، مثلاً 67:1–10۔	Gunakan nomor atau nama surah dan rentang ayat, misalnya 67:1–10.
