@@ -100,7 +100,7 @@
  // The approved room runs through one lifecycle-owned animation loop.
  let skyFrame=0,motionPaused=false;
  const motionButton=$('[data-motion-toggle]');
- function sky(now){skyFrame=0;if(document.hidden||reduced.matches||motionPaused)return;window.UmmahtiSky?.frame(now,.18);skyFrame=requestAnimationFrame(sky);}
+ function sky(now){skyFrame=0;if(document.hidden||reduced.matches||motionPaused||!window.UmmahtiSky)return;window.UmmahtiSky?.frame(now,.18);skyFrame=requestAnimationFrame(sky);}
  function syncSky(){if(motionButton)motionButton.hidden=reduced.matches;if(skyFrame)cancelAnimationFrame(skyFrame);skyFrame=0;if(!document.hidden&&!reduced.matches&&!motionPaused&&window.UmmahtiSky)skyFrame=requestAnimationFrame(sky);}
  motionButton?.addEventListener('click',()=>{motionPaused=!motionPaused;motionButton.textContent=t(motionPaused?'resumeAtmosphere':'pauseAtmosphere');motionButton.setAttribute('aria-pressed',String(motionPaused));syncSky();});
  document.addEventListener('visibilitychange',syncSky);reduced.addEventListener('change',syncSky);syncSky();

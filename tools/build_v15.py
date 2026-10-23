@@ -24,7 +24,7 @@ HEAD=snippets['head'].replace('\r\n','\n').replace('\r','\n')
 HEAD=re.sub(r'<script type="application/ld\+json">\s*\{\s*"@context": "https://schema.org",\s*"@type": "VideoObject".*?</script>','',HEAD,flags=re.S)
 HEAD=re.sub(r'<link rel="stylesheet" href="/(?:hub|editorial)\.css[^>]+>','',HEAD)
 HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
-STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r4">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r4">\n'
+STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r5">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r5">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r5">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r5">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r5">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r5">\n'
 HEAD+=STYLES
 
 def render(text,c):
@@ -214,10 +214,10 @@ def hero_ayah(lang):
             'heroAyahRef':html.escape(name)+f' {s}:{a}'}
 
 def scripts(lang,moon=False):
-    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r4" defer></script>\n<script src="/v15-moon.js?v=20261023r4" defer></script>\n<script src="/v15-slides.js?v=20261023r4" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r4" defer></script>\n<script src="/v15-guide.js?v=20261023r4" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r4" defer></script>\n<script src="/v15-library.js?v=20261023r4" defer></script>\n<script src="/v15-flow.js?v=20261023r4" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r4" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r4" defer></script>\n<script src="/v15-renders.js?v=20261023r4" defer></script>' if moon else ''
+    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r5" defer></script>\n<script src="/v15-moon.js?v=20261023r5" defer></script>\n<script src="/v15-slides.js?v=20261023r5" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r5" defer></script>\n<script src="/v15-guide.js?v=20261023r5" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r5" defer></script>\n<script src="/v15-library.js?v=20261023r5" defer></script>\n<script src="/v15-flow.js?v=20261023r5" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r5" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r5" defer></script>\n<script src="/v15-renders.js?v=20261023r5" defer></script>' if moon else ''
     if moon:
-        extra='\n<script src="/v15-field-light.js?v=20261023r4" defer></script>'+extra
-    return f'<script src="/i18n/v15-{lang}.js?v=20261023r4" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20260918a" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261023r4" defer></script>{extra}'
+        extra='\n<script src="/v15-field-light.js?v=20261023r5" defer></script>'+extra
+    return f'<script src="/i18n/v15-{lang}.js?v=20261023r5" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20261023r5" defer></script>\n<script src="/verse.js?v=20260918a" defer></script>\n<script src="/v15.js?v=20261023r5" defer></script>{extra}'
 
 def write_page(path,text):
     text=text.replace('\r\n','\n').replace('\r','\n')

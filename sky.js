@@ -298,6 +298,7 @@
   }, { passive: true });
 
   let lost = false;
+  let drawn = 0;
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
     lost = true;
@@ -370,6 +371,13 @@
 
       px += (tx - px) * 0.045;
       py += (ty - py) * 0.045;
+
+      /* The room's own drift is slow enough that thirty frames a second show
+         all of it, so a resting room draws every other frame. Only a light
+         still following the pointer is drawn on every one. */
+      const settled = Math.abs(tx - px) + Math.abs(ty - py) < 0.002;
+      if (settled && now - drawn < 30) return;
+      drawn = now;
 
       gl.uniform2f(U.u_res, w, h);
       gl.uniform1f(U.u_time, (now - start) / 1000);

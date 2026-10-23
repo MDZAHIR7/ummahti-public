@@ -146,7 +146,7 @@ remain together, input is 16 px on mobile and no horizontal overflow occurred.
 These observations are not a complete release or performance verdict. Final
 asset version for those observations was `20261022r2`; evidence is in the
 shared brain's 22 October repair report and handoff. The generator now uses
-`20261023r4` for the flowing-rim and bowed-placement iteration. Its current
+`20261023r5` for the flowing-rim and bowed-placement iteration. Its current
 browser comparison is recorded in the shared brain's
 `website/reports/2026-10-22-flowing-rim/index.html`. It includes actual forward
 and return samples, full Guide active/settled states and mobile theme/RTL

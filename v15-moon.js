@@ -25,6 +25,7 @@
   const T = window.UMMAHTI_V15_I18N || {};
   const t = (key, fallback) => T[key] || fallback;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const touch = matchMedia('(hover: none) and (pointer: coarse)');
   const N = D.total;
   const arabicNames = rtl && D.namesArabic;
   const VERSION = '20261019f';
@@ -169,7 +170,9 @@
 
   function layout() {
     vw = innerWidth; vh = innerHeight;
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    /* A phone's panel is dense enough that 1.5 reads as sharp for points and glow, and it is
+       less than half the pixels of 2 to fill, composite and send to the GPU every frame. */
+    dpr = Math.min(devicePixelRatio || 1, touch.matches ? 1.5 : 2);
     canvas.width = Math.round(vw * dpr); canvas.height = Math.round(vh * dpr);
     const wide = vw >= 900;
     const captures = document.querySelector('.v-product-captures');
@@ -668,7 +671,7 @@
        hidden tab or Save-Data rest it). */
     const ambient = live && skyLayer;
     if (intro < 1 || settling || meteors.length) request();
-    else if (ambient || wave >= 0) { clearTimeout(lightTimer); lightTimer = setTimeout(request, vw < 700 ? 42 : 33); }
+    else if (ambient || wave >= 0) { clearTimeout(lightTimer); lightTimer = setTimeout(request, touch.matches ? 50 : 33); }
     if (!card.hidden && selected >= 0 && moving) closeCard(false);
   }
   let lightTimer = 0, frame = 0;

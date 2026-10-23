@@ -8,6 +8,8 @@
   const t = (k, vars) => { let s = I18N[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.split('{' + a + '}').join(b); return s; };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const still = () => reduced.matches || document.querySelector('[data-motion-toggle]')?.getAttribute('aria-pressed') === 'true';
+  const touch = matchMedia('(hover: none) and (pointer: coarse)');
+  const canvasDpr = () => Math.min(devicePixelRatio || 1, touch.matches ? 1.5 : 2);
   const lang = document.documentElement.lang || 'en';
   const fmt = n => n.toLocaleString(lang === 'ar' ? 'ar-EG' : lang === 'ur' ? 'ur-PK' : lang === 'id' ? 'id-ID' : 'en-US');
   const sleep = ms => new Promise(r => setTimeout(r, still() ? Math.min(ms, 60) : ms));
@@ -203,7 +205,7 @@
     const ctx = canvas.getContext('2d'); let W = 0, H = 0, dpr = 1, pts = null, cx = 0, cy = 0, R = 0, rot = 0;
     const ROWS = 8;
     function layout() {
-      const r = canvas.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1);
+      const r = canvas.getBoundingClientRect(); dpr = canvasDpr();
       W = r.width; H = r.height; canvas.width = W * dpr; canvas.height = H * dpr;
       const dev = device.getBoundingClientRect(); cx = dev.left + dev.width / 2 - r.left; cy = dev.top + dev.height / 2 - r.top;
       R = Math.min(Math.max(dev.height * .62, 200), Math.min(W, H) * .49);
@@ -402,8 +404,9 @@
     lanes.forEach(ul => { [...ul.children].forEach(li => { const c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); $$('a', c).forEach(a => a.tabIndex = -1); ul.append(c); }); });
     const state = lanes.map((ul, i) => ({ ul, x: i % 2 ? -ul.scrollWidth / 4 : 0, dir: i % 2 ? 1 : -1, hover: false }));
     state.forEach(s => { s.ul.addEventListener('pointerenter', () => s.hover = true); s.ul.addEventListener('pointerleave', () => s.hover = false); s.ul.addEventListener('focusin', () => s.hover = true); s.ul.addEventListener('focusout', () => s.hover = false); });
-    let on = false, last = 0, lastY = scrollY, boost = 0;
+    let on = false, last = 0, lastY = scrollY, boost = 0, laneFrame = 0;
     function frame(now) {
+      laneFrame = 0;
       const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
       const dy = scrollY - lastY; lastY = scrollY; boost = boost * .9 + Math.abs(dy) * .6;
       state.forEach(s => {
@@ -411,9 +414,9 @@
         s.x += s.dir * speed * dt; if (s.x <= -half) s.x += half; if (s.x > 0) s.x -= half;
         s.ul.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
       });
-      if (on && !still()) requestAnimationFrame(frame);
+      if (on && !still()) laneFrame = requestAnimationFrame(frame);
     }
-    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was) { last = performance.now(); requestAnimationFrame(frame); } }).observe(root);
+    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was && !laneFrame) { last = performance.now(); laneFrame = requestAnimationFrame(frame); } }).observe(root);
     // Hover plays a tile's six-second loop; on touch, a spotlight walks along the wall.
     const play = tile => { const v = $('video', tile); if (!v) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => tile.classList.add('is-playing')).catch(() => {}); };
     const stop = tile => { const v = $('video', tile); tile.classList.remove('is-playing'); if (v) v.pause(); };
@@ -521,7 +524,7 @@
     function drawGlobe(now) {
       globeFrame = 0; if (!ctx) return;
       const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
-      const dpr = Math.min(2, devicePixelRatio || 1), pw = Math.round(w * dpr), ph = Math.round(h * dpr);
+      const dpr = canvasDpr(), pw = Math.round(w * dpr), ph = Math.round(h * dpr);
       if (canvas.width !== pw || canvas.height !== ph) { canvas.width = pw; canvas.height = ph; }
       const dt = lastFrame ? Math.min(.05, (now - lastFrame) / 1000) : 0; lastFrame = now;
       if (!still() && !paused) rotation += dt * speed;
