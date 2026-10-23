@@ -243,6 +243,7 @@
   }
   function select(i, user, focusTarget) {
     if (!topics[i]) return;
+    reader.hidden = false;
     readerAnimation?.cancel();
     readerAnimation = null;
     if (i !== current) {
@@ -301,9 +302,7 @@
     stopLight();
     apply();
   }
-  const fold = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ًͯ-ٰٟ]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
-  const stopWords = new Set('i my me the a an to for is am what how do does can with and in'.split(' '));
-  const index = topics.map(tp => ({ title: fold(tp.t), question: fold(tp.s), phrases: tp.w.map(fold), all: fold([tp.t, tp.s, tp.e, ...tp.w].join(' ')) }));
+  const matcher = window.UmmahtiGuideSearch.create(topics);
   let matches = topics.map((_, i) => i);
 
   /* The real query remains local. Matching never changes selection, focus, or document scroll. */
@@ -376,31 +375,27 @@
   function apply() {
     section.classList.remove('is-search-answer');
     lightAfterArrival = false;
-    const q = fold(search?.value || '');
-    const words = q.split(' ').filter(w => w.length > 1 && !stopWords.has(w));
-    const ranked = [];
+    const hasQuery = Boolean(search?.value.trim());
+    const ranked = hasQuery ? matcher.search(search.value) : topics.map((_, i) => i);
+    matches = ranked.filter(i => subject < 0 || topics[i].k === subject);
+    const matched = new Set(matches);
     stars.forEach((s, i) => {
-      const inSubject = subject < 0 || topics[i].k === subject;
-      const item = index[i];
-      const match = !q || (words.length > 0 && words.every(w => item.all.includes(w)));
-      const on = inSubject && match;
+      const on = matched.has(i);
       s.classList.toggle('is-dim', !on);
       s.disabled = !on;
-      if (on) {
-        const score = q ? (item.title === q ? 1000 : 0) + (item.question === q ? 900 : 0) + (item.phrases.includes(q) ? 800 : 0) + (item.title.includes(q) ? 250 : 0) + (item.question.includes(q) ? 180 : 0) + words.reduce((sum, w) => sum + (item.title.includes(w) ? 30 : 0) + (item.question.includes(w) ? 20 : 0) + (item.phrases.some(p => p.includes(w)) ? 8 : 0), 0) : 0;
-        ranked.push({ i, score });
-      }
     });
-    matches = ranked.sort((a, b) => b.score - a.score || a.i - b.i).map(row => row.i);
+    // An old source may stay selected for discovery, but cannot masquerade as
+    // the answer to a newly edited or unmatched question.
+    reader.hidden = hasQuery || (subject >= 0 && !matched.has(current));
     const tabStop = matches.includes(current) ? current : matches[0];
     stars.forEach((s, i) => { s.tabIndex = i === tabStop ? 0 : -1; });
     sky.querySelectorAll('.v-sky-label').forEach(l => l.classList.toggle('is-dim', subject >= 0 && Number(l.dataset.k) !== subject));
-    if (status) status.textContent = q || subject >= 0 ? (matches.length ? (matches.length === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(matches.length))) : t('guideNoMatch', 'Nothing matched. Try other words, or choose a subject.')) : '';
+    if (status) status.textContent = hasQuery || subject >= 0 ? (matches.length ? (matches.length === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(matches.length))) : t('guideNoMatch', 'Nothing matched. Try other words, or choose a subject.')) : '';
     clear.hidden = !search?.value;
-    submit.disabled = !q || !matches.length;
-    suggestions.hidden = Boolean(q || subject >= 0);
-    resultList.hidden = !matches.length || (!q && subject < 0);
-    resultList.replaceChildren(...(q || subject >= 0 ? matches.slice(0, 6).map(i => {
+    submit.disabled = !hasQuery || !matches.length;
+    suggestions.hidden = hasQuery || subject >= 0;
+    resultList.hidden = !matches.length || (!hasQuery && subject < 0);
+    resultList.replaceChildren(...(hasQuery || subject >= 0 ? matches.slice(0, 6).map(i => {
       const tp = topics[i], li = el('li'), b = el('button', '');
       b.type = 'button';
       b.dataset.guideResult = tp.id;
@@ -411,7 +406,7 @@
       li.append(b);
       return li;
     }) : []));
-    field.dataset.state = q ? (matches.length ? 'typing' : 'empty') : 'idle';
+    field.dataset.state = hasQuery ? (matches.length ? 'typing' : 'empty') : 'idle';
     return matches[0] ?? -1;
   }
   let composing = false;
@@ -425,6 +420,7 @@
   });
   search?.addEventListener('input', () => {
     readerAnimation?.cancel();
+    if (composing) { reader.hidden = true; resultList.hidden = true; section.classList.remove('is-search-answer'); }
     if (!composing) apply();
     if (search.value.trim() && (composing || matches.length)) illuminate('typing');
     else stopLight();
@@ -489,9 +485,9 @@
     subject = -1;
     chipButtons.forEach((chip, n) => chip.setAttribute('aria-pressed', String(n === 0)));
     const first = apply();
-    if (i !== undefined) openMatch(i);
+    if (i !== undefined && (!search.value.trim() || matches.includes(i))) openMatch(i);
     else if (first >= 0 && search.value.trim()) openMatch(first);
-    else search.focus({ preventScroll: true });
+    else { search.focus({ preventScroll: true }); section.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' }); }
   });
 
   /* Start with a question almost everyone brings. */

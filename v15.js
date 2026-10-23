@@ -206,7 +206,7 @@
 
  const guideExamples={worry:{title:'worryTitle',ref:'13:28',sources:['13:28','2:286','94:5'],topic:'anxiety_and_worry'},return:{title:'returnTitle',ref:'39:53',sources:['39:53','4:110','66:8'],topic:'forgiveness_and_repentance'},patience:{title:'patienceTitle',ref:'94:5',sources:['94:5','94:6','2:153'],topic:'hardship_and_patience'}};
  let selectedGuide='worry';
- function guideResult(id){selectedGuide=id;const example=guideExamples[id],v=verse(example.ref);$$('[data-guide-example]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.guideExample===id)));refresh($('[data-guide-result]'),()=>{$('[data-guide-ref]').textContent=v.surah+' '+v.reference;$('[data-guide-title]').textContent=t(example.title);$('[data-guide-arabic]').textContent=v.arabic;$('[data-guide-translation]').textContent=v.translation;});}
+ function guideResult(id){selectedGuide=id;const example=guideExamples[id],v=verse(example.ref);$$('[data-guide-example]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.guideExample===id)));const result=$('[data-guide-result]');refresh(result,()=>{$('[data-guide-ref]',result).textContent=v.surah+' '+v.reference;$('[data-guide-title]',result).textContent=t(example.title);$('[data-guide-arabic]',result).textContent=v.arabic;$('[data-guide-translation]',result).textContent=v.translation;});}
  if($('[data-guide-result]')){
    $$('[data-guide-example]').forEach(button=>button.addEventListener('click',()=>guideResult(button.dataset.guideExample)));
    $('[data-guide-sources]').addEventListener('click',event=>{const example=guideExamples[selectedGuide];const cards=example.sources.map(ref=>{const v=verse(ref);return v?`<article class="v-source-page"><p class="v-source-label">${escape(v.surah)} ${escape(ref)}</p><p class="v-arabic" lang="ar" dir="rtl">${escape(v.arabic)}</p><p class="v-translation" lang="en" dir="ltr">${escape(v.translation)}</p><p class="v-translation-source">Saheeh International</p></article>`:`<p><a href="https://quran.com/${ref.replace(':','/')}" target="_blank" rel="noopener">${escape(t('quranSource'))} ${escape(ref)} ↗</a></p>`;}).join('');openSheet(t(example.title),`<p>${escape(t('sourceExplanation'))}</p>${cards}<p class="v-caption">${escape(t('guideDemoNote'))}</p>`,event.currentTarget);});guideResult('worry');
@@ -233,20 +233,28 @@
  if($('[data-theme-verse]')){$('[data-theme-verse]').textContent=verse('13:28').arabic;$('[data-theme-translation]').textContent=verse('13:28').translation;}
 
  $$('[data-logo-film]').forEach(film=>{
-   const video=$('[data-logo-video]',film),control=$('[data-logo-toggle]',film);let visible=false,paused=false,finished=false,programmaticPause=false;
+   const video=$('[data-logo-video]',film),control=$('[data-logo-toggle]',film);let visible=false,paused=false,finished=false,programmaticPause=false,request=0;
    const initialLabel=film.classList.contains('v-story-film')?'watchFilm':'watchFormation';
    const label=key=>control.textContent=t(key);
-   function play(){if(!video.src)video.src=video.dataset.src;video.play().catch(()=>{paused=true;label(initialLabel);});}
-   function stopForVisibility(){if(!video.paused){programmaticPause=true;video.pause();}}
+   const failure=document.createElement('p');failure.className='v-caption';failure.setAttribute('role','status');failure.hidden=true;film.append(failure);
+   function play(){
+     const own=++request;failure.hidden=true;
+     if(!video.src)video.src=video.dataset.src;
+     if(video.error)video.load();
+     if(!video.muted)document.dispatchEvent(new CustomEvent('ummahti:audio-start',{detail:{audio:video}}));
+     video.play().catch(()=>{if(own!==request)return;paused=true;stopForVisibility();label(initialLabel);failure.textContent=t('rFilmError');failure.hidden=false;});
+   }
+   function stopForVisibility(){request++;if(!video.paused){programmaticPause=true;video.pause();}film.classList.remove('is-playing');}
    function sync(){if(!visible||document.hidden){stopForVisibility();return;}if(automatically()&&!paused&&!finished)play();}
    control.hidden=false;
-   control.addEventListener('click',()=>{if(!video.paused){paused=true;video.pause();return;}if(finished){video.currentTime=0;finished=false;}paused=false;play();});
-   video.addEventListener('playing',()=>{paused=false;finished=false;film.classList.add('is-playing');label('pauseAnimation');});
-   video.addEventListener('pause',()=>{if(!programmaticPause&&!video.ended)paused=true;programmaticPause=false;label(finished||video.ended?'replayAnimation':'continueAnimation');});
-   video.addEventListener('ended',()=>{finished=true;label('replayAnimation');});
-   video.addEventListener('error',()=>{film.classList.remove('is-playing');control.hidden=true;});
-   // Coming back to a film that has finished plays it again from the start; nobody should need a replay button.
+   control.addEventListener('click',()=>{if(!video.paused){paused=true;request++;video.pause();return;}if(finished){video.currentTime=0;finished=false;}paused=false;play();});
+   video.addEventListener('playing',()=>{if(!visible||document.hidden){stopForVisibility();return;}paused=false;finished=false;failure.hidden=true;film.classList.add('is-playing');label('pauseAnimation');});
+   video.addEventListener('pause',()=>{if(!programmaticPause&&!video.ended)paused=true;programmaticPause=false;film.classList.remove('is-playing');label(finished||video.ended?'replayAnimation':'continueAnimation');});
+   video.addEventListener('ended',()=>{finished=true;film.classList.remove('is-playing');label('replayAnimation');});
+   video.addEventListener('error',()=>{paused=true;stopForVisibility();control.hidden=false;label(initialLabel);failure.textContent=t('rFilmError');failure.hidden=false;});
+   video.addEventListener('volumechange',()=>{if(!video.muted&&!video.paused)document.dispatchEvent(new CustomEvent('ummahti:audio-start',{detail:{audio:video}}));});
+   document.addEventListener('ummahti:audio-start',event=>{if(event.detail?.audio!==video&&!video.muted){paused=true;stopForVisibility();}});
    if('IntersectionObserver'in window)new IntersectionObserver(entries=>{const was=visible;visible=entries[0].isIntersecting;if(visible&&!was&&finished&&!paused){video.currentTime=0;finished=false;}sync();},{threshold:.35}).observe(film);
-   document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',()=>{if(reduced.matches){stopForVisibility();film.classList.remove('is-playing');label(initialLabel);}else sync();});connection?.addEventListener('change',()=>{if(connection.saveData)stopForVisibility();else sync();});
+   document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',()=>{if(reduced.matches){stopForVisibility();label(initialLabel);}else sync();});connection?.addEventListener('change',()=>{if(connection.saveData)stopForVisibility();else sync();});
  });
 })();

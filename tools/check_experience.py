@@ -193,6 +193,20 @@ def check_preview_delivery(page):
             and scripts.index("/v15-field-light.js") < scripts.index("/v15-guide.js")
             and scripts.index("/v15-field-light.js") < scripts.index("/v15-renders.js"),
             f"{label}: both search surfaces need their shared flowing-rim owner")
+    for helper, consumers in (("/v15-guide-search.js", ("/v15-guide.js", "/v15-renders.js")),
+                              ("/v15-preview-audio.js", ("/v15-renders.js",)),
+                              ("/v15-hifz-preview.js", ("/v15-renders.js",))):
+        require(helper in scripts and all(scripts.index(helper) < scripts.index(consumer) for consumer in consumers),
+                f"{label}: shared interaction owner missing or loaded too late: {helper}")
+    for attribute in ("data-r-read-play", "data-r-unlock-play", "data-r-unlock-reset", "data-hh-reset"):
+        node = exactly_one(page, attribute)
+        require(node.tag == "button" and node.accessible_name(),
+                f"{label}: local preview action [{attribute}] must be a named button")
+    manual = exactly_one(page, "data-hh-form")
+    reference = page.ids.get("hero-hifz-reference")
+    require(manual.tag == "form" and not manual.attrs.get("action") and reference is not None
+            and reference.belongs_to(manual) and not reference.attrs.get("name"),
+            f"{label}: Hifz reference must remain a real local-only form")
     require("/v15-handoff-craft.css" in page.resource_paths("link", "href"),
             f"{label}: the authored handoff material is not included")
     require("/v15-hifz-refinement.css" in page.resource_paths("link", "href"),

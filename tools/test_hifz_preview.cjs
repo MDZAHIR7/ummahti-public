@@ -18,12 +18,13 @@ const assets = { window: {} };
 for (const file of ['moon-data.js', 'renders-data.js']) {
   vm.runInNewContext(read('media/v15/' + file), assets);
 }
+vm.runInNewContext(read('v15-hifz-preview.js'), assets);
 const MOON = assets.window.UMMAHTI_MOON;
 const D = assets.window.UMMAHTI_RENDERS;
 const parserStart = body.indexOf('    function parseReference(value) {');
 const parserEnd = body.indexOf('    async function submitReference', parserStart);
 assert(parserStart >= 0 && parserEnd > parserStart, 'Locate the actual reference parser.');
-const parse = vm.runInNewContext('(' + body.slice(parserStart, parserEnd).trim() + ')', { MOON, counts: MOON.counts });
+const parse = vm.runInNewContext('(' + body.slice(parserStart, parserEnd).trim() + ')', { MOON, window: assets.window });
 const validReferences = [
   ['67:1-10', 67, 1, 10], ['Al-Mulk 1–10', 67, 1, 10],
   ['Surah Al-Mulk 1', 67, 1, 1], ['المُلۡكِ ١-١٠', 67, 1, 10],
@@ -37,14 +38,14 @@ for (const [value, s, a, b] of validReferences) {
 const invalidReferences = ['', 'hello', '999:1', '0:1', '67:0', '67:10-1', '67:1-31', '2:287'];
 for (const value of invalidReferences) assert(parse(value).error, value);
 
-// Exercise the shipped range update against its actual seeded passages.
-const seededRecord = /const record = (\[[\s\S]*?\n    \]);/.exec(body);
-assert(seededRecord, 'Locate the actual example record.');
+// A new visit has no saved visitor data. Exercise real canonical ranges explicitly.
+const seededRecord = /const record = (\[\]);/.exec(body);
+assert(seededRecord, 'The example record starts empty.');
 const record = vm.runInNewContext(seededRecord[1]);
 const upsertStart = body.indexOf('    function upsertPassage(passage) {');
 const upsertEnd = body.indexOf('    function paintRecord()', upsertStart);
 assert(upsertStart >= 0 && upsertEnd > upsertStart, 'Locate the shipped passage update.');
-const upsert = vm.runInNewContext('(' + body.slice(upsertStart, upsertEnd).trim() + ')', { record });
+const upsert = vm.runInNewContext('(' + body.slice(upsertStart, upsertEnd).trim() + ')', { record, window: assets.window });
 const ranges = s => JSON.stringify(record.filter(p => p.s === s).map(p => [p.a, p.b, p.st]));
 function coverage() {
   const seen = new Set();
@@ -55,20 +56,21 @@ function coverage() {
   }
   return seen.size;
 }
-assert.equal(coverage(), 75);
+assert.equal(coverage(), 0);
+upsert({ s: 67, a: 1, b: 30, st: 'learn' });
 upsert({ s: 67, a: 1, b: 10, st: 'learn' });
 assert.equal(ranges(67), '[[1,30,"learn"]]', 'Saving a seeded subrange in the same state does not duplicate it.');
 upsert({ s: 67, a: 1, b: 10, st: 'mem' });
 assert.equal(ranges(67), '[[1,10,"mem"],[11,30,"learn"]]');
 upsert({ s: 67, a: 4, b: 6, st: 'rev' });
 assert.equal(ranges(67), '[[1,3,"mem"],[4,6,"rev"],[7,10,"mem"],[11,30,"learn"]]', 'Partial replacement retains both outside boundaries.');
-assert.equal(coverage(), 75);
+assert.equal(coverage(), 30);
 upsert({ s: 67, a: 1, b: 30, st: 'mem' });
 assert.equal(ranges(67), '[[1,30,"mem"]]', 'A complete replacement joins the passage again.');
 upsert({ s: 2, a: 255, b: 255, st: 'learn' });
 assert.equal(ranges(2), '[[255,255,"learn"]]');
-assert.equal(ranges(1), '[[1,7,"mem"]]', 'Updating another surah preserves its neighbours.');
-assert.equal(coverage(), 75);
+assert.equal(ranges(67), '[[1,30,"mem"]]', 'Updating another surah preserves its neighbours.');
+assert.equal(coverage(), 31);
 
 class Element {
   constructor(dataset = {}) {
@@ -133,7 +135,7 @@ const document = {
 };
 const scope = {
   root: new Element(), MOON, $: one, $$: all, tilt() {}, fmt: String,
-  window: { UMMAHTI_RENDERS: D, Audio: forbiddenAudio, AudioContext: forbiddenAudio, webkitAudioContext: forbiddenAudio, SpeechRecognition: forbiddenMicrophone },
+  window: { ...assets.window, UMMAHTI_RENDERS: D, Audio: forbiddenAudio, AudioContext: forbiddenAudio, webkitAudioContext: forbiddenAudio, SpeechRecognition: forbiddenMicrophone },
   Audio: forbiddenAudio, AudioContext: forbiddenAudio,
   navigator: { mediaDevices: { getUserMedia: forbiddenMicrophone } },
   t: (key, values = {}) => Object.entries(values).reduce((text, [name, value]) => text.split('{' + name + '}').join(value), copy[key] || key),
@@ -162,10 +164,21 @@ async function main() {
   assert.equal(one('[data-r-found-ref]').textContent, '');
   assert.equal(requests.length, 0, 'Initialization must not produce an automatic recognition result.');
   assert.equal(timers.size, 0, 'Initialization must not schedule a fake recognition result.');
+  assert.equal(one('[data-r-rec-sum]').textContent, '0 ayahs in 0 surahs');
   await emit(one('[data-r-review-example]'), 'click');
   assert.equal(one('.r-screen').dataset.step, 'found');
   assert.equal(one('[data-r-first]').textContent, D.ayah.arabic);
   assert(one('[data-r-hz-status]').textContent.includes('Review'));
+  assert.equal(one('[data-r-save]').disabled, true, 'State is never preselected.');
+  await emit(one('[data-r-save]'), 'click');
+  assert.equal(one('.r-screen').dataset.step, 'found', 'Save without a state cannot write the record.');
+  await emit(states[0], 'click'); await emit(one('[data-r-save]'), 'click');
+  assert.equal(one('.r-screen').dataset.step, 'saved');
+  assert.equal(one('[data-r-rec-sum]').textContent, '1 ayahs in 1 surahs');
+  assert.equal(timers.size, 0, 'A saved confirmation has no automatic dismissal.');
+  await emit(one('[data-r-add-another]'), 'click');
+  assert.equal(one('.r-screen').dataset.step, 'idle');
+  assert(states.every(button => button.attrs['aria-pressed'] === 'false'), 'Add another carries no selected state.');
 
   await emit(modes[1], 'click');
   assert.equal(one('.r-screen').dataset.step, 'say');
@@ -177,16 +190,23 @@ async function main() {
   await emit(one('[data-r-reference-form]'), 'submit');
   assert.equal(one('[data-r-first]').textContent, corpus(67)[0][0]);
   assert.equal(one('[data-r-last]').textContent, corpus(67)[9][0]);
+  assert.equal(one('[data-r-save]').disabled, true);
+  await emit(states[0], 'click');
   await emit(one('[data-r-save]'), 'click');
-  assert.equal(one('[data-r-rec-sum]').textContent, '75 ayahs in 8 surahs', 'Saving already-seeded Al-Mulk ayahs does not inflate the total.');
-  assert.equal(one('[data-r-rec-learn]').textContent, '2', 'Same-state overlap stays one learning passage.');
-  await emit(modes[1], 'click'); one('[data-r-reference]').value = '2:255';
+  assert.equal(one('[data-r-rec-sum]').textContent, '11 ayahs in 2 surahs');
+  await emit(one('[data-r-add-another]'), 'click');
+  assert.equal(one('[data-r-reference]').value, '', 'Add another carries no old reference.');
+  one('[data-r-reference]').value = '67:1–10';
   await emit(one('[data-r-reference-form]'), 'submit');
-  assert.equal(one('[data-r-first]').textContent, corpus(2)[254][0]);
+  await emit(states[0], 'click'); await emit(one('[data-r-save]'), 'click');
+  assert.equal(one('[data-r-rec-sum]').textContent, '11 ayahs in 2 surahs', 'An overlapping save never inflates unique coverage.');
+  assert.equal(one('[data-r-rec-learn]').textContent, '2');
+  await emit(modes[1], 'click'); one('[data-r-reference]').value = '67:4–6';
+  await emit(one('[data-r-reference-form]'), 'submit'); await emit(states[1], 'click');
   await emit(one('[data-r-save]'), 'click');
-  assert.equal(one('[data-r-rec-sum]').textContent, '75 ayahs in 8 surahs');
-  assert.equal(one('[data-r-rec-mem]').textContent, '4', 'Ayat al-Kursi leaves its old memorised passage count.');
-  assert.equal(one('[data-r-rec-learn]').textContent, '3', 'Its new state appears exactly once.');
+  assert.equal(one('[data-r-rec-sum]').textContent, '11 ayahs in 2 surahs');
+  assert.equal(one('[data-r-rec-mem]').textContent, '1');
+  assert.equal(one('[data-r-rec-learn]').textContent, '3', 'The two outside Al-Mulk ranges retain learning state.');
 
   for (const invalid of ['999:1', '67:1-31', '67:10-1']) {
     await emit(modes[1], 'click'); one('[data-r-reference]').value = invalid;
@@ -223,10 +243,13 @@ async function main() {
   await emit(one('[data-r-pick-next]'), 'click');
   assert.equal(one('[data-r-first]').textContent, corpus(55)[1][0]);
   assert.equal(one('[data-r-last]').textContent, corpus(55)[12][0]);
+  await emit(states[2], 'click');
   await emit(one('[data-r-save]'), 'click');
   assert.equal(one('[data-r-save]').disabled, true);
-  const staleSaveFeedback = [...timers.values()].at(-1);
-  await emit(modes[1], 'click'); staleSaveFeedback();
+  assert.equal(one('[data-r-rec-sum]').textContent, '23 ayahs in 3 surahs');
+  assert.equal(one('.r-screen').dataset.step, 'saved');
+  assert.equal(timers.size, 0);
+  await emit(modes[1], 'click');
   assert.equal(one('.r-screen').dataset.mode, 'say');
   assert.equal(one('.r-screen').dataset.step, 'say', 'An old save callback cannot replace a newer pane.');
 
@@ -237,11 +260,23 @@ async function main() {
   assert.equal(one('[data-r-reference-submit]').disabled, false);
 
   await emit(one('[data-r-review-example]'), 'click');
+  await emit(states[0], 'click');
   await emit(one('[data-r-save]'), 'click');
   document.hidden = true; documentEvents.get('visibilitychange')();
-  assert.equal(one('.r-screen').dataset.step, 'idle', 'Hidden save feedback settles without leaving a dead save action.');
+  assert.equal(one('.r-screen').dataset.step, 'saved', 'The explicit saved result survives visibility changes.');
   assert.equal(timers.size, 0);
+  document.hidden = false;
+  await emit(one('[data-r-reset]'), 'click');
+  assert.equal(one('[data-r-rec-sum]').textContent, '0 ayahs in 0 surahs');
+  assert.equal(one('.r-screen').dataset.step, 'idle');
+  assert.equal(one('[data-r-save]').disabled, true);
+  assert(states.every(button => button.attrs['aria-pressed'] === 'false'));
+  await emit(modes[1], 'click'); one('[data-r-reference]').value = '67:1–10'; delayRequest = true;
+  const beforeReset = emit(one('[data-r-reference-form]'), 'submit');
+  await emit(one('[data-r-reset]'), 'click'); delayRequest = false; resolveDelayed(); await beforeReset;
+  assert.equal(one('.r-screen').dataset.step, 'idle', 'Reset cancels an unresolved corpus request.');
+  assert.equal(one('[data-r-rec-sum]').textContent, '0 ayahs in 0 surahs');
   assert.equal(audioAttempts, 0); assert.equal(microphoneAttempts, 0);
-  console.log(JSON.stringify({ passed: true, parserCases: validReferences.length + invalidReferences.length, checks: ['explicit known-example reveal', 'no automatic result/audio/microphone', 'typed-reference corpus boundaries', 'invalid reference bounds', 'edit/invalid-submit stale-response cancellation', 'unique seeded ayah totals and state replacement', 'partial-overlap boundaries and same-state merge', 'manual-range corpus boundaries', 'save callback cancellation', 'stale corpus cancellation', 'hidden-state cleanup'], corpusRequests: requests }));
+  console.log(JSON.stringify({ passed: true, parserCases: validReferences.length + invalidReferences.length, checks: ['empty record and explicit known-example reveal', 'no automatic result/audio/microphone', 'explicit state required on every review', 'typed-reference corpus boundaries', 'invalid reference bounds', 'edit/invalid-submit stale-response cancellation', 'unique ayah totals and state replacement', 'partial-overlap boundaries and same-state merge', 'manual-range corpus boundaries', 'stable saved result and Add another', 'reset and stale corpus cancellation', 'hidden-state cleanup'], corpusRequests: requests }));
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

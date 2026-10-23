@@ -84,6 +84,7 @@ function fixture(lang = 'en', reduce = false, loaded = true) {
   // Already loaded Quran data isolates network timing without changing the Guide under test.
   context.UMMAHTI_AYAT = loaded ? Object.fromEntries(Array.from({ length: 114 }, (_, i) => [i + 1, Array.from({ length: 300 }, () => ['source-ar', 'source-en'])])) : {};
   vm.runInContext(read('v15-field-light.js'), context);
+  vm.runInContext(read('v15-guide-search.js'), context);
   vm.runInContext(guideCode, context);
   const flushTimers = () => { const queued = [...timers.values()]; timers.clear(); queued.forEach(fn => fn()); };
   const input = value => { search.value = value; search.dispatchEvent({ type: 'input' }); flushTimers(); };
@@ -106,9 +107,13 @@ function heroAcceptanceFixture() {
   const context = f.context;
   context.run = 0;
   context.matches = [{ t: 'older topic' }];
+  context.guideComposing = false; context.userQuery = false;
   context.form = f.doc.createElement('form');
   context.input = f.doc.createElement('input'); context.input.value = 'question';
   context.matchesBox = f.doc.createElement('div');
+  context.status = f.status;
+  context.clearGuideAnswer = () => {};
+  context.stopSearchLight = () => {};
   context.takeControl = () => { context.run++; };
   context.working = value => working.push(value);
   context.say = text => announcements.push(text);
@@ -177,7 +182,7 @@ function installHeroHostChange(context) {
   f.input('worry');
   f.search.dispatchEvent({ type: 'keydown', key: 'ArrowDown' });
   assert.equal(f.doc.activeElement.dataset.guideResult, 'anxiety_and_worry');
-  f.doc.dispatchEvent({ type: 'ummahti:guide-open', detail: { topicId: 'delayed_dua', query: 'When will my dua be answered?' } });
+  f.doc.dispatchEvent({ type: 'ummahti:guide-open', detail: { topicId: 'delayed_dua', query: 'unanswered dua' } });
   assert.equal(f.title.textContent, f.context.UMMAHTI_GUIDE.topics.find(tp => tp.id === 'delayed_dua').t);
   f.doc.hidden = true; f.doc.dispatchEvent({ type: 'visibilitychange' });
   assert(f.animations.every(a => a.cancelled), 'hidden tab cancels finite visual jobs');
@@ -196,6 +201,27 @@ function installHeroHostChange(context) {
     local.input(topic.s); local.submit();
     assert.equal(local.title.textContent, topic.t, `${lang} exact reviewed scenario must select its topic`);
     assert.equal(local.animations.length, 0, `${lang} reduced motion has no animation jobs`);
+  }
+  const actualCorpus = { window: { UMMAHTI_AYAT: {} } };
+  for (let n = 1; n <= 114; n++) vm.runInNewContext(read('media/v15/quran/s' + String(n).padStart(3, '0') + '.js'), actualCorpus);
+  for (const lang of ['en', 'ar', 'ur', 'id']) {
+    const all = fixture(lang, true); all.context.UMMAHTI_AYAT = actualCorpus.window.UMMAHTI_AYAT;
+    for (const tp of all.context.UMMAHTI_GUIDE.topics) {
+      all.doc.dispatchEvent({ type: 'ummahti:guide-open', detail: { topicId: tp.id, query: tp.t } });
+      await Promise.resolve(); await Promise.resolve();
+      assert.equal(all.title.textContent, tp.t, `${lang} displayed topic ${tp.id}`);
+      for (let k = 0; k < tp.q.length; k++) {
+        all.reader.querySelector('[data-guide-refs]').querySelectorAll('button')[k].dispatchEvent({ type: 'click' });
+        await Promise.resolve(); await Promise.resolve();
+        const [s, a, b] = tp.q[k], values = actualCorpus.window.UMMAHTI_AYAT[s].slice(a - 1, b);
+        const arabic = all.reader.querySelector('[data-guide-ayah-ar]').textContent;
+        assert(arabic.includes(values[0][0]) && arabic.includes(values.at(-1)[0]), `${lang} actual Arabic range ${tp.id} ${s}:${a}-${b}`);
+        assert.equal(all.reader.querySelector('[data-guide-ayah-en]').textContent, values.map(v => v[1]).join(' '), `${lang} actual meaning matches selected reference ${tp.id}`);
+      }
+    }
+    all.input('Happy'); all.submit();
+    assert.equal(all.reader.hidden, true, `${lang} unsupported Happy query hides every old answer`);
+    assert.equal(all.form.querySelectorAll('button').filter(b => b.dataset.guideResult).length, 0);
   }
   const pending = fixture('en', false, false);
   const oldTag = pending.externalScripts[0];
@@ -285,7 +311,7 @@ function installHeroHostChange(context) {
   assert.equal(focusJobs[0].opts.duration, 3200, 'flow follows the inspected reference cycle');
   assert.equal(focusJobs[0].opts.iterations, Infinity, 'the rim flows while the actual field is active');
   assert.equal(light.scrolls.length, 0, 'focus feedback does not navigate');
-  light.input('wor');
+  light.input('worry');
   assert(focusJobs.every(job => job.cancelled), 'typing supersedes focus feedback');
   const typingJobs = light.animations.filter(job => !job.cancelled);
   const started = light.animations.length;
@@ -438,7 +464,7 @@ function installHeroHostChange(context) {
     assert.equal(calls.control, 1); assert.equal(calls.settled.length, 1, 'same-host reconciliation cannot restart settling');
   }
   {
-    const calls = [], handlers = [], location = { hash: '' };
+    const calls = [], location = { hash: '' };
     let reduced = false;
     const destination = {
       setAttribute: (key, value) => calls.push(['attribute', key, value]),
@@ -451,28 +477,25 @@ function installHeroHostChange(context) {
       takeControl: () => calls.push(['control']), still: () => reduced, phone: {},
       $$: () => [{ addEventListener: (event, callback) => handlers.push(callback) }]
     });
-    vm.runInContext(heroSlice('    function openSection(selector) {', "    $('[data-r-gh-open]'"), context);
-    const click = extra => { const event = { button: 0, preventDefault() { this.prevented = true; }, ...extra }; handlers[0](event); return event; };
-    assert(click().prevented, 'ordinary phone reciter navigation is resolved explicitly');
+    vm.runInContext(heroSlice('    function openSection(selector) {', "    $('[data-r-read-play]'"), context);
+    context.openSection('#reciters');
     assert.equal(location.hash, '#reciters', 'the reciter destination remains refreshable');
     assert.deepEqual(calls.map(call => call[0]), ['control', 'history', 'attribute', 'focus', 'scroll']);
     assert.equal(calls.at(-2)[1].preventScroll, true, 'destination focus precedes scrolling without moving the page');
     assert.equal(calls.at(-1)[1].behavior, 'smooth');
-    const count = calls.length;
-    assert(!click({ ctrlKey: true }).prevented, 'modified link clicks retain native new-tab behavior');
-    assert.equal(calls.length, count);
-    reduced = true; click();
+    reduced = true; context.openSection('#reciters');
     assert.equal(calls.at(-1)[1].behavior, 'auto', 'reduced motion bypasses smooth navigation');
     assert.equal(calls.filter(call => call[0] === 'history').length, 1, 'repeat navigation does not duplicate the same fragment entry');
     const beforeMissing = calls.length; context.openSection('#missing');
     assert.equal(calls.length, beforeMissing, 'a missing destination cannot cancel the current preview or change its URL');
   }
   console.log('PASS: actual Guide script — mobile typing stability, Fajr ranking, explicit submit, source focus, rapid cancellation, no match, Escape/clear, keyboard result access, dock event, hidden-tab cancellation, four locale scenarios, reduced motion.');
+  console.log('PASS: all 86 topics and every selected Quran reference display their exact corpus range and meaning in all four locales; unsupported Happy clears old answers.');
   console.log('PASS: superseded asynchronous passage success/failure cannot overwrite the current source; active source settles busy state; IME confirmation stays separate from submit.');
   console.log('PASS: same-topic Guide failures retry, busy retries deduplicate, and both source loaders recover after network or missing-payload rejection.');
   console.log('PASS: full-rim flow has one phase owner, continuous active typing, immediate results, bounded submit surge and static settlement; no-match/blur/offscreen/reduced cancellation and stale-timer safety.');
   console.log('PASS: actual hero submit/chip handlers ignore stale success/cancellation; current failures report; actual-field visibility cancels flow, focused queries resume, and accepted/unfocused/inactive states stay still.');
   console.log('PASS: actual hero slot sizing preserves the source-screen ratio at fractional layout widths.');
   console.log('PASS: actual dock callback preserves pending manual query/result/run/light and settles an automatic preview once.');
-  console.log('PASS: actual phone section navigation focuses before scrolling, preserves fragments and modified clicks, and honors reduced motion.');
+  console.log('PASS: explicit section navigation focuses before scrolling, preserves fragments and honors reduced motion; playback controls are local buttons.');
 })().catch(e => { console.error(e); process.exitCode = 1; });

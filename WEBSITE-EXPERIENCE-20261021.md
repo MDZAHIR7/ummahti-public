@@ -231,3 +231,15 @@ section, and two consecutive builds produce identical pages.
 
 No standards change required. This refines the existing website architecture;
 it does not amend Android engineering or release standards.
+
+## 23 October corrective interaction audit
+
+The owner rejected the published preview behavior, including irrelevant Guide
+matching, navigation standing in for local playback/reset, missing Unlock
+acknowledgment and misleading Hifz recognition. The earlier verification is
+limited evidence and is not owner acceptance. The concrete repairs and
+verification boundaries are recorded in
+[`INTERACTION-AUDIT-20261023.md`](INTERACTION-AUDIT-20261023.md).
+The existing retained phone, field light, theme identity and upstream mobile
+performance work remain in place. Controls now complete bounded local flows
+and show their results. No standards change required.

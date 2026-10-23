@@ -406,11 +406,10 @@ rJuzPage	الجزء ٣٠ · الصفحة ٥٩٦	پارہ 30 · صفحہ 596	Juz 
 rUnlocked	فُتح القفل. اقرأها الآن، أو احفظها لوقت لاحق.	فون کھل گیا۔ ابھی پڑھیں، یا بعد کے لیے رکھیں۔	Terbuka. Baca sekarang, atau simpan untuk nanti.
 rKeptAgain	الآية التي أبقيتها تنتظرك.	جو آیت آپ نے رکھی تھی، وہ آپ کی منتظر ہے۔	Ayat yang Anda simpan sedang menunggu.
 rRecitePreview	في التطبيق، تُسمعك «تلاوة» هذه الآية.	ایپ میں «تلاوت» یہ آیت سناتا ہے۔	Di aplikasi, Recite memperdengarkan ayat ini.
-rLoadError	تعذّر تحميل هذا المثال. يُرجى تحديث الصفحة.	یہ مثال لوڈ نہ ہو سکی۔ براہ کرم صفحہ ریفریش کریں۔	Contoh ini gagal dimuat. Muat ulang halaman.
+rLoadError	تعذّر تحميل هذا المثال. يُرجى المحاولة مجددًا.	یہ مثال لوڈ نہ ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔	Contoh ini gagal dimuat. Silakan coba lagi.
 rFindsNote	التعرّف يجد المقطع فقط، ولا يُقيّم تلاوتك ولا نطقك ولا تجويدك.	پہچان صرف حصہ ڈھونڈتی ہے؛ یہ آپ کی تلاوت، تلفظ یا تجوید کو نہیں جانچتی۔	Pengenalan hanya menemukan bagiannya. Ia tidak menilai bacaan, pelafalan, atau tajwid Anda.
 rModesLabel	طرق إضافة مقطع	حصہ شامل کرنے کے طریقے	Cara menambah bagian
 rModeRecite	تلاوة	تلاوت	Bacakan
-rModeSay	انطق المرجع	حوالہ بولیں	Ucapkan rujukan
 rModeChoose	اختر	چنیں	Pilih
 rMeterLabel	آيات ما زالت تطابق	ابھی تک ملنے والی آیات	Ayat yang masih cocok
 rHifzDeviceLabel	أضف بالتلاوة، معاينة تفاعلية	تلاوت سے شامل کریں، انٹرایکٹو جھلک	Tambah dengan tilawah, pratinjau interaktif
@@ -440,7 +439,7 @@ rRecord	سجل على سبيل المثال	مثالی ریکارڈ	Contoh catat
 rRecordSum	{ayahs} آية في {surahs} سورة	{surahs} سورتوں میں {ayahs} آیات	{ayahs} ayat dalam {surahs} surah
 rRingNote	كل نقطة آية واحدة، والآيات الـ٦٬٢٣٦ كلها بترتيبها حول الحلقة. الذهبي محفوظ، والأخضر قيد الحفظ، والدائرة المفرغة تحتاج مراجعة.	ہر نقطہ ایک آیت ہے؛ تمام 6,236 آیات ترتیب سے دائرے میں۔ سنہری یاد ہے، سبز سیکھا جا رہا ہے، خالی دائرہ دہرانا ہے۔	Setiap titik adalah satu ayat, seluruh 6.236 ayat berurutan mengelilingi cincin. Emas berarti hafal, hijau sedang dipelajari, lingkaran kosong perlu diulang.
 rSheetRecite	أضف بالتلاوة	تلاوت سے شامل کریں	Tambah dengan tilawah
-rSheetSay	انطق المرجع	حوالہ بولیں	Ucapkan rujukan
+rSheetSay	اكتب مرجعًا	حوالہ لکھیں	Ketik rujukan
 rSheetChoose	اختر مقطعًا	حصہ چنیں	Pilih bagian
 rSheetReciteBody	اتلُ ما تتذكره من أي موضع في السورة. يتوقف الاستماع حين تتوقف.	سورہ میں کہیں سے بھی جو یاد ہو پڑھیں۔ آپ رکیں تو سننا رک جاتا ہے۔	Bacakan yang Anda ingat, dari bagian mana pun dalam surah. Mendengarkan berhenti saat Anda berhenti.
 rSheetSayBody	انطق السورة والآيات كما تخبر بها صديقًا.	سورہ اور آیات ویسے ہی بتائیں جیسے کسی دوست کو بتاتے ہیں۔	Sebutkan surah dan ayatnya, seperti Anda memberi tahu seorang teman.
@@ -481,9 +480,9 @@ rGuideDua	دعاء لذلك	اس کے لیے دعا	Doa untuknya
 rDayLegend	ساعة من ٢٤ ساعة: كل علامة فتحٌ للقفل في يوم مثالي، والمضيئة منها تأتي بآية.	24 گھنٹے کی گھڑی: ہر نشان ایک مثالی دن میں فون کھولنا ہے؛ روشن نشان آیت لاتے ہیں۔	Jam 24 jam: setiap garis adalah satu kali membuka kunci dalam contoh sehari. Garis yang menyala menghadirkan ayat.
 rSceneNext	اللحظة التالية	اگلا لمحہ	Momen berikutnya
 rSceneUnlockCap	آية مع كل فتح للقفل، نحو ختمة	ہر بار فون کھولنے پر ایک آیت، ختم کی طرف	Satu ayat setiap membuka kunci, menuju khatam
-rSceneReciteCap	اتلُ، فيجد المقطع	پڑھیں، اور یہ حصہ ڈھونڈ لیتا ہے	Bacakan, dan ia menemukan bagiannya
+rSceneReciteCap	راجع مقطعًا، ثم احفظه	حصہ دیکھیں، پھر محفوظ کریں	Tinjau bagian, lalu simpan
 rSceneRead	اقرأ واستمع	پڑھیں اور سنیں	Baca dan dengarkan
-rSceneReadCap	تابع كل آية وهي تُتلى	ہر آیت کو تلاوت کے ساتھ دیکھیں	Ikuti setiap ayat saat dibacakan
+rSceneReadCap	اختر آية، واستمع إليها هنا	آیت منتخب کریں، یہیں سنیں	Pilih ayat, dengarkan di sini
 rSoundOn	شغّل الصوت	آواز چلائیں	Nyalakan suara
 rSoundOff	أوقف الصوت	آواز بند کریں	Matikan suara
 rHifzPreviewTag	تجربة على الموقع	ویب سائٹ کی مثال	Panduan di situs
@@ -504,3 +503,27 @@ rHifzReferenceReview	راجع المقطع	حصے کا جائزہ لیں	Tinjau 
 rHifzReferenceExample	استخدم الملك ١–١٠	الملک ۱–۱۰ استعمال کریں	Gunakan Al-Mulk 1–10
 rHifzReferenceBounds	اختر الآيات من ١ إلى {max}، واجعل الآية الأخيرة بعد الأولى أو مساوية لها.	۱ سے {max} تک آیات چنیں۔ آخری آیت پہلی کے برابر یا اس کے بعد ہو۔	Pilih ayat 1 sampai {max}, dengan ayat terakhir sama atau setelah ayat pertama.
 rHifzReferenceHelp	استخدم رقم السورة أو اسمها مع نطاق الآيات، مثل 67:1–10.	سورت کا نمبر یا نام اور آیات کی حد لکھیں، مثلاً 67:1–10۔	Gunakan nomor atau nama surah dan rentang ayat, misalnya 67:1–10.
+rAudioPlay	تشغيل {ref}	{ref} سنیں	Putar {ref}
+rAudioPause	إيقاف {ref} مؤقتًا	{ref} روکیں	Jeda {ref}
+rAudioVoice	قارئ هذه المعاينة	اس پیش منظر کے قاری	Qari pratinjau ini
+rAudioLoading	جارٍ تحميل {ref}…	{ref} لوڈ ہو رہی ہے…	Memuat {ref}…
+rAudioPlaying	تُتلى الآن {ref}	{ref} کی تلاوت جاری ہے	Memutar {ref}
+rAudioPaused	متوقف مؤقتًا · {ref}	رکی ہوئی · {ref}	Dijeda · {ref}
+rAudioFinished	اكتملت {ref}. اضغط تشغيل لسماعها مرة أخرى.	{ref} مکمل ہوئی۔ دوبارہ سننے کے لیے چلائیں۔	{ref} selesai. Putar untuk mendengarnya lagi.
+rAudioError	تعذّر تشغيل الصوت. اضغط تشغيل للمحاولة مجددًا.	آڈیو شروع نہیں ہو سکی۔ دوبارہ کوشش کے لیے چلائیں۔	Audio belum dapat diputar. Tekan putar untuk mencoba lagi.
+rReadHint	اختر آية، ثم استمع إليها هنا.	آیت منتخب کریں، پھر یہیں سنیں۔	Pilih ayat, lalu dengarkan di sini.
+rReadSelected	تم اختيار {ref}. اضغط تشغيل للاستماع.	{ref} منتخب ہے۔ سننے کے لیے چلائیں۔	{ref} dipilih. Tekan putar untuk mendengarkan.
+rUnlockMarked	✓ قُرئت {ref}. الآية التالية جاهزة.	✓ {ref} پڑھی ہوئی نشان زد ہے۔ اگلی آیت تیار ہے۔	✓ {ref} ditandai dibaca. Ayat berikutnya siap.
+rUnlockCount	{n} آيات مقروءة في هذا المثال	اس مثال میں {n} آیات پڑھی گئیں	{n} ayat dibaca dalam contoh ini
+rHifzKnownExample	استخدم الأنبياء 21:92	الانبیاء 21:92 استعمال کریں	Gunakan Al-Anbiya 21:92
+rHifzAddAnother	أضف مقطعًا آخر	ایک اور حصہ شامل کریں	Tambahkan bagian lain
+rHifzPreviewReset	أعد ضبط هذا المثال	یہ مثال دوبارہ شروع کریں	Atur ulang contoh ini
+rHifzPreviewResetDone	أُعيد ضبط المثال. لا توجد مقاطع محفوظة.	مثال دوبارہ شروع ہوئی۔ کوئی حصہ محفوظ نہیں ہے۔	Contoh diatur ulang. Belum ada bagian disimpan.
+rHifzPreviewSavedDetail	{ref} · {state}. حُفظ في مثال الموقع هذا.	{ref} · {state}۔ ویب سائٹ کی اس مثال میں محفوظ ہوا۔	{ref} · {state}. Disimpan dalam contoh situs ini.
+rHifzPreviewSavedCount	حُفظت {ayahs} آيات في هذا المثال.	اس مثال میں {ayahs} آیات محفوظ ہوئیں۔	{ayahs} ayat disimpan dalam contoh ini.
+rHifzChooseState	اختر حالة قبل الحفظ.	محفوظ کرنے سے پہلے حالت منتخب کریں۔	Pilih status sebelum menyimpan.
+rHifzOpenWalkthrough	افتح تجربة الحفظ الكاملة	حفظ کی مکمل مثال کھولیں	Buka panduan Hifz lengkap
+rModeSay	اكتب مرجعًا	حوالہ لکھیں	Ketik rujukan
+rFilmError	تعذّر تشغيل الفيلم. اضغط المشاهدة للمحاولة مجددًا.	فلم نہیں چل سکی۔ دوبارہ کوشش کے لیے دیکھیں دبائیں۔	Film belum dapat diputar. Tekan tonton untuk mencoba lagi.
+rUnlockComplete	أكملت هذا المثال المكوّن من 19 آية. أعد ضبطه للبدء مجددًا.	آپ نے 19 آیات کی یہ مثال مکمل کر لی ہے۔ دوبارہ شروع کرنے کے لیے ری سیٹ کریں۔	Contoh 19 ayat ini selesai. Atur ulang untuk memulai lagi.
+rRetrySource	حاول التحميل مجددًا	دوبارہ لوڈ کرنے کی کوشش کریں	Coba muat lagi

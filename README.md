@@ -19,10 +19,21 @@ dimensions, preview hooks, localized search controls and local-query guards
 execute the shipped controllers and local content:
 
 - `node tools/test_guide_search.cjs`: reviewed Guide search and explicit selection.
+- `node tools/test_guide_matching.cjs`: 812 actual-catalogue retrieval cases,
+  including multilingual aliases, negation and identical hero/full ranking.
 - `node tools/test_phone_handoff.cjs`: the single phone owner, scroll restoration,
   interruption, reversal, focus and resize behavior.
 - `node tools/test_hifz_preview.cjs`: explicit example review, typed references,
   actual Quran boundaries, cancellation and audio/microphone traps.
+- `node tools/test_hifz_hero.cjs`: the hero's canonical review/save/reset flows,
+  explicit state choice, interruption and privacy boundaries.
+- `node tools/test_preview_interactions.cjs`: both Guide catalogues, exact local
+  ayah playback, source recovery, hero Hifz saves/reset, isolated workbench
+  results, reciter request ownership/keyboard input and film/wall lifecycle.
+- `node tools/test_library_and_moon.cjs`: every public dua/reflection in four
+  locales, source/copy consistency, stale requests and moon-card recovery.
+- `python tools/fetch_preview_recitation.py --check`: the 52 preview clips'
+  source coordinates, sizes and SHA-256 digests; no requests or file changes.
 
 Check changed interaction scripts with `node --check`, including
 `node --check v15-phone-handoff.js` and `node --check v15-field-light.js`
@@ -72,6 +83,19 @@ Do not replace them with refresh stubs: the mirror does not read `_redirects`.
   review a known Quran passage or type a validated reference before saving in
   this page's example.
 - `v15-guide.js`: reviewed local-topic search and explicit answer selection.
+- `v15-guide-search.js`: one token/phrase matcher for the hero and full Guide.
+  It searches reviewed titles, scenarios and keyword phrases, preserves
+  negation, and leaves unsupported questions unanswered. `happy` cannot match
+  the substring in `unhappy marriage` or an incidental editorial paragraph.
+- `v15-preview-audio.js`: user-initiated playback of the exact selected/displayed
+  ayah, with pause, progress, retry and one audible player at a time. Read and
+  Unlock stay in their phone; scene changes and visibility stop playback.
+  The hero preserves its chosen sample reciter across Read and Unlock.
+- `v15-hifz-preview.js`, `v15-hifz-preview.css`: manual passage review in the
+  retained hero phone, shared reference validation/overlap semantics, explicit
+  state choice, stable saved result and local reset. Autoplay never saves or
+  simulates speech recognition. The larger Hifz walkthrough starts empty.
+- `v15-preview-controls.css`: local playback, feedback and recovery controls.
 - `v15-field-light.js`, `v15-guide-light.css`: shared hero/full-Guide feedback
   following the inspected Frames mechanism: a masked full conic-gradient rim
   and matching blurred bloom. The current treatment uses a 2 px rim, 18 px

@@ -74,6 +74,8 @@
 
   let itemH = rows[0].offsetHeight || 42;
   let index = 0;          // the name currently under the band
+  let transport = 0;
+  let intended = null;    // keyboard target while native smooth scrolling settles
   let detent = 0;         // the last row to cross it, ticked or not
   let gestured = false;   // has the reader touched the drum yet
   const missing = new Set();
@@ -195,10 +197,12 @@
   function land() {
     const at = Math.max(0, Math.min(rows.length - 1, Math.round(list.scrollTop / itemH)));
     if (at !== index) select(at);
+    if (at === intended) intended = null;
   }
 
   function goTo(i, smooth) {
     const at = Math.max(0, Math.min(rows.length - 1, i));
+    intended = at;
     list.scrollTo({
       top: at * itemH,
       behavior: smooth && !reduced.matches ? 'smooth' : 'auto',
@@ -208,6 +212,7 @@
   /* ----------------------------------------------------------- the voice */
 
   function select(i) {
+    transport++;
     index = i;
     const li = rows[i];
 
@@ -256,8 +261,9 @@
   }
 
   function fail(message) {
-    playBtn.disabled = true;
+    playBtn.disabled = message === GONE;
     playBtn.setAttribute('aria-pressed', 'false');
+    playBtn.setAttribute('aria-label', PLAY);
     hintEl.textContent = message;
     barEl.style.setProperty('--p', '0');
   }
@@ -280,9 +286,12 @@
   /* -------------------------------------------------------- the transport */
 
   function start() {
+    const request = ++transport, source = audio.getAttribute('src'), selected = rows[index];
+    document.dispatchEvent(new CustomEvent('ummahti:audio-start', { detail: { audio } }));
     const p = audio.play();
     if (!p || !p.catch) return;
     p.catch(() => {
+      if (request !== transport || audio.getAttribute('src') !== source || rows[index] !== selected) return;
       /* A play() on a clip that 404s rejects and fires error, in that order,
          so the generic message would land on top of the true one. The clip
          being absent is the better answer whenever it is the right one. */
@@ -292,8 +301,11 @@
 
   playBtn.addEventListener('click', () => {
     if (audio.paused || audio.ended) start();
-    else audio.pause();
+    else { transport++; audio.pause(); }
   });
+  document.addEventListener('ummahti:audio-start', event => { if (event.detail?.audio !== audio) { transport++; audio.pause(); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { transport++; audio.pause(); } });
+  new IntersectionObserver(entries => { if (!entries[0].isIntersecting) { transport++; audio.pause(); } }).observe(root);
 
   audio.addEventListener('play', () => {
     playBtn.setAttribute('aria-pressed', 'true');
@@ -335,10 +347,10 @@
   /* pointerdown and touchend are the two the platforms actually grant
      activation on, and a wheel event is a trackpad that never will — it only
      needs to arm the visual tick. */
-  wheel.addEventListener('pointerdown', prime, { passive: true });
-  wheel.addEventListener('touchend', prime, { passive: true });
+  wheel.addEventListener('pointerdown', () => { intended = null; prime(); }, { passive: true });
+  wheel.addEventListener('touchend', () => { intended = null; prime(); }, { passive: true });
   wheel.addEventListener('keydown', prime);
-  wheel.addEventListener('wheel', () => { gestured = true; }, { passive: true });
+  wheel.addEventListener('wheel', () => { intended = null; gestured = true; }, { passive: true });
 
   // A row you can see is a row you can point at.
   rows.forEach((li, i) => {
@@ -352,7 +364,7 @@
       e.key === 'PageDown' ? 4 :
       e.key === 'PageUp' ? -4 : 0;
 
-    if (step) { e.preventDefault(); goTo(index + step, true); return; }
+    if (step) { e.preventDefault(); goTo((intended ?? index) + step, true); return; }
     if (e.key === 'Home') { e.preventDefault(); goTo(0, true); return; }
     if (e.key === 'End') { e.preventDefault(); goTo(rows.length - 1, true); return; }
 

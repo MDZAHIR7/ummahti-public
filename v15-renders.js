@@ -52,7 +52,11 @@
     const status = $('[data-r-status]', root), sparks = $('.r-sparks', root);
     const ayatEl = $('[data-r-ayat]'), countEl = $('[data-r-count]'), placeTrack = $('[data-r-place]');
     tilt(device);
-    let seq = 93, index = 0, done = 0, keptLater = false, busy = false, open = false;
+    let seq = 93, index = 0, done = 0, keptLater = false, busy = false, open = false, loadRequest = 0, transition = 0, cadenceRequest = 0;
+    const content = $('.r-card', root);
+    const recitation = window.UmmahtiPreviewAudio.create({ root: device, button: $('[data-r-recite]', root), status, t });
+    content.inert = true;
+    const disableActions = on => $$('.r-card button', root).forEach(button => { button.disabled = on || (button.hasAttribute('data-r-tamam') && done >= 19); });
 
     // Live clock, with the Hijri date where the browser knows the Umm al-Qura calendar.
     const clock = () => {
@@ -73,9 +77,11 @@
     const paintDots = () => { if (seq !== 93) return; dots.forEach((d, i) => { d.classList.toggle('is-read', i < index); d.classList.toggle('is-now', i === index); }); };
 
     async function show(animate = true) {
+      const request = ++loadRequest, currentSeq = seq, currentIndex = index;
       const list = await surah(seq).catch(() => null);
-      if (!list) { status.textContent = t('rLoadError'); return; }
-      const [arabic, translation] = list[index];
+      if (request !== loadRequest) return false;
+      if (!list) { status.textContent = t('rLoadError'); return false; }
+      const [arabic, translation] = list[currentIndex];
       card.ref.textContent = t('rSurahChip', { name: name(seq), ref: seq + ':' + (index + 1) });
       card.sub.textContent = t('rJuzPage');
       const spans = words(card.ar, arabic);
@@ -83,27 +89,34 @@
       card.pct.textContent = Math.floor(done / 6236 * 100) + '%';
       if (countEl) countEl.textContent = t('rOfAyat', { n: fmt(done) });
       paintDots();
+      recitation.set(currentSeq, currentIndex + 1);
       if (animate) reveal(spans, 130); else spans.forEach(s => s.classList.add('is-in'));
+      return true;
     }
 
     function unlock() {
       if (open || busy) return;
       open = true; screen.classList.add('is-open'); screen.classList.remove('is-leaving');
+      transition++; content.inert = false; lock.inert = true;
       card.kept.classList.toggle('is-on', keptLater);
       lock.setAttribute('aria-hidden', 'true'); lock.querySelector('button').tabIndex = -1;
       $$('.r-card button', root).forEach(b => b.tabIndex = 0);
       show(true);
       status.textContent = keptLater ? t('rKeptAgain') : t('rUnlocked');
-      setTimeout(() => $('[data-r-tamam]', root).focus({ preventScroll: true }), still() ? 0 : 900);
+      if (lock.contains(document.activeElement)) $('[data-r-tamam]', root).focus({ preventScroll: true });
     }
     async function relock(message) {
-      busy = true; screen.classList.add('is-leaving');
+      const request = ++transition;
+      recitation.stop({ reset: true }); busy = true; disableActions(true); lock.querySelector('button').disabled = true; content.inert = true; screen.classList.add('is-leaving');
       await sleep(550);
+      if (request !== transition) return;
       screen.classList.remove('is-open', 'is-leaving'); open = false;
+      lock.inert = false;
+      lock.querySelector('button').disabled = false; disableActions(false);
       lock.removeAttribute('aria-hidden'); const b = lock.querySelector('button'); b.tabIndex = 0;
       $$('.r-card button', root).forEach(x => x.tabIndex = -1);
       status.textContent = message; busy = false;
-      setTimeout(() => b.focus({ preventScroll: true }), 50);
+      if (root.contains(document.activeElement)) b.focus({ preventScroll: true });
     }
 
     // Swipe up (or tap, or press the hint) to unlock.
@@ -115,25 +128,29 @@
       screen.classList.remove('is-dragging'); lock.style.translate = ''; lock.style.opacity = '';
       if (dy < -h * .18 || Math.abs(dy) < 6) unlock();
     };
-    lock.addEventListener('pointerup', end); lock.addEventListener('pointercancel', end);
+    lock.addEventListener('pointerup', end); lock.addEventListener('pointercancel', () => { start = null; screen.classList.remove('is-dragging'); lock.style.translate = ''; lock.style.opacity = ''; });
     lock.querySelector('button').addEventListener('click', e => { e.stopPropagation(); unlock(); });
     lock.querySelector('button').addEventListener('pointerdown', e => e.stopPropagation());
 
     $('[data-r-tamam]', root).addEventListener('click', async e => {
       if (!open || busy) return;
+      const action = ++transition, previousRef = seq + ':' + (index + 1), previous = { seq, index, done };
+      busy = true; disableActions(true); recitation.stop({ reset: true });
       const star = e.currentTarget; star.classList.remove('is-burst'); void star.offsetWidth; star.classList.add('is-burst');
       burst(star); done++; keptLater = false; card.kept.classList.remove('is-on');
       if (placeTrack) { placeTrack.classList.remove('is-pulse'); void placeTrack.offsetWidth; placeTrack.classList.add('is-pulse'); }
-      const len = (ayat()[seq] || []).length;
+      const len = (ayat()[seq] || []).length, complete = seq === 94 && index === len - 1;
       if (index < len - 1) index++;
       else if (seq === 93) { seq = 94; index = 0; dots.forEach(d => d.classList.add('is-read')); }
-      else { status.textContent = t('exampleComplete'); seq = 93; index = 0; dots.forEach(d => d.classList.remove('is-read')); await sleep(320); show(true); return; }
-      status.textContent = t('advancedResult');
-      await sleep(320); show(true);
+      status.textContent = complete ? t('rUnlockComplete') : t('rUnlockMarked', { ref: previousRef });
+      const shown = await show(true);
+      if (action === transition) {
+        if (!shown) { ({ seq, index, done } = previous); await show(false); status.textContent = t('rLoadError'); }
+        busy = false; disableActions(false);
+      }
     });
     $('[data-r-later]', root).addEventListener('click', () => { if (!open || busy) return; keptLater = true; relock(t('laterResult')); });
-    $('[data-r-recite]', root).addEventListener('click', () => { if (open) status.textContent = t('rRecitePreview'); });
-    $('[data-r-reset]', root).addEventListener('click', () => { seq = 93; index = 0; done = 0; keptLater = false; dots.forEach(d => d.classList.remove('is-read')); relock(t('resetResult')); show(false); });
+    $('[data-r-reset]', root).addEventListener('click', () => { seq = 93; index = 0; done = 0; keptLater = false; $('[data-r-tamam]', root).disabled = false; dots.forEach(d => d.classList.remove('is-read')); relock(t('resetResult')); show(false); });
 
     function burst(from) {
       if (still()) return;
@@ -163,11 +180,12 @@
     }
     const lines = svg ? $$('line', svg) : [];
     function cadence(kind) {
+      const request = ++cadenceRequest;
       let last = -99, shown = 0;
       unlocks.forEach((h, i) => {
         const on = kind === 'every' || (kind === 'hourly' && h - last >= 1) || (kind === 'daily' && last < 0);
         if (on) { last = h; shown++; }
-        const line = lines[i]; if (line) setTimeout(() => line.classList.toggle('is-on', on), still() ? 0 : i * 18);
+        const line = lines[i]; if (line) setTimeout(() => { if (request === cadenceRequest) line.classList.toggle('is-on', on); }, still() ? 0 : i * 18);
       });
       if (note) note.innerHTML = t('rDayNote', { shown: '<b>' + fmt(shown) + '</b>', unlocks: fmt(unlocks.length) });
     }
@@ -187,18 +205,15 @@
     tilt(device, 5);
     const counts = MOON.counts, starts = []; let g = 0; counts.forEach(c => { starts.push(g); g += c; });
     const TOTAL = 6236;
-    // A record that is "a few ayahs here, a surah there".
-    const record = [
-      { s: 1, a: 1, b: 7, st: 'mem' }, { s: 2, a: 255, b: 255, st: 'mem' }, { s: 18, a: 1, b: 10, st: 'learn' },
-      { s: 36, a: 1, b: 12, st: 'rev' }, { s: 67, a: 1, b: 30, st: 'learn' }, { s: 112, a: 1, b: 4, st: 'mem' },
-      { s: 113, a: 1, b: 5, st: 'mem' }, { s: 114, a: 1, b: 6, st: 'mem' }
-    ];
-    let flare = null, mode = 'recite', chosenState = 'learn', found = null, running = 0;
-    let feedbackTimer = 0, focusFrame = 0;
+    // Only deliberate saves populate this page's record; the displayed ayah is a sample.
+    const record = [];
+    let flare = null, mode = 'recite', chosenState = null, found = null, running = 0;
+    let focusFrame = 0;
     function cancelPending() {
-      running++; clearTimeout(feedbackTimer); feedbackTimer = 0; cancelAnimationFrame(focusFrame); focusFrame = 0;
+      running++; cancelAnimationFrame(focusFrame); focusFrame = 0;
       $('.r-toast', root).classList.remove('is-on');
       $$('[data-r-save], [data-r-reference-submit], [data-r-pick-next]', root).forEach(button => button.disabled = false);
+      $('[data-r-save]', root).disabled = !found || !chosenState;
     }
 
     // ---- The ring: every ayah one dot, in order, a small gap between surahs.
@@ -254,28 +269,14 @@
     new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) { last = performance.now(); kick(); } else { cancelAnimationFrame(ringFrame); ringFrame = 0; } }).observe(root);
     document.addEventListener('visibilitychange', () => {
       cancelAnimationFrame(ringFrame); ringFrame = 0;
-      if (document.hidden) { const savedFeedback = !!feedbackTimer; cancelPending(); if (savedFeedback) pane(mode === 'recite' ? 'idle' : mode); }
+      if (document.hidden) cancelPending();
       else { kick(); if (mode === 'choose' && screen.dataset.step === 'choose') preview(); }
     });
     new ResizeObserver(() => { pts = null; kick(); }).observe(root);
 
     // ---- The record box.
     function upsertPassage(passage) {
-      const kept = [];
-      for (const item of record) {
-        if (item.s !== passage.s || item.b < passage.a || item.a > passage.b) { kept.push(item); continue; }
-        if (item.a < passage.a) kept.push({ ...item, b: passage.a - 1 });
-        if (item.b > passage.b) kept.push({ ...item, a: passage.b + 1 });
-      }
-      kept.push(passage);
-      kept.sort((a, b) => a.s - b.s || a.a - b.a);
-      const merged = [];
-      for (const item of kept) {
-        const previous = merged[merged.length - 1];
-        if (previous && previous.s === item.s && previous.st === item.st && previous.b + 1 >= item.a) previous.b = Math.max(previous.b, item.b);
-        else merged.push({ ...item });
-      }
-      record.splice(0, record.length, ...merged);
+      window.UmmahtiHifzPreview.upsert(record, passage);
     }
     function paintRecord() {
       const by = { mem: 0, learn: 0, rev: 0 }, surahs = new Set(); let n = 0;
@@ -288,11 +289,14 @@
     meter(1, name(D.ayah.surah) + ' ' + D.ayah.ref);
 
     // ---- Panes.
-    const panes = { idle: $('[data-pane=idle]', root), say: $('[data-pane=say]', root), found: $('[data-pane=found]', root), choose: $('[data-pane=choose]', root) };
+    const panes = { idle: $('[data-pane=idle]', root), say: $('[data-pane=say]', root), found: $('[data-pane=found]', root), choose: $('[data-pane=choose]', root), saved: $('[data-pane=saved]', root) };
     function pane(id) { Object.entries(panes).forEach(([key, el]) => { el.classList.toggle('is-on', key === id); el.hidden = key !== id; el.toggleAttribute('inert', key !== id); }); screen.dataset.step = id; }
     function setMode(m) {
       if (!['recite', 'say', 'choose'].includes(m)) return;
-      cancelPending(); mode = m; found = null; candSet = null; status.textContent = ''; kick();
+      cancelPending(); mode = m; found = null; chosenState = null; candSet = null; status.textContent = ''; kick();
+      $$('[data-r-state]', root).forEach(button => button.setAttribute('aria-pressed', 'false'));
+      $('[data-r-save]', root).disabled = true;
+      $('[data-r-reference]', root).removeAttribute('aria-invalid'); $('[data-r-reference-error]', root).textContent = '';
       $$('[data-r-mode]', root).forEach(b => { const on = b.dataset.rMode === m; b.setAttribute('aria-pressed', String(on)); });
       screen.dataset.mode = m;
       $('[data-r-sheet-title]', root).textContent = t(m === 'recite' ? 'rSheetRecite' : m === 'say' ? 'rSheetSay' : 'rSheetChoose');
@@ -315,17 +319,7 @@
     }
 
     function parseReference(value) {
-      const ascii = value.trim().replace(/[٠-٩۰-۹]/g, ch => String(ch.charCodeAt(0) - (ch <= '٩' ? 0x660 : 0x6f0)));
-      const clean = ascii.replace(/^(?:surah|sura|سورة|سورۃ)\s+/i, '');
-      const match = clean.match(/^(.+?)[\s:/]+(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?$/);
-      if (!match) return { error: 'format' };
-      const foldName = text => text.toLowerCase().normalize('NFKD').replace(/[̀-ًͯ-ٰٟۖ-ۭـ'’\s_-]/g, '').replace(/[ٱأإآ]/g, 'ا').replace(/ک/g, 'ك').replace(/ی/g, 'ي').replace(/^(?:surah|sura|سورة|سورۃ)/, '');
-      const key = foldName(match[1]); let s = /^\d+$/.test(key) ? Number(key) : 0;
-      if (!s) s = MOON.names.findIndex((label, i) => [label, MOON.namesArabic[i]].some(candidate => { const folded = foldName(candidate); return folded === key || folded.replace(/^(?:al|ال)/, '') === key; })) + 1;
-      if (s < 1 || s > counts.length) return { error: 'format' };
-      const a = Number(match[2]), b = Number(match[3] || match[2]);
-      if (a < 1 || b < a || b > counts[s - 1]) return { error: 'range', max: counts[s - 1] };
-      return { s, a, b };
+      return window.UmmahtiHifzPreview.parseReference(value, MOON);
     }
     async function submitReference(event) {
       event?.preventDefault();
@@ -345,7 +339,9 @@
     $('[data-r-reference]', root).addEventListener('input', event => { cancelPending(); event.target.removeAttribute('aria-invalid'); $('[data-r-reference-error]', root).textContent = ''; });
     $('[data-r-reference-example]', root).addEventListener('click', () => { $('[data-r-reference]', root).value = '67:1–10'; submitReference(); });
     function showFound(s, a, b, first, lastText) {
-      found = { s, a, b }; pane('found');
+      found = { s, a, b }; chosenState = null; pane('found');
+      $$('[data-r-state]', root).forEach(button => button.setAttribute('aria-pressed', 'false'));
+      $('[data-r-save]', root).disabled = true;
       $('[data-r-sheet-title]', root).textContent = t('rHifzReferenceReview');
       $('[data-r-found-ref]', root).textContent = name(s) + ' ' + s + ':' + (a === b ? a : a + '–' + b);
       $('[data-r-first-n]', root).textContent = fmt(a); $('[data-r-first]', root).textContent = first;
@@ -353,17 +349,25 @@
       if (lastText) { $('[data-r-last-n]', root).textContent = fmt(b); $('[data-r-last]', root).textContent = lastText; }
       status.textContent = t('rHifzPreviewReviewStatus', { ref: name(s) + ' ' + s + ':' + (a === b ? a : a + '–' + b) });
       const request = running; cancelAnimationFrame(focusFrame);
-      focusFrame = requestAnimationFrame(() => { focusFrame = 0; if (request === running) $('[data-r-state][aria-pressed=true]', root)?.focus({ preventScroll: true }); });
+      focusFrame = requestAnimationFrame(() => { focusFrame = 0; if (request === running) $('[data-r-state]', root)?.focus({ preventScroll: true }); });
     }
-    $$('[data-r-state]', root).forEach(b => b.addEventListener('click', () => { chosenState = b.dataset.rState; $$('[data-r-state]', root).forEach(x => x.setAttribute('aria-pressed', String(x === b))); }));
+    $$('[data-r-state]', root).forEach(b => b.addEventListener('click', () => { chosenState = b.dataset.rState; $$('[data-r-state]', root).forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('[data-r-save]', root).disabled = false; }));
     $('[data-r-save]', root).addEventListener('click', event => {
       if (!found) return;
-      const request = ++running, savedCount = found.b - found.a + 1; event.currentTarget.disabled = true;
+      if (!chosenState) { status.textContent = t('rHifzChooseState'); $('[data-r-state]', root)?.focus({ preventScroll: true }); return; }
+      ++running; const savedCount = found.b - found.a + 1; event.currentTarget.disabled = true;
+      const detail = t('rHifzPreviewSavedDetail', { ref: name(found.s) + ' ' + found.s + ':' + found.a + (found.a === found.b ? '' : '–' + found.b), state: t({ learn: 'rLearning', mem: 'rMemorised', rev: 'rRevision' }[chosenState]) });
       upsertPassage({ s: found.s, a: found.a, b: found.b, st: chosenState }); rebuildStates(); paintRecord();
       candSet = null; flare = { a: starts[found.s - 1] + found.a - 1, b: starts[found.s - 1] + found.b - 1, t: performance.now() }; kick();
-      found = null; $('.r-toast', root).classList.add('is-on'); status.textContent = t('rHifzPreviewSaved');
+      found = null; chosenState = null; pane('saved'); $('[data-r-saved-detail]', root).textContent = detail; status.textContent = detail;
       meter(savedCount, t('rHifzPreviewSaved'));
-      feedbackTimer = setTimeout(() => { feedbackTimer = 0; if (request === running) { flare = null; setMode(mode); } }, 1300);
+      $('[data-r-add-another]', root).focus({ preventScroll: true });
+    });
+    $('[data-r-add-another]', root).addEventListener('click', () => { $('[data-r-reference]', root).value = ''; setMode(mode); });
+    $('[data-r-reset]', root).addEventListener('click', () => {
+      cancelPending(); record.length = 0; found = null; chosenState = null; flare = null;
+      $('[data-r-reference]', root).value = ''; rebuildStates(); paintRecord(); setMode('recite');
+      status.textContent = t('rHifzPreviewResetDone');
     });
     $('[data-r-review-example]', root).addEventListener('click', recite);
     $('[data-r-hifz-back]', root).addEventListener('click', () => setMode(mode));
@@ -377,10 +381,11 @@
     async function preview() {
       clamp(); const s = +sel.value; candSet = new Set(Array.from({ length: to - from + 1 }, (_, i) => starts[s - 1] + from - 1 + i)); kick();
       meter(to - from + 1, t('rMeterChoose'));
+      status.textContent = ''; $('[data-r-pick-first]', root).textContent = ''; $('[data-r-pick-next]', root).disabled = true;
       const request = ++running, first = from;
       const list = await surah(s).catch(() => null); if (request !== running || mode !== 'choose') return;
       if (!list) { status.textContent = t('rLoadError'); return; }
-      $('[data-r-pick-first]', root).textContent = list[first - 1][0];
+      $('[data-r-pick-first]', root).textContent = list[first - 1][0]; $('[data-r-pick-next]', root).disabled = false;
     }
     sel.addEventListener('change', () => { from = 1; to = Math.min(counts[sel.value - 1], 10); preview(); });
     $$('[data-r-step]', root).forEach(b => b.addEventListener('click', () => { const [which, d] = b.dataset.rStep.split(':'); if (which === 'from') from += +d; else to += +d; preview(); }));
@@ -395,42 +400,50 @@
 
   /* ---------------- The channel wall ---------------- */
   function wall(root) {
-    // The video field: one dot per video on the channel, the ones on this wall lit.
     const field = $('[data-r-dotfield]');
     if (field) { const n = +field.dataset.count, lit = +field.dataset.lit; for (let i = 0; i < n; i++) { const d = document.createElement('i'); if (i < lit) d.className = 'is-shown'; field.append(d); } }
     const lanes = $$('.r-lane ul', root);
-    if (still()) { root.classList.add('is-static'); return; }
-    // Two copies of each lane so it loops without a seam; the copies are hidden from assistive tech.
-    lanes.forEach(ul => { [...ul.children].forEach(li => { const c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); $$('a', c).forEach(a => a.tabIndex = -1); ul.append(c); }); });
-    const state = lanes.map((ul, i) => ({ ul, x: i % 2 ? -ul.scrollWidth / 4 : 0, dir: i % 2 ? 1 : -1, hover: false }));
-    state.forEach(s => { s.ul.addEventListener('pointerenter', () => s.hover = true); s.ul.addEventListener('pointerleave', () => s.hover = false); s.ul.addEventListener('focusin', () => s.hover = true); s.ul.addEventListener('focusout', () => s.hover = false); });
-    let on = false, last = 0, lastY = scrollY, boost = 0, laneFrame = 0;
+    lanes.forEach(ul => [...ul.children].forEach(li => { const clone = li.cloneNode(true); clone.setAttribute('aria-hidden', 'true'); $$('a', clone).forEach(a => a.tabIndex = -1); ul.append(clone); }));
+    const state = lanes.map((ul, i) => ({ ul, x: i % 2 ? -ul.scrollWidth / 4 : 0, half: ul.scrollWidth / 2, dir: i % 2 ? 1 : -1, hover: false }));
+    state.forEach(s => { s.ul.addEventListener('pointerenter', () => s.hover = true); s.ul.addEventListener('pointerleave', () => s.hover = false); s.ul.addEventListener('focusin', () => s.hover = true); s.ul.addEventListener('focusout', event => s.hover = s.ul.contains(event.relatedTarget)); });
+    new ResizeObserver(() => state.forEach(s => { s.half = s.ul.scrollWidth / 2; })).observe(root);
+    let on = false, last = 0, lastY = scrollY, boost = 0, laneFrame = 0, touchTimer = 0, currentTile = null;
+    const allowed = () => on && !document.hidden && !still() && !navigator.connection?.saveData;
+    const tiles = $$('.r-tile', root), intents = new WeakMap();
+    function stop(tile) { const video = $('video', tile); intents.set(tile, (intents.get(tile) || 0) + 1); tile.classList.remove('is-playing'); video?.pause(); }
+    function play(tile) {
+      const video = $('video', tile); if (!video || !allowed()) return;
+      const request = (intents.get(tile) || 0) + 1; intents.set(tile, request);
+      if (!video.src) video.src = video.dataset.src;
+      video.play().then(() => { if (intents.get(tile) !== request || !allowed()) { if (intents.get(tile) === request) video.pause(); return; } tile.classList.add('is-playing'); }).catch(() => {});
+    }
+    tiles.forEach(tile => { tile.addEventListener('pointerenter', () => play(tile)); tile.addEventListener('pointerleave', () => stop(tile)); tile.addEventListener('focus', () => play(tile)); tile.addEventListener('blur', () => stop(tile)); });
     function frame(now) {
-      laneFrame = 0;
+      laneFrame = 0; if (!allowed()) return;
       const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
       const dy = scrollY - lastY; lastY = scrollY; boost = boost * .9 + Math.abs(dy) * .6;
-      state.forEach(s => {
-        const half = s.ul.scrollWidth / 2, speed = s.hover ? 0 : (22 + boost) * (document.dir === 'rtl' ? -1 : 1);
-        s.x += s.dir * speed * dt; if (s.x <= -half) s.x += half; if (s.x > 0) s.x -= half;
-        s.ul.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
-      });
-      if (on && !still()) laneFrame = requestAnimationFrame(frame);
+      state.forEach(s => { if (!s.half) return; const speed = s.hover ? 0 : (22 + boost) * (document.dir === 'rtl' ? -1 : 1); s.x += s.dir * speed * dt; if (s.x <= -s.half) s.x += s.half; if (s.x > 0) s.x -= s.half; s.ul.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)'; });
+      laneFrame = requestAnimationFrame(frame);
     }
-    new IntersectionObserver(es => { const was = on; on = es[0].isIntersecting; if (on && !was && !laneFrame) { last = performance.now(); laneFrame = requestAnimationFrame(frame); } }).observe(root);
-    // Hover plays a tile's six-second loop; on touch, a spotlight walks along the wall.
-    const play = tile => { const v = $('video', tile); if (!v) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => tile.classList.add('is-playing')).catch(() => {}); };
-    const stop = tile => { const v = $('video', tile); tile.classList.remove('is-playing'); if (v) v.pause(); };
-    $$('.r-tile', root).forEach(tile => { tile.addEventListener('pointerenter', () => play(tile)); tile.addEventListener('pointerleave', () => stop(tile)); tile.addEventListener('focus', () => play(tile)); tile.addEventListener('blur', () => stop(tile)); });
-    if (!matchMedia('(hover: hover)').matches) {
-      let current = null;
-      setInterval(() => {
-        if (!on || still()) return;
-        const mid = innerWidth / 2, tiles = $$('.r-tile', root).filter(x => { const r = x.getBoundingClientRect(); return r.left > 0 && r.right < innerWidth; });
-        if (!tiles.length) return; tiles.sort((a, b) => Math.abs(a.getBoundingClientRect().left - mid) - Math.abs(b.getBoundingClientRect().left - mid));
-        const next = tiles[Math.floor(Math.random() * Math.min(3, tiles.length))];
-        if (current && current !== next) stop(current); current = next; play(next);
-      }, 3200);
+    function spotlight() {
+      touchTimer = 0; if (!allowed()) return;
+      const candidates = tiles.filter(tile => { const r = tile.getBoundingClientRect(); return r.left > 0 && r.right < innerWidth; });
+      candidates.sort((a, b) => Math.abs(a.getBoundingClientRect().left - innerWidth / 2) - Math.abs(b.getBoundingClientRect().left - innerWidth / 2));
+      const next = candidates[Math.floor(Math.random() * Math.min(3, candidates.length))];
+      if (currentTile && currentTile !== next) stop(currentTile); currentTile = next;
+      if (next) play(next); touchTimer = setTimeout(spotlight, 3200);
     }
+    function sync() {
+      cancelAnimationFrame(laneFrame); laneFrame = 0; clearTimeout(touchTimer); touchTimer = 0;
+      root.classList.toggle('is-static', still() || !!navigator.connection?.saveData);
+      if (!allowed()) { tiles.forEach(stop); currentTile = null; return; }
+      last = performance.now(); lastY = scrollY; laneFrame = requestAnimationFrame(frame);
+      if (!matchMedia('(hover: hover)').matches) spotlight();
+    }
+    new IntersectionObserver(entries => { on = entries[0].isIntersecting; sync(); }).observe(root);
+    document.addEventListener('visibilitychange', sync); reduced.addEventListener('change', sync);
+    navigator.connection?.addEventListener('change', sync);
+    document.querySelector('[data-motion-toggle]')?.addEventListener('click', () => queueMicrotask(sync));
   }
 
 
@@ -471,16 +484,18 @@
     const matchesBox = $('[data-r-gh-matches]', phone), pauseButtons = $$('[data-r-gh-pause]');
     const choiceButtons = $$('[data-r-scene]'), scenes = Object.fromEntries($$('[data-scene]', phone).map(el => [el.dataset.scene, el]));
     const byId = Object.fromEntries(G.topics.map(x => [x.id, x]));
+    const readVoice = $('[data-r-read-voice]', phone);
+    const readAudio = window.UmmahtiPreviewAudio.create({ root: scenes.read, button: $('[data-r-read-play]', phone), status: $('[data-r-read-status]', phone), progress: $('[data-r-sc-prog]', phone), t });
+    const unlockAudio = window.UmmahtiPreviewAudio.create({ root: scenes.unlock, button: $('[data-r-unlock-play]', phone), status: $('[data-r-unlock-status]', phone), t });
     const questions = [['rGhQ1', 'anxiety_and_worry'], ['rGhQ2', 'forgiveness_and_repentance'], ['rGhQ3', 'waking_for_fajr'], ['rGhQ4', 'feeling_behind_in_life']].filter(([, id]) => byId[id]);
     const captions = { guide: ['Ummahti Guide', 'rGuideCaption'], read: [t('rSceneRead'), 'rSceneReadCap'], unlock: ['Ayah on Unlock', 'rSceneUnlockCap'], recite: ['My Hifz', 'rSceneReciteCap'] };
     const order = ['guide', 'read', 'unlock', 'recite'];
-    const fold = value => value.toLowerCase().normalize('NFKD').replace(/[̀-ًͯ-ٰٟ]/g, '');
-    const haystack = G.topics.map(tp => fold([tp.t, tp.s, tp.e, ...tp.w].join(' ')));
+    const matcher = window.UmmahtiGuideSearch.create(G.topics);
     let run = 0, questionAt = -1, current = 'guide', topic = byId[questions[0]?.[1]] || G.topics[0];
     let paused = false, manual = false, visible = false, docked = false, timer = 0, rejectWait = null, userQuery = false;
     let globeFrame = 0, lastFrame = 0, rotation = 0, speed = .2, handoff = null;
     const searchLight = window.UmmahtiFieldLight.create(form, { still, visible: () => current === 'guide' && window.UmmahtiFieldLight.inViewport(form) });
-    let unlockAt = 0, unlockDone = 0, readAt = 0, readList = [];
+    let unlockSeq = 93, unlockAt = 0, unlockDone = 0, readAt = 0, readList = [];
     const canAuto = () => visible && !document.hidden && !manual && !paused && !still() && !navigator.connection?.saveData;
     function stopSearchLight(retain = false) {
       searchLight.stop({ retain });
@@ -504,13 +519,18 @@
       });
     }
     function takeControl(preserveLight = false) { stop(preserveLight); manual = true; paused = true; updatePause(); syncGlobe(); }
+    const heroHifz = window.UmmahtiHifzPreview.createHero(scenes.recite, {
+      moon: MOON, loadSurah: surah, name, format: fmt, t, onInteract: takeControl, announce: say
+    });
     function showScene(id) {
+      if (current !== id) { readAudio.stop(); unlockAudio.stop(); }
       current = id;
+      heroHifz.setActive(id === 'recite');
       Object.entries(scenes).forEach(([key, el]) => { el.classList.toggle('is-on', key === id); if (key !== id) el.classList.remove('is-live'); el.toggleAttribute('inert', key !== id); el.setAttribute('aria-hidden', String(key !== id)); });
       choiceButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.rScene === id)));
       const label = $('[data-r-sc-name]', controls); label.firstChild.textContent = captions[id][0];
       $('[data-r-sc-cap]', controls).textContent = t(captions[id][1]);
-      const copy = { guide: ['guideTitle', 'guideBody', 'guideScope', 'rHeroTryGuide'], read: ['rSceneRead', 'readWayBody', 'translationCount', 'recitation'], unlock: ['unlockTitle', 'unlockBody', 'placeSafe', 'moments'], recite: ['hifzTitle', 'hifzBody', 'speechLimit', 'rSheetRecite'] }[id];
+      const copy = { guide: ['guideTitle', 'guideBody', 'guideScope', 'rHeroTryGuide'], read: ['rSceneRead', 'readWayBody', 'translationCount', 'recitation'], unlock: ['unlockTitle', 'unlockBody', 'placeSafe', 'moments'], recite: ['hifzTitle', 'hifzBody', 'speechLimit', 'rHifzOpenWalkthrough'] }[id];
       // Preserve the generator's reviewed emphasis and line breaks. Runtime
       // translations are plain text; queries never become heading markup.
       const heading = $('[data-r-dock-heading="' + id + '"]');
@@ -553,7 +573,7 @@
       if (tp.q.length > 1) chip(t('rGuideMoreAyat', { n: fmt(tp.q.length - 1) }));
       tp.h.slice(0, 1).forEach(i => { if (G.cites[i]) chip(G.cites[i].c + ' ' + G.cites[i].r); });
       if (tp.d?.length) chip(t('rGuideDua'));
-      card.scrollTop = 0; card.classList.add('is-on'); screen.classList.add('is-found'); working(false); syncGlobe();
+      card.scrollTop = 0; card.hidden = false; card.classList.add('is-on'); screen.classList.add('is-found'); working(false); syncGlobe();
       status.textContent = t('rGuideFound', { n: fmt(tp.q.length + tp.h.length) });
       return tp;
     }
@@ -570,45 +590,63 @@
       await fillGuide(topic, id); await wait(3600, id);
     }
     async function fillUnlock(id = run) {
-      const el = scenes.unlock, now = new Date(), list = await surah(93).catch(() => null); check(id); if (!list) return;
+      const el = scenes.unlock, now = new Date(), list = await surah(unlockSeq).catch(() => null); check(id);
+      if (!list) { $('[data-r-unlock-status]', el).textContent = t('rLoadError'); throw new Error('load'); }
       $('[data-r-sc-time]', el).textContent = now.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: false });
       $('[data-r-sc-date]', el).textContent = now.toLocaleDateString(lang, { weekday: 'long', day: 'numeric', month: 'long' });
-      const [ar, en] = list[unlockAt % list.length];
-      $('[data-r-sc-ref]', el).textContent = t('rSurahChip', { name: name(93), ref: '93:' + (unlockAt % list.length + 1) });
+      const [ar, en] = list[unlockAt];
+      $('[data-r-sc-ref]', el).textContent = t('rSurahChip', { name: name(unlockSeq), ref: unlockSeq + ':' + (unlockAt + 1) });
       $('[data-r-sc-ar]', el).textContent = ar; $('[data-r-sc-en]', el).textContent = '“' + en + '”';
       $('[data-r-sc-pct]', el).textContent = Math.floor(unlockDone / 6236 * 100) + '%';
+      $('[data-r-unlock-count]', el).textContent = t('rUnlockCount', { n: fmt(unlockDone) });
+      unlockAudio.set(unlockSeq, unlockAt + 1, readVoice.value);
+      $('[data-r-unlock-credit]', el).textContent = readVoice.selectedOptions[0].textContent + ' · AlQuran Cloud';
+      $('[data-r-sc-tamam]', el).disabled = unlockDone >= 19;
+    }
+    function setUnlockOpen(open) {
+      scenes.unlock.classList.toggle('is-open', open);
+      $('.r-sc-lock', scenes.unlock).inert = open;
+      $('.r-sc-card', scenes.unlock).inert = !open;
     }
     async function previewUnlock(id) {
-      showScene('unlock'); scenes.unlock.classList.remove('is-open'); await fillUnlock(id); await wait(650, id);
-      scenes.unlock.classList.add('is-open'); await wait(2200, id);
+      showScene('unlock'); setUnlockOpen(false); await fillUnlock(id); await wait(650, id);
+      setUnlockOpen(true); await wait(2200, id);
       const done = $('[data-r-sc-tamam]', phone); done.classList.add('is-press'); await wait(260, id); done.classList.remove('is-press');
-      unlockAt++; unlockDone++; await fillUnlock(id); await wait(2200, id);
+      await wait(2200, id);
     }
     async function previewRecite(id, settled = false) {
-      showScene('recite'); const D = window.UMMAHTI_RENDERS; if (!D) return;
-      const el = scenes.recite, count = $('[data-r-sc-count]', el), found = $('[data-r-sc-found]', el);
-      const heard = words($('[data-r-sc-heard]', el), D.ayah.arabic); found.textContent = ''; count.textContent = fmt(6236);
-      el.classList.toggle('is-live', !settled); el.classList.remove('is-found');
-      for (let i = 0; i < heard.length; i++) { if (!settled) await wait(270, id); heard[i].classList.add('is-in'); count.textContent = fmt(D.narrow[i].length); }
-      el.classList.remove('is-live'); el.classList.add('is-found'); found.textContent = '✓ ' + name(21) + ' 21:92 · ' + t('rSaved');
-      if (!settled) await wait(3000, id);
+      // Autoplay presents the real manual controls; it never manufactures heard
+      // words, recognition candidates, a chosen state or a saved passage.
+      showScene('recite');
+      if (!settled) await wait(3600, id);
     }
     function selectRead(index) {
+      readAudio.stop({ reset: true });
       readAt = index; const spans = $$('[data-read-ayah]', phone);
       spans.forEach((el, i) => { el.classList.toggle('is-now', i === index); el.setAttribute('aria-pressed', String(i === index)); });
       $('[data-r-sc-tr]', phone).textContent = readList[index]?.[1] || '';
-      $('[data-r-sc-prog]', phone).style.setProperty('--p', ((index + 1) / readList.length).toFixed(3));
+      $('[data-r-read-ref]', phone).textContent = name(1) + ' 1:' + (index + 1);
+      $('[data-r-read-status]', phone).textContent = t('rReadSelected', { ref: '1:' + (index + 1) });
+      readAudio.set(1, index + 1, readVoice.value);
     }
     async function fillRead(id = run) {
-      const list = await surah(1).catch(() => null); check(id); if (!list) return; readList = list;
+      const play = $('[data-r-read-play]', phone), retry = $('[data-r-read-retry]', phone);
+      play.disabled = true; retry.hidden = true;
+      const list = await surah(1).catch(() => null); check(id);
+      if (!list) { $('[data-r-read-status]', phone).textContent = t('rLoadError'); retry.hidden = false; return false; }
+      readList = list; play.disabled = false;
       const lines = $('[data-r-sc-lines]', phone); lines.replaceChildren();
       list.forEach(([ar], i) => { const button = document.createElement('button'); button.type = 'button'; button.dataset.readAyah = i; button.textContent = ar + ' ﴿' + (i + 1).toLocaleString('ar-EG') + '﴾ '; button.addEventListener('click', () => { takeControl(); selectRead(i); }); lines.append(button); });
       selectRead(readAt % list.length);
+      return true;
     }
-    async function previewRead(id) { showScene('read'); await fillRead(id); for (let i = 0; i < 3; i++) { selectRead(i); await wait(1900, id); } }
+    async function previewRead(id) { showScene('read'); if (!await fillRead(id)) { await wait(1800, id); return; } for (let i = 0; i < 3; i++) { selectRead(i); await wait(1900, id); } }
     async function settled(id) {
-      if (current === 'guide') { if (!userQuery) input.value = topic.s; await fillGuide(topic, id); }
-      else if (current === 'unlock') { await fillUnlock(id); scenes.unlock.classList.add('is-open'); }
+      if (current === 'guide') {
+        if (userQuery) { if (!card.classList.contains('is-on') || !findTopics().includes(topic)) showMatches(); return; }
+        input.value = topic.s; await fillGuide(topic, id);
+      }
+      else if (current === 'unlock') { await fillUnlock(id); setUnlockOpen(true); }
       else if (current === 'recite') await previewRecite(id, true);
       else await fillRead(id);
     }
@@ -622,34 +660,57 @@
     }));
     $$('[data-r-gh-next]').forEach(button => button.addEventListener('click', () => { takeControl(); showScene(order[(order.indexOf(current) + 1) % order.length]); settled(run).catch(() => {}); say(captions[current][0]); }));
     pauseButtons.forEach(button => button.addEventListener('click', () => { if (paused || manual) { manual = false; paused = false; start(); } else { takeControl(); settled(run).catch(() => {}); } }));
+    let guideComposing = false;
+    function clearGuideAnswer() {
+      card.classList.remove('is-on'); card.hidden = true;
+      flyers.replaceChildren();
+      screen.classList.remove('is-found'); status.textContent = '';
+    }
     function findTopics() {
-      const query = fold(input.value.trim()), terms = query.split(/\s+/).filter(x => x.length > 1);
-      if (!terms.length) return [];
-      return G.topics.map((tp, i) => ({ tp, score: terms.every(word => haystack[i].includes(word)) ? terms.reduce((sum, word) => sum + (fold(tp.t).includes(word) ? 8 : 1), 0) : 0 })).filter(x => x.score).sort((a, b) => b.score - a.score).map(x => x.tp);
+      return matcher.search(input.value).map(i => G.topics[i]);
     }
     async function acceptGuide(tp) {
+      if (guideComposing || !findTopics().includes(tp)) { showMatches(); return; }
+      userQuery = true;
       const request = run;
+      clearGuideAnswer();
       working(true);
       try {
         const accepted = await fillGuide(tp, request);
         if (request === run) say(accepted.t);
       } catch (error) {
         if (request !== run || error?.message === 'cancelled') return;
-        working(false); say(t('rLoadError'));
+        working(false); status.textContent = t('rLoadError'); say(t('rLoadError'));
       }
     }
     function showMatches() {
+      clearGuideAnswer();
       const matches = findTopics(); matchesBox.replaceChildren();
       matches.slice(0, 3).forEach(tp => { const button = document.createElement('button'); button.type = 'button'; button.textContent = tp.t; button.addEventListener('click', () => { takeControl(); matchesBox.hidden = true; acceptGuide(tp); }); matchesBox.append(button); });
       matchesBox.hidden = !matches.length;
       const message = !input.value.trim() ? '' : matches.length ? t('guideMatches', { n: fmt(matches.length) }) : t('guideNoMatch');
+      status.textContent = message;
+      if (!matches.length) stopSearchLight();
       say(message); return matches;
     }
     input.addEventListener('focus', () => { if (handoff?.isRestoringFocus()) return; takeControl(); acknowledgeSearch('focus'); });
-    input.addEventListener('input', () => { userQuery = true; takeControl(true); card.classList.remove('is-on'); screen.classList.remove('is-found'); const matches = showMatches(); if (input.value.trim() && matches.length) acknowledgeSearch('typing'); else stopSearchLight(); });
+    function editGuideQuery() {
+      userQuery = true; takeControl(true); clearGuideAnswer();
+      if (guideComposing) { matchesBox.hidden = true; stopSearchLight(); return; }
+      const matches = showMatches();
+      if (input.value.trim() && matches.length) acknowledgeSearch('typing'); else stopSearchLight();
+    }
+    input.addEventListener('input', editGuideQuery);
+    input.addEventListener('compositionstart', () => { guideComposing = true; });
+    input.addEventListener('compositionend', () => { guideComposing = false; editGuideQuery(); });
     input.addEventListener('blur', event => { if (!form.contains(event.relatedTarget)) stopSearchLight(['matched', 'settled'].includes(form.dataset.light)); });
-    form.addEventListener('submit', event => { event.preventDefault(); takeControl(); const matches = findTopics(); matchesBox.hidden = true; if (!matches.length) { showMatches(); return; } acceptGuide(matches[0]); });
-    function openGuide() { takeControl(); document.dispatchEvent(new CustomEvent('ummahti:guide-open', { detail: { topicId: topic.id, query: input.value } })); }
+    form.addEventListener('submit', event => { event.preventDefault(); if (guideComposing) return; takeControl(); const matches = findTopics(); matchesBox.hidden = true; if (!matches.length) { showMatches(); return; } acceptGuide(matches[0]); });
+    function openGuide() {
+      takeControl();
+      const matches = userQuery ? findTopics() : [topic];
+      const selected = card.classList.contains('is-on') && matches.includes(topic) ? topic : matches[0];
+      document.dispatchEvent(new CustomEvent('ummahti:guide-open', { detail: { topicId: selected?.id, query: input.value } }));
+    }
     function openSection(selector) {
       const destination = document.querySelector(selector); if (!destination) return;
       takeControl();
@@ -657,18 +718,27 @@
       destination.setAttribute('tabindex', '-1'); destination.focus({ preventScroll: true });
       destination.scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
     }
-    // Resolve these destinations before native fragment focus can interrupt the
-    // long scroll while the retained phone moves between its two hosts.
-    $$('a[href="#reciters"]', phone).forEach(link => link.addEventListener('click', event => {
-      if (event.defaultPrevented || event.button > 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-      event.preventDefault(); openSection('#reciters');
-    }));
+    $('[data-r-read-play]', phone).addEventListener('click', () => takeControl());
+    $('[data-r-read-retry]', phone).addEventListener('click', () => { takeControl(); fillRead(run).catch(() => {}); });
+    readVoice.addEventListener('change', () => { takeControl(); selectRead(readAt); });
+    $('[data-r-unlock-play]', phone).addEventListener('click', () => takeControl());
     $('[data-r-gh-open]', phone).addEventListener('click', openGuide);
     $('[data-r-full-guide]')?.addEventListener('click', () => { if (current === 'guide') openGuide(); else openSection({ read: '#reciters', unlock: '#unlock', recite: '#my-hifz' }[current]); });
-    $('[data-r-sc-unlock]', phone).addEventListener('click', () => { takeControl(); scenes.unlock.classList.add('is-open'); say(t('rUnlocked')); });
-    $('[data-r-sc-tamam]', phone).addEventListener('click', () => { takeControl(); unlockAt++; unlockDone++; fillUnlock(run).then(() => say(t('advancedResult'))).catch(() => {}); });
-    $('[data-r-sc-later]', phone).addEventListener('click', () => { takeControl(); scenes.unlock.classList.remove('is-open'); say(t('laterResult')); });
-    $('[data-r-sc-replay]', phone).addEventListener('click', () => { takeControl(); if (still()) settled(run).catch(() => {}); else previewRecite(run).catch(() => {}); });
+    const unlockMessage = message => { $('[data-r-unlock-status]', phone).textContent = message; say(message); };
+    $('[data-r-sc-unlock]', phone).addEventListener('click', () => { takeControl(); setUnlockOpen(true); fillUnlock(run).then(() => unlockMessage(t('rUnlocked'))).catch(() => {}); });
+    $('[data-r-sc-tamam]', phone).addEventListener('click', async () => {
+      if (unlockDone >= 19) return;
+      takeControl(); unlockAudio.stop({ reset: true });
+      const request = run, previous = { unlockSeq, unlockAt, unlockDone }, reference = unlockSeq + ':' + (unlockAt + 1);
+      $('[data-r-sc-tamam]', phone).disabled = true;
+      if (unlockSeq === 93 && unlockAt === 10) { unlockSeq = 94; unlockAt = 0; }
+      else if (!(unlockSeq === 94 && unlockAt === 7)) unlockAt++;
+      unlockDone++;
+      try { await fillUnlock(request); check(request); unlockMessage(unlockDone >= 19 ? t('rUnlockComplete') : t('rUnlockMarked', { ref: reference })); }
+      catch (_) { if (request !== run) return; ({ unlockSeq, unlockAt, unlockDone } = previous); $('[data-r-sc-tamam]', phone).disabled = false; unlockMessage(t('rLoadError')); }
+    });
+    $('[data-r-sc-later]', phone).addEventListener('click', () => { takeControl(); unlockAudio.stop(); setUnlockOpen(false); unlockMessage(t('laterResult')); });
+    $('[data-r-unlock-reset]', phone).addEventListener('click', () => { takeControl(); unlockAudio.stop({ reset: true }); unlockSeq = 93; unlockAt = 0; unlockDone = 0; setUnlockOpen(true); fillUnlock(run).then(() => unlockMessage(t('resetResult'))).catch(() => {}); });
     // Both control groups stay in their layout. One controller owns the phone.
     const marker = document.createElement('div'); marker.className = 'v-product-front r-home-marker'; marker.setAttribute('aria-hidden', 'true'); home.append(marker);
     const sizeSlot = el => { const width = el.getBoundingClientRect().width; if (width) el.style.height = ((width - 14) * 910 / 420 + 14) + 'px'; };

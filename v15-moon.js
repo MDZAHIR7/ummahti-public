@@ -169,7 +169,10 @@
   }
 
   function layout() {
-    vw = innerWidth; vh = innerHeight;
+    // Drawing and hit testing share the actual CSS canvas size. innerWidth
+    // includes the scrollbar gutter and used to shift visible point targets.
+    const viewport = canvas.getBoundingClientRect();
+    vw = viewport.width || root.clientWidth || innerWidth; vh = viewport.height || innerHeight;
     /* A phone's panel is dense enough that 1.5 reads as sharp for points and glow, and it is
        less than half the pixels of 2 to fill, composite and send to the GPU every frame. */
     dpr = Math.min(devicePixelRatio || 1, touch.matches ? 1.5 : 2);
@@ -672,7 +675,6 @@
     const ambient = live && skyLayer;
     if (intro < 1 || settling || meteors.length) request();
     else if (ambient || wave >= 0) { clearTimeout(lightTimer); lightTimer = setTimeout(request, touch.matches ? 50 : 33); }
-    if (!card.hidden && selected >= 0 && moving) closeCard(false);
   }
   let lightTimer = 0, frame = 0;
   function request() { if (!frame) frame = requestAnimationFrame(draw); }
@@ -705,13 +707,21 @@
     if (!loading[n]) loading[n] = new Promise((resolve, reject) => {
       const tag = document.createElement('script');
       tag.src = '/media/v15/quran/s' + String(n).padStart(3, '0') + '.js?v=' + VERSION;
-      tag.onload = () => (window.UMMAHTI_AYAT && window.UMMAHTI_AYAT[n] ? resolve(window.UMMAHTI_AYAT[n]) : reject());
-      tag.onerror = () => { delete loading[n]; reject(); };
+      const fail = () => { delete loading[n]; tag.remove(); reject(); };
+      tag.onload = () => {
+        if (Array.isArray(window.UMMAHTI_AYAT?.[n])) { tag.remove(); resolve(window.UMMAHTI_AYAT[n]); }
+        else fail();
+      };
+      tag.onerror = fail;
       document.head.append(tag);
     });
     return loading[n];
   }
-  let anchor = null, origin = null;
+  let anchor = null, origin = null, ayahRequest = 0, cardAnimation = null, cardRun = 0, cardClosing = false;
+  function stopCardMotion() {
+    cardRun++;
+    cardAnimation?.cancel(); cardAnimation = null; cardClosing = false;
+  }
   function placeCard() {
     if (card.hidden) return;
     const from = selected >= 0 ? { x: drawn[selected * 2], y: drawn[selected * 2 + 1] } : origin || { x: vw / 2, y: vh / 2 };
@@ -724,6 +734,7 @@
     card.style.transform = `translate(${cx}px, ${cy}px)`;
   }
   function fillAyah(index) {
+    const requestId = ++ayahRequest;
     const s = surahOf[index], a = ayahOf[index];
     card.classList.remove('is-narration');
     $c('[data-verse-ref]').textContent = ref(index);
@@ -734,26 +745,32 @@
     basmala.hidden = !(a === 1 && s !== 0 && s !== 8);
     basmala.textContent = basmala.hidden ? '' : D.basmala;
     const arabic = $c('[data-verse-arabic]'), english = $c('[data-verse-translation]');
+    arabic.textContent = ''; english.textContent = '';
     arabic.hidden = false;
     english.lang = 'en'; english.dir = 'ltr';
     $c('[data-verse-source]').textContent = 'Saheeh International';
     const link = $c('[data-verse-link]');
     link.href = PLAY; link.textContent = t('verseReadOn', 'Read on in Ummahti Quran') + ' ↗';
     card.classList.add('is-loading');
+    card.setAttribute('aria-busy', 'true');
     surahText(s).then(ayat => {
-      if (selected !== index) return;
+      if (selected !== index || requestId !== ayahRequest) return;
       arabic.textContent = ayat[a - 1][0];
       english.textContent = ayat[a - 1][1];
       card.classList.remove('is-loading', 'is-failed');
+      card.setAttribute('aria-busy', 'false');
       placeCard(); request();
     }, () => {
-      if (selected !== index) return;
+      if (selected !== index || requestId !== ayahRequest) return;
       arabic.textContent = '';
       english.textContent = t('verseFailed', 'This verse could not load. Check your connection and try again.');
       card.classList.remove('is-loading'); card.classList.add('is-failed');
+      card.setAttribute('aria-busy', 'false');
     });
   }
   function fillNarration(l) {
+    ayahRequest++;
+    card.setAttribute('aria-busy', 'false');
     card.classList.add('is-narration'); card.classList.remove('is-loading', 'is-failed');
     $c('[data-verse-ref]').textContent = l.collection + ' ' + l.reference + ' · ' + l.grade;
     $c('[data-verse-nav]').hidden = true;
@@ -774,7 +791,7 @@
       if (!reduced.matches && card.animate) {
         const r = card.getBoundingClientRect();
         card.style.transformOrigin = `${fromX - r.left}px ${fromY - r.top}px`;
-        card.animate([{ opacity: 0, scale: 0.86, filter: 'blur(4px)' }, { opacity: 1, scale: 1, filter: 'blur(0)' }], { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
+        cardAnimation = card.animate([{ opacity: 0, scale: 0.86, filter: 'blur(4px)' }, { opacity: 1, scale: 1, filter: 'blur(0)' }], { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
       }
       $c('[data-verse-close]').focus({ preventScroll: true });
     }
@@ -782,6 +799,7 @@
   }
   function openCard(index, fromX, fromY) {
     const wasOpen = !card.hidden;
+    stopCardMotion();
     selected = index; openLight = -1; anchor = scrollY; tip.hidden = true;
     card.hidden = false;
     fillAyah(index);
@@ -791,15 +809,21 @@
     const l = lights[k];
     if (l.kind === 'ayah') { openCard(l.i, lightPos[k].x, lightPos[k].y); openLight = k; return; }
     const wasOpen = !card.hidden;
+    stopCardMotion();
     selected = -1; openLight = k; anchor = scrollY; tip.hidden = true; origin = { ...lightPos[k] };
     card.hidden = false;
     fillNarration(l);
     reveal(lightPos[k].x, lightPos[k].y, wasOpen);
   }
   function closeCard(restore = true) {
-    if (card.hidden) return;
-    const done = () => { card.hidden = true; selected = -1; openLight = -1; request(); };
-    if (!reduced.matches && card.animate && restore) card.animate([{ opacity: 1 }, { opacity: 0, scale: 0.94 }], { duration: 160, easing: 'ease-in' }).onfinish = done;
+    if (card.hidden || (cardClosing && restore)) return;
+    stopCardMotion(); cardClosing = true; ayahRequest++;
+    const ownRun = cardRun;
+    const done = () => { if (ownRun !== cardRun) return; card.hidden = true; selected = -1; openLight = -1; cardClosing = false; cardAnimation = null; card.setAttribute('aria-busy', 'false'); request(); };
+    if (!reduced.matches && !document.hidden && card.animate && restore) {
+      cardAnimation = card.animate([{ opacity: 1 }, { opacity: 0, scale: 0.94 }], { duration: 160, easing: 'ease-in' });
+      cardAnimation.onfinish = done;
+    }
     else done();
   }
   const step = by => { if (selected < 0) return; const x = drawn[selected * 2], y = drawn[selected * 2 + 1]; openCard((selected + by + N) % N, x, y); };
@@ -828,7 +852,11 @@
   function target(event, radius) {
     const s = current, none = { index: -1, group: -1, light: -1 };
     const over = document.elementFromPoint(event.clientX, event.clientY);
-    if (!s || s.alpha < 0.5 || (over && over.closest(ignore)) || s.a !== s.b) return none;
+    if (!s || (over && over.closest(ignore))) return none;
+    // A reader can stop scrolling halfway through a formation. Those visible
+    // ayahs still open their own sources; settled groups retain portion taps.
+    if (s.a !== s.b) return s.alpha < 0.2 ? none : { ...none, index: nearest(event.clientX, event.clientY, radius) };
+    if (s.alpha < 0.5) return none;
     if (s.a === 'M' || s.a === 'Mc' || s.a === 'F') {
       let light = -1, best = (radius + 6) ** 2;
       lightPos.forEach((p, k) => { const d = (p.x - event.clientX) ** 2 + (p.y - event.clientY) ** 2; if (d < best) { best = d; light = k; } });
@@ -883,10 +911,17 @@
     const x = Math.min(event.clientX + 16, vw - tip.offsetWidth - 12), y = Math.max(event.clientY - tip.offsetHeight - 14, 8);
     tip.style.transform = `translate(${x}px, ${y}px)`;
   }
-  let down = null;
-  addEventListener('pointerdown', event => { down = { x: event.clientX, y: event.clientY }; }, { passive: true });
+  let down = null, dragged = false;
+  addEventListener('pointerdown', event => { down = { x: event.clientX, y: event.clientY }; dragged = false; }, { passive: true });
   addEventListener('pointerup', event => {
-    if (!down || Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8) return;
+    dragged = !!down && Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8;
+    down = null;
+  }, { passive: true });
+  addEventListener('pointercancel', () => { down = null; dragged = true; }, { passive: true });
+  // Activate once through the platform click event, including click-only
+  // assistive/browser input. Pointer events only distinguish a drag from a tap.
+  addEventListener('click', event => {
+    if (dragged) { dragged = false; return; }
     if (event.target.closest && event.target.closest('.v-verse-card')) return;
     const { index, group, light } = target(event, event.pointerType === 'mouse' ? 12 : 22);
     const s = current;
@@ -912,8 +947,9 @@
   }, { passive: true });
   let resizeTimer = 0;
   addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { layout(); request(); }, 80); });
-  reduced.addEventListener('change', () => { if (reduced.matches) intro = 1; request(); });
-  document.addEventListener('visibilitychange', () => { lastNow = 0; if (!document.hidden) request(); });
+  const settleCardMotion = () => { if (cardClosing) closeCard(false); else stopCardMotion(); };
+  reduced.addEventListener('change', () => { if (reduced.matches) intro = 1; settleCardMotion(); request(); });
+  document.addEventListener('visibilitychange', () => { lastNow = 0; if (document.hidden) settleCardMotion(); else request(); });
   motionToggle?.addEventListener('click', () => setTimeout(request, 0));
   addEventListener('load', () => { layout(); request(); });
   if (scrollY > innerHeight * 0.5) intro = 1;
