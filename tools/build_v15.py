@@ -24,7 +24,8 @@ HEAD=snippets['head'].replace('\r\n','\n').replace('\r','\n')
 HEAD=re.sub(r'<script type="application/ld\+json">\s*\{\s*"@context": "https://schema.org",\s*"@type": "VideoObject".*?</script>','',HEAD,flags=re.S)
 HEAD=re.sub(r'<link rel="stylesheet" href="/(?:hub|editorial)\.css[^>]+>','',HEAD)
 HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
-STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-preview-controls.css?v=20261023r13">\n<link rel="stylesheet" href="/v15-hifz-preview.css?v=20261023r13">\n'
+STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-preview-controls.css?v=20261023r14">\n<link rel="stylesheet" href="/v15-hifz-preview.css?v=20261023r14">\n'
+STYLES+='<link rel="stylesheet" href="/v15-app-preview-nav.css?v=20261023r14">\n'
 HEAD+=STYLES
 
 def render(text,c):
@@ -188,6 +189,18 @@ def guide_lead(c,lang):
     counts=json.loads(raw[raw.index('{'):raw.rindex('}')+1])['counts']
     return c['guideMapLead'].replace('{topics}',str(counts['topics'])).replace('{quran}',str(counts['quran'])).replace('{narrations}',str(counts['narrations']))
 
+def preview_navigation(c, selected=2):
+    """The five actual app slots; decorative chrome on the bounded website demo."""
+    icons = [
+        '<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M21 4c-2.7-.8-5.5-.3-8 1v14c2.5-1.3 5.3-1.8 8-1V4ZM3 4c2.7-.8 5.5-.3 8 1v14c-2.5-1.3-5.3-1.8-8-1V4Z"/><path d="M1 5v15c3.6-1.2 7.3-.8 11 1 3.7-1.8 7.4-2.2 11-1V5h-1v14c-3.6-.8-6.9-.3-10 1.2C8.9 18.7 5.6 18.2 2 19V5Z"/></svg>',
+        '<img src="/media/v15/nav-guide.svg?v=20261023g1" width="24" height="24" alt="">',
+        '<svg viewBox="0 0 24 24"><path d="M6 3h12v19l-6-4-6 4z"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="m9.4 2-.6 2.6-2 .9-2.4-.8-2 3.5 1.8 1.9-.2 2.2L2 14l2 3.5 2.6-.6 1.8 1.3.6 2.8h4l.6-2.6 2-.9 2.4.8 2-3.5-1.8-1.9.2-2.2 2-1.7-2-3.5-2.6.6-1.8-1.3L13.4 2h-4ZM11.5 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" fill-rule="evenodd"/></svg>'
+    ]
+    keys=['navHome','navRead','navGuide','navSaved','navSettings']
+    return '<div class="r-gh-nav r-app-nav" data-r-app-nav aria-hidden="true" style="--nav-active:'+str(selected)+'"><i class="r-app-nav-marker"><img src="/media/v15/nav-indicator.svg?v=20261023g1" width="48" height="48" alt=""></i>'+''.join('<span data-r-nav-item="'+str(i)+'"'+(' class="is-on"' if i==selected else '')+'>'+icon+'<small>'+html.escape(c[key])+'</small></span>' for i,(key,icon) in enumerate(zip(keys,icons)))+'</div>'
+
 def library_counts(c,lang):
     """Du'a and reflection leads carry the library's own counts."""
     raw=(ROOT/f'media/v15/library-{lang}.js').read_text(encoding='utf-8')
@@ -214,10 +227,10 @@ def hero_ayah(lang):
             'heroAyahRef':html.escape(name)+f' {s}:{a}'}
 
 def scripts(lang,moon=False):
-    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r13" defer></script>\n<script src="/v15-moon.js?v=20261023r13" defer></script>\n<script src="/v15-slides.js?v=20261023r13" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r13" defer></script>\n<script src="/v15-guide-search.js?v=20261023r13" defer></script>\n<script src="/v15-guide.js?v=20261023r13" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r13" defer></script>\n<script src="/v15-library.js?v=20261023r13" defer></script>\n<script src="/v15-flow.js?v=20261023r13" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r13" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r13" defer></script>\n<script src="/v15-preview-audio.js?v=20261023r13" defer></script>\n<script src="/v15-hifz-preview.js?v=20261023r13" defer></script>\n<script src="/v15-renders.js?v=20261023r13" defer></script>' if moon else ''
+    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r14" defer></script>\n<script src="/v15-moon.js?v=20261023r14" defer></script>\n<script src="/v15-slides.js?v=20261023r14" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r14" defer></script>\n<script src="/v15-guide-search.js?v=20261023r14" defer></script>\n<script src="/v15-guide-answer.js?v=20261023r14" defer></script>\n<script src="/v15-guide.js?v=20261023r14" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r14" defer></script>\n<script src="/v15-library.js?v=20261023r14" defer></script>\n<script src="/v15-flow.js?v=20261023r14" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r14" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r14" defer></script>\n<script src="/v15-preview-audio.js?v=20261023r14" defer></script>\n<script src="/v15-hifz-preview.js?v=20261023r14" defer></script>\n<script src="/v15-renders.js?v=20261023r14" defer></script>' if moon else ''
     if moon:
-        extra='\n<script src="/v15-field-light.js?v=20261023r13" defer></script>'+extra
-    return f'<script src="/i18n/v15-{lang}.js?v=20261023r13" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20261023r13" defer></script>\n<script src="/verse.js?v=20261023r13" defer></script>\n<script src="/v15.js?v=20261023r13" defer></script>{extra}'
+        extra='\n<script src="/v15-field-light.js?v=20261023r14" defer></script>'+extra
+    return f'<script src="/i18n/v15-{lang}.js?v=20261023r14" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20261023r14" defer></script>\n<script src="/verse.js?v=20261023r14" defer></script>\n<script src="/v15.js?v=20261023r14" defer></script>{extra}'
 
 def write_page(path,text):
     text=text.replace('\r\n','\n').replace('\r','\n')
@@ -250,7 +263,7 @@ def build(languages=None):
     runtime={key:re.sub('<[^>]+>','',re.sub(r'<br\s*/?>',' ',value,flags=re.I)) for key,value in c.items()}
     write_page(ROOT/f'i18n/v15-{lang}.js','window.UMMAHTI_V15_I18N = '+json.dumps(runtime,ensure_ascii=False,separators=(',',':'))+';\n')
     c={**c,'themeButtons':theme_buttons(c),'reciterWheel':reciter_wheel(lang),'nightsTable':nights_table(c,lang),'slidesList':slides_html(c),**channel_tiles(c),'guideMapLead':guide_lead(c,lang),**library_counts(c,lang),**hero_ayah(lang)}
-    main=initial_examples(render(TEMPLATE,c),c)
+    main=initial_examples(render(TEMPLATE,{**c,'previewNavigation':preview_navigation(c),'previewNavigationHome':preview_navigation(c,0),'previewNavigationRead':preview_navigation(c,1)}),c)
     # Stable old root bookmarks reach the corresponding new story.
     if lang!='en':
         main=main.replace('href="/quran/#catalogue"',f'href="{link(lang,"quran")}#catalogue"').replace('href="/privacy/"',f'href="{link(lang,"privacy")}"')

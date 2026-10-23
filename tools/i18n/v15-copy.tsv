@@ -6,10 +6,8 @@ rHeroResume	استأنف المعاينة	پیش منظر جاری رکھیں	La
 rHeroFeatures	اختر تجربة من التطبيق	ایپ کا ایک تجربہ منتخب کریں	Pilih pengalaman aplikasi
 rHeroTryGuide	جرّب الدليل	رہنما آزمائیں	Coba Panduan
 rHeroPreviewNote	محتوى حقيقي من التطبيق وتجربة صغيرة هنا.	ایپ کے حقیقی مواد کے ساتھ یہاں ایک مختصر تجربہ۔	Konten asli aplikasi. Pengalaman singkat untuk dicoba di sini.
-guideSearchSubmit	ابحث عن موضوع	موضوع تلاش کریں	Temukan topik
 guideSearchClear	امسح البحث	تلاش صاف کریں	Hapus pencarian
 guideTryQuestion	جرّب سؤالًا	سوال آزمائیں	Coba pertanyaan
-guideSearchHint	ابحث في الموضوعات المراجعة، ثم اختر نتيجة لقراءة مصادرها.	نظرثانی شدہ موضوعات تلاش کریں۔ ماخذ پڑھنے کے لیے نتیجہ منتخب کریں۔	Cari topik yang telah ditinjau. Pilih hasil untuk membaca sumbernya.
 guideResultsLabel	موضوعات الدليل المطابقة	رہنما کے متعلقہ موضوعات	Topik Panduan yang cocok
 guideBrowseTopic	اقرأ هذا الموضوع	یہ موضوع پڑھیں	Baca topik ini
 guideResultReady	جاهز: {topic}	تیار: {topic}	Siap: {topic}
@@ -62,7 +60,6 @@ hifzTab	سجّل ما تحفظه	جو یاد ہے، محفوظ کریں	Catat ya
 themeTab	اختر أجواءك	اپنا انداز چنیں	Temukan suasana
 guideTitle	ابدأ بسؤال.<br><em>وارجع إلى المصدر.</em>	سوال لے کر آئیں۔<br><em>ماخذ سے آغاز کریں۔</em>	Bawa pertanyaan.<br><em>Mulai dari sumber.</em>
 guideBody	يجمع الدليل آيات ذات صلة ومراجع من السنة الصحيحة ونقاط بداية عملية من فهرس منتقى ومراجع.	Guide منتخب اور جائزہ شدہ موضوعات سے متعلقہ قرآنی آیات، صحیح سنت کے حوالے اور عملی آغاز یکجا کرتا ہے۔	Guide menghimpun ayat terkait, rujukan Sunnah autentik, dan langkah awal praktis dari katalog yang dikurasi dan ditinjau.
-guideScope	فهرس موثّق من 86 موضوعًا للتعلم والتأمل. لا يصدر أحكامًا دينية شخصية.	86 مستند موضوعات کا مجموعہ، سیکھنے اور غور کرنے کے لیے۔ یہ ذاتی دینی فتوے نہیں دیتا۔	Katalog bersumber dengan 86 topik untuk belajar dan merenung. Bukan layanan fatwa pribadi.
 seeApp	شاهد داخل التطبيق	ایپ کے اندر دیکھیں	Lihat isi aplikasi
 chooseExample	اختر مثالًا	ایک مثال منتخب کریں	Pilih contoh
 guideExamples	أمثلة الدليل	Guide کی مثالیں	Contoh Guide
@@ -188,7 +185,6 @@ faqIdentityAnswer	Ummahti هي المنصة الجامعة، وUmmahti Quran ت�
 faqDevices	هل التطبيق متاح لهاتفي؟	کیا ایپ میرے فون کے لیے دستیاب ہے؟	Apakah aplikasi tersedia untuk ponsel saya?
 faqDevicesAnswer	Ummahti Quran متاح لأندرويد عبر Google Play. لا ننشر حاليًا تطبيقًا لآيفون. يعمل الموقع على الهواتف والأجهزة اللوحية والحواسيب.	Ummahti Quran اینڈرائیڈ کے لیے Google Play پر دستیاب ہے۔ فی الحال ہماری آئی فون ایپ نہیں ہے۔ ویب سائٹ فون، ٹیبلیٹ اور کمپیوٹر پر چلتی ہے۔	Ummahti Quran tersedia untuk Android melalui Google Play. Saat ini kami belum menerbitkan aplikasi iPhone. Situs dapat digunakan di ponsel, tablet, dan komputer.
 faqGuide	هل الدليل روبوت محادثة بالذكاء الاصطناعي؟	کیا Guide ایک AI چیٹ بوٹ ہے؟	Apakah Guide chatbot AI?
-faqGuideAnswer	يبحث الدليل في فهرس منتقى ومراجع من الموضوعات ومصادرها. ليس ذكاء اصطناعيًا مفتوحًا ولا عالمًا ولا خدمة للفتاوى الشخصية.	Guide منتخب اور جائزہ شدہ موضوعات اور ان کے ماخذ میں تلاش کرتا ہے۔ یہ کھلا AI، عالم یا ذاتی فتووں کی خدمت نہیں ہے۔	Guide menelusuri katalog topik dan sumber yang dikurasi dan ditinjau. Bukan AI tanpa batas, ulama, atau layanan fatwa pribadi.
 faqVoice	هل يلزمني استخدام الميكروفون؟	کیا مائیکروفون استعمال کرنا ضروری ہے؟	Apakah saya harus memakai mikrofon?
 faqVoiceAnswer	لا. المساعدة الصوتية في سجل الحفظ اختيارية. يمكنك كتابة المرجع أو اختيار المقطع. يشرح التطبيق الإعداد والتوفر، ولا يطلب إذن الميكروفون إلا عند اختيار خطوة صوتية.	نہیں۔ My Hifz میں آواز کی مدد اختیاری ہے۔ حوالہ لکھ سکتے ہیں یا حصہ خود منتخب کر سکتے ہیں۔ ایپ ترتیب اور دستیابی واضح کرتی ہے اور صرف آواز والا مرحلہ منتخب کرنے پر مائیکروفون کی اجازت مانگتی ہے۔	Tidak. Bantuan suara di My Hifz bersifat opsional. Anda dapat mengetik rujukan atau memilih bagian sendiri. Aplikasi menjelaskan penyiapan dan ketersediaan, serta meminta izin mikrofon hanya saat Anda memilih langkah suara.
 faqSpelling	هل تبحث عن “Ummati”؟	“Ummati” تلاش کر رہے ہیں؟	Mencari “Ummati”?
@@ -527,3 +523,27 @@ rModeSay	اكتب مرجعًا	حوالہ لکھیں	Ketik rujukan
 rFilmError	تعذّر تشغيل الفيلم. اضغط المشاهدة للمحاولة مجددًا.	فلم نہیں چل سکی۔ دوبارہ کوشش کے لیے دیکھیں دبائیں۔	Film belum dapat diputar. Tekan tonton untuk mencoba lagi.
 rUnlockComplete	أكملت هذا المثال المكوّن من 19 آية. أعد ضبطه للبدء مجددًا.	آپ نے 19 آیات کی یہ مثال مکمل کر لی ہے۔ دوبارہ شروع کرنے کے لیے ری سیٹ کریں۔	Contoh 19 ayat ini selesai. Atur ulang untuk memulai lagi.
 rRetrySource	حاول التحميل مجددًا	دوبارہ لوڈ کرنے کی کوشش کریں	Coba muat lagi
+guideSearchReady	ابحث لاستكشاف آيات القرآن والإرشادات المعدّة.	قرآنی آیات اور مرتب رہنمائی تلاش کریں۔	Cari ayat Al-Quran dan panduan yang telah disiapkan.
+guideSearchingQuran	جارٍ البحث عن آيات لسؤالك…	آپ کے سوال کے لیے آیات تلاش ہو رہی ہیں…	Mencari ayat untuk pertanyaan Anda…
+guideSearchRetry	تعذّر تحميل فهرس القرآن. أعد البحث أو اختر موضوعًا أدناه.	قرآن کا اشاریہ لوڈ نہیں ہو سکا۔ دوبارہ تلاش کریں یا نیچے موضوع منتخب کریں۔	Indeks Al-Quran belum dimuat. Cari lagi atau pilih topik di bawah.
+guidePassageTitle	آيات من القرآن	قرآن کی آیات	Ayat dari Al-Quran
+guideReferenceIntro	اقرأ الآيات بالعربية مع الترجمة المسمّاة.	آیات عربی متن اور درج کردہ ترجمے کے ساتھ پڑھیں۔	Baca ayat Arab beserta terjemahan yang disebutkan sumbernya.
+guideRangeLimit	تُعرض أول عشر آيات من النطاق. ابحث عن المرجع التالي للمتابعة.	اس حصے کی پہلی دس آیات دکھائی جا رہی ہیں۔ آگے پڑھنے کے لیے اگلا حوالہ تلاش کریں۔	Menampilkan sepuluh ayat pertama. Cari rujukan berikutnya untuk melanjutkan.
+guideCheckReference	تحقّق من رقم السورة والآية	سورہ اور آیت کے نمبر دیکھیں	Periksa nomor surah dan ayat
+guideReferenceHelp	هذا المرجع خارج نطاق القرآن. استخدم مثلًا 2:255 أو ابحث عن شخص أو شعور أو موضوع.	یہ حوالہ قرآن کی حدود سے باہر ہے۔ مثلاً 2:255 لکھیں یا کسی شخصیت، احساس یا موضوع کو تلاش کریں۔	Rujukan di luar rentang Al-Quran. Gunakan misalnya 2:255, atau cari tokoh, perasaan, atau topik.
+guideJoyTitle	الفرح والشكر وطمأنينة القلب	خوشی، شکر اور دل کا سکون	Kegembiraan, syukur, dan hati yang tenteram
+guideJoyIntro	تتحدث هذه الآيات عن الفرح بفضل الله ورحمته، وطمأنينة القلوب بذكره، والحياة الطيبة مع الإيمان والعمل الصالح.	یہ آیات اللہ کے فضل و رحمت پر خوشی، اس کے ذکر سے دل کے اطمینان، اور ایمان و نیک عمل کے ساتھ پاکیزہ زندگی کا ذکر کرتی ہیں۔	Ayat-ayat ini membahas kegembiraan atas karunia dan rahmat Allah, ketenteraman dalam mengingat-Nya, serta kehidupan yang baik dengan iman dan amal saleh.
+guideQuranResults	آيات قرآنية للتأمل	غور کرنے کے لیے قرآنی آیات	Ayat Al-Quran untuk ditelaah
+guideQuranIntro	اقرأ الآيات في سياقها. يجد البحث الكلمات والموضوعات المتصلة بها في القرآن؛ وهي مصادر للتأمل وليست فتوى جديدة أو حكمًا شخصيًا.	آیات ان کے سیاق میں پڑھیں۔ تلاش قرآن میں الفاظ اور متعلقہ موضوعات ڈھونڈتی ہے؛ یہ غور کے ماخذ ہیں، نیا فتویٰ یا ذاتی فیصلہ نہیں۔	Baca ayat dalam konteksnya. Pencarian menemukan kata dan tema terkait dalam Al-Quran; ayat ini menjadi bahan renungan, bukan fatwa baru atau putusan pribadi.
+guideExploreTitle	بداية للتأمل	ایک آغاز	Tempat untuk memulai
+guideExploreIntro	لنجد مدخلًا لسؤالك. اختر شعورًا أو شخصًا أو موضوعًا، أو أدخل مرجع آية. وتأمل هذه الآيات عن الذكر واليسر مع العسر وطلب العلم.	آپ کے سوال کا راستہ ڈھونڈتے ہیں۔ کوئی احساس، شخصیت یا موضوع چنیں یا آیت کا حوالہ دیں۔ تب تک ذکر، مشکل کے ساتھ آسانی اور طلبِ علم کی یہ آیات دیکھیں۔	Mari temukan jalan menuju pertanyaan Anda. Pilih perasaan, tokoh, topik, atau rujukan ayat. Sambil itu, telaah ayat tentang zikir, kemudahan bersama kesulitan, dan mencari ilmu.
+guideQuranAnswer	من القرآن	قرآن سے	DARI AL-QURAN
+guideSearchHint	اكتب سؤالك بكلماتك أو كلمة عربية أو مرجعًا مثل 2:255. استكشف 6236 آية و86 موضوعًا معدًّا. يبقى بحثك في هذه الصفحة.	اپنے الفاظ میں سوال، عربی لفظ یا مثلاً 2:255 لکھیں۔ 6,236 آیات اور 86 مرتب موضوعات تلاش کریں۔ تلاش اسی صفحے پر رہتی ہے۔	Tanyakan dengan kata sendiri, kata Arab, atau rujukan seperti 2:255. Jelajahi 6.236 ayat dan 86 topik. Pencarian tetap di halaman ini.
+guideSearchSubmit	ابحث في الدليل	گائیڈ میں تلاش	Cari di Guide
+guideScope	ابحث في 6236 آية مع 86 موضوعًا معدًّا، واقرأ الآيات الموثّقة هنا للتعلّم والتأمل.	6,236 آیات اور 86 مرتب موضوعات تلاش کریں۔ سیکھنے اور غور کے لیے حوالہ شدہ آیات یہیں پڑھیں۔	Cari 6.236 ayat bersama 86 topik. Baca ayat beserta rujukannya di sini untuk belajar dan merenung.
+faqGuideAnswer	يبحث الدليل هنا في آيات القرآن و86 موضوعًا معدًّا. اسأل بكلماتك أو ابحث بالعربية أو أدخل مرجع آية واقرأ مصادرها هنا. لا يصدر أحكامًا شرعية جديدة.	اس ویب سائٹ پر گائیڈ قرآن کی آیات اور 86 مرتب موضوعات تلاش کرتی ہے۔ عام الفاظ، عربی یا آیت کے حوالے سے تلاش کر کے ماخذ یہیں پڑھیں۔ یہ نئے شرعی فیصلے نہیں بناتی۔	Di situs ini, Guide mencari ayat Al-Quran dan 86 topik. Gunakan kata sehari-hari, bahasa Arab, atau rujukan ayat dan baca sumbernya di sini. Guide tidak membuat hukum agama baru.
+navHome	الرئيسية	ہوم	Beranda
+navRead	القراءة	پڑھیں	Baca
+navGuide	الدليل	رہنما	Panduan
+navSaved	المحفوظات	محفوظات	Tersimpan
+navSettings	إعدادات	ترتیبات	Pengaturan

@@ -23,7 +23,7 @@ ROUTES = ("", "quran")
 GUIDE_COPY_KEYS = (
     "guideSearchSubmit", "guideSearchClear", "guideTryQuestion",
     "guideSearchHint", "guideResultsLabel", "guideBrowseTopic",
-    "guideResultReady",
+    "guideResultReady", "guideSearchReady", "guideSearchingQuran", "guideSearchRetry", "guideJoyTitle", "guideJoyIntro", "guideQuranIntro", "guideExploreIntro",
 )
 PREVIEW_COPY_KEYS = (
     "rHeroPreviewLabel", "rHeroFeatures", "rHeroPreviewNote", "rHeroTry",
@@ -194,6 +194,7 @@ def check_preview_delivery(page):
             and scripts.index("/v15-field-light.js") < scripts.index("/v15-renders.js"),
             f"{label}: both search surfaces need their shared flowing-rim owner")
     for helper, consumers in (("/v15-guide-search.js", ("/v15-guide.js", "/v15-renders.js")),
+                              ("/v15-guide-answer.js", ("/v15-guide.js", "/v15-renders.js")),
                               ("/v15-preview-audio.js", ("/v15-renders.js",)),
                               ("/v15-hifz-preview.js", ("/v15-renders.js",))):
         require(helper in scripts and all(scripts.index(helper) < scripts.index(consumer) for consumer in consumers),
@@ -312,6 +313,16 @@ def check_guide_delivery(root, page, lang, copy):
                 f"{label}: missing localized copy {key}")
         require(generated.get(key) == value,
                 f"{label}: generated locale copy is stale for {key}; run build_v15.py")
+    navs = page.with_attribute("data-r-app-nav")
+    require(len(navs) == 3, f"{label}: every interactive phone needs the shared app navigation")
+    expected = [copy[lang][key] for key in ("navHome", "navRead", "navGuide", "navSaved", "navSettings")]
+    for nav in navs:
+        labels = [node.accessible_name() for node in page.elements if node.tag == "small" and node.belongs_to(nav)]
+        require(labels == expected, f"{label}: app slot names/order drifted")
+        require(sum(1 for node in page.elements if node.belongs_to(nav) and "is-on" in node.attrs.get("class", "").split()) == 1,
+                f"{label}: app navigation must have one selected slot")
+        require(nav.attrs.get("aria-hidden") == "true", f"{label}: decorative navigation must not promise unavailable routes")
+    require("/v15-app-preview-nav.css" in page.resource_paths("link", "href"), f"{label}: shared app navigation materials missing")
 
 
 def check_privacy_guards(root):
@@ -336,6 +347,8 @@ def check_privacy_guards(root):
     for name, pattern in forbidden.items():
         require(not re.search(pattern, source),
                 f"Local reviewed Guide must not introduce {name}")
+        require(not re.search(pattern, (root / "v15-guide-answer.js").read_text(encoding="utf-8")),
+                f"Broad Quran Guide must not introduce {name}")
 
 
 def check(root=ROOT):

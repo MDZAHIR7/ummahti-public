@@ -491,6 +491,7 @@
     const captions = { guide: ['Ummahti Guide', 'rGuideCaption'], read: [t('rSceneRead'), 'rSceneReadCap'], unlock: ['Ayah on Unlock', 'rSceneUnlockCap'], recite: ['My Hifz', 'rSceneReciteCap'] };
     const order = ['guide', 'read', 'unlock', 'recite'];
     const matcher = window.UmmahtiGuideSearch.create(G.topics);
+    const guideAnswers = window.UmmahtiGuideAnswer.create(G, MOON, t);
     let run = 0, questionAt = -1, current = 'guide', topic = byId[questions[0]?.[1]] || G.topics[0];
     let paused = false, manual = false, visible = false, docked = false, timer = 0, rejectWait = null, userQuery = false;
     let globeFrame = 0, lastFrame = 0, rotation = 0, speed = .2, handoff = null;
@@ -501,6 +502,7 @@
       searchLight.stop({ retain });
     }
     const stop = (preserveLight = false) => {
+      form.setAttribute('aria-busy', 'false');
       run++; clearTimeout(timer); timer = 0; if (!preserveLight) stopSearchLight();
       if (rejectWait) { const reject = rejectWait; rejectWait = null; reject(new Error('cancelled')); }
       speed = .2; screen.classList.remove('is-searching'); form.classList.remove('is-working'); scenes.recite.classList.remove('is-live');
@@ -525,6 +527,8 @@
     function showScene(id) {
       if (current !== id) { readAudio.stop(); unlockAudio.stop(); }
       current = id;
+      const appNav = $('[data-r-app-nav]', phone), navIndex = id === 'guide' ? 2 : id === 'read' || id === 'recite' ? 1 : 0;
+      if (appNav) { appNav.style.setProperty('--nav-active', navIndex); $$('[data-r-nav-item]', appNav).forEach(slot => slot.classList.toggle('is-on', Number(slot.dataset.rNavItem) === navIndex)); }
       heroHifz.setActive(id === 'recite');
       Object.entries(scenes).forEach(([key, el]) => { el.classList.toggle('is-on', key === id); if (key !== id) el.classList.remove('is-live'); el.toggleAttribute('inert', key !== id); el.setAttribute('aria-hidden', String(key !== id)); });
       choiceButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.rScene === id)));
@@ -563,16 +567,18 @@
     function working(on) { screen.classList.toggle('is-searching', on); form.classList.toggle('is-working', on); speed = on ? 1.8 : .2; if (on) acknowledgeSearch(); }
     async function fillGuide(tp, id = run) {
       const list = await surah(tp.q[0][0]).catch(() => null); check(id); topic = tp;
-      const [s, a] = tp.q[0], verse = list?.[a - 1];
+      const [s, a, end = a] = tp.q[0], verse = list?.[a - 1];
+      const excerpt = tp.id === 'quran-search' && verse ? list.slice(a - 1, end) : verse ? [verse] : [];
       $('[data-r-gh-topic]', phone).textContent = tp.t; $('[data-r-gh-question]', phone).textContent = tp.s;
-      $('[data-r-gh-ar]', phone).textContent = verse ? verse[0] : '';
-      $('[data-r-gh-en]', phone).textContent = verse ? verse[1] : t('rLoadError');
-      $('[data-r-gh-ref]', phone).textContent = name(s) + ' ' + s + ':' + a;
+      $('[data-r-gh-ar]', phone).textContent = excerpt.map(v => v[0]).join(' ');
+      $('[data-r-gh-en]', phone).textContent = verse ? excerpt.map(v => v[1]).join(' ') : t('rLoadError');
+      $('[data-r-gh-ref]', phone).textContent = name(s) + ' ' + s + ':' + a + (tp.id === 'quran-search' && end > a ? '–' + end : '');
       const chips = $('[data-r-gh-chips]', phone); chips.replaceChildren();
       const chip = text => { const el = document.createElement('span'); el.textContent = text; chips.append(el); };
       if (tp.q.length > 1) chip(t('rGuideMoreAyat', { n: fmt(tp.q.length - 1) }));
       tp.h.slice(0, 1).forEach(i => { if (G.cites[i]) chip(G.cites[i].c + ' ' + G.cites[i].r); });
       if (tp.d?.length) chip(t('rGuideDua'));
+      card.dataset.guideQuery = userQuery ? input.value.trim() : '';
       card.scrollTop = 0; card.hidden = false; card.classList.add('is-on'); screen.classList.add('is-found'); working(false); syncGlobe();
       status.textContent = t('rGuideFound', { n: fmt(tp.q.length + tp.h.length) });
       return tp;
@@ -643,7 +649,7 @@
     async function previewRead(id) { showScene('read'); if (!await fillRead(id)) { await wait(1800, id); return; } for (let i = 0; i < 3; i++) { selectRead(i); await wait(1900, id); } }
     async function settled(id) {
       if (current === 'guide') {
-        if (userQuery) { if (!card.classList.contains('is-on') || !findTopics().includes(topic)) showMatches(); return; }
+        if (userQuery) { if (!card.classList.contains('is-on') || (!findTopics().includes(topic) && card.dataset.guideQuery !== input.value.trim())) showMatches(); return; }
         input.value = topic.s; await fillGuide(topic, id);
       }
       else if (current === 'unlock') { await fillUnlock(id); setUnlockOpen(true); }
@@ -662,6 +668,7 @@
     pauseButtons.forEach(button => button.addEventListener('click', () => { if (paused || manual) { manual = false; paused = false; start(); } else { takeControl(); settled(run).catch(() => {}); } }));
     let guideComposing = false;
     function clearGuideAnswer() {
+      card.dataset.guideQuery = '';
       card.classList.remove('is-on'); card.hidden = true;
       flyers.replaceChildren();
       screen.classList.remove('is-found'); status.textContent = '';
@@ -688,9 +695,9 @@
       const matches = findTopics(); matchesBox.replaceChildren();
       matches.slice(0, 3).forEach(tp => { const button = document.createElement('button'); button.type = 'button'; button.textContent = tp.t; button.addEventListener('click', () => { takeControl(); matchesBox.hidden = true; acceptGuide(tp); }); matchesBox.append(button); });
       matchesBox.hidden = !matches.length;
-      const message = !input.value.trim() ? '' : matches.length ? t('guideMatches', { n: fmt(matches.length) }) : t('guideNoMatch');
+      const message = !input.value.trim() ? '' : matches.length ? t('guideMatches', { n: fmt(matches.length) }) : t('guideSearchReady');
       status.textContent = message;
-      if (!matches.length) stopSearchLight();
+      if (!input.value.trim()) stopSearchLight();
       say(message); return matches;
     }
     input.addEventListener('focus', () => { if (handoff?.isRestoringFocus()) return; takeControl(); acknowledgeSearch('focus'); });
@@ -698,13 +705,30 @@
       userQuery = true; takeControl(true); clearGuideAnswer();
       if (guideComposing) { matchesBox.hidden = true; stopSearchLight(); return; }
       const matches = showMatches();
-      if (input.value.trim() && matches.length) acknowledgeSearch('typing'); else stopSearchLight();
+      if (input.value.trim()) acknowledgeSearch('typing'); else stopSearchLight();
     }
     input.addEventListener('input', editGuideQuery);
-    input.addEventListener('compositionstart', () => { guideComposing = true; });
+    input.addEventListener('compositionstart', () => { guideComposing = true; takeControl(); clearGuideAnswer(); matchesBox.hidden = true; });
     input.addEventListener('compositionend', () => { guideComposing = false; editGuideQuery(); });
     input.addEventListener('blur', event => { if (!form.contains(event.relatedTarget)) stopSearchLight(['matched', 'settled'].includes(form.dataset.light)); });
-    form.addEventListener('submit', event => { event.preventDefault(); if (guideComposing) return; takeControl(); const matches = findTopics(); matchesBox.hidden = true; if (!matches.length) { showMatches(); return; } acceptGuide(matches[0]); });
+    async function answerGuide() {
+      const query = input.value.trim(); if (!query) return;
+      userQuery = true; const request = run;
+      clearGuideAnswer(); working(true); form.setAttribute('aria-busy', 'true');
+      status.textContent = t('guideSearchingQuran');
+      try {
+        const answer = await guideAnswers.resolve(query); check(request);
+        if (query !== input.value.trim() || current !== 'guide') return;
+        const tp = answer.mode === 'topic' ? byId[answer.topicId] : { id:'quran-search', t:answer.title, s:answer.intro, q:answer.q, h:[], d:[] };
+        if (tp) { await fillGuide(tp, request); check(request); say(tp.t); }
+      } catch (error) {
+        if (request !== run || error?.message === 'cancelled') return;
+        working(false); status.textContent = t('guideSearchRetry'); say(t('guideSearchRetry'));
+      } finally {
+        if (request === run) form.setAttribute('aria-busy', 'false');
+      }
+    }
+    form.addEventListener('submit', event => { event.preventDefault(); if (guideComposing) return; takeControl(); const matches = findTopics(); matchesBox.hidden = true; if (matches.length) acceptGuide(matches[0]); else answerGuide(); });
     function openGuide() {
       takeControl();
       const matches = userQuery ? findTopics() : [topic];
@@ -779,7 +803,7 @@
       else if (current === 'guide' && form.contains(document.activeElement) && !accepted) {
         if (screen.classList.contains('is-found')) stopSearchLight(true);
         else if (!input.value.trim()) acknowledgeSearch('focus');
-        else if (findTopics().length) acknowledgeSearch('typing');
+        else if (input.value.trim()) acknowledgeSearch('typing');
       }
     });
     fieldVisibility.observe(form);

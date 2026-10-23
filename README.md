@@ -21,6 +21,9 @@ execute the shipped controllers and local content:
 - `node tools/test_guide_search.cjs`: reviewed Guide search and explicit selection.
 - `node tools/test_guide_matching.cjs`: 812 actual-catalogue retrieval cases,
   including multilingual aliases, negation and identical hero/full ranking.
+- `node tools/test_guide_answers.cjs`: complete 6,236-ayah index and corpus
+  provenance, natural questions, Happy/negation, Arabic, synonyms/typos,
+  references, context ranges, exploration and load recovery.
 - `node tools/test_phone_handoff.cjs`: the single phone owner, scroll restoration,
   interruption, reversal, focus and resize behavior.
 - `node tools/test_hifz_preview.cjs`: explicit example review, typed references,
@@ -82,11 +85,25 @@ Do not replace them with refresh stubs: the mirror does not read `_redirects`.
   walkthrough. It neither plays a reciter recording nor listens. Visitors
   review a known Quran passage or type a validated reference before saving in
   this page's example.
-- `v15-guide.js`: reviewed local-topic search and explicit answer selection.
+- `v15-guide.js`: reviewed topics and full-Quran answers in the source reader.
 - `v15-guide-search.js`: one token/phrase matcher for the hero and full Guide.
   It searches reviewed titles, scenarios and keyword phrases, preserves
-  negation, and leaves unsupported questions unanswered. `happy` cannot match
-  the substring in `unhappy marriage` or an incidental editorial paragraph.
+  negation, and cannot mistake `happy` for a substring in `unhappy marriage`.
+- `v15-guide-answer.js`: the shared broader answer layer. Everyday questions
+  resolve to reviewed guidance or cited Quran passages; Happy opens joy,
+  gratitude and tranquillity, while not happy opens grief guidance. Local
+  Arabic/English full-corpus retrieval includes synonyms, modest typo tolerance
+  and neighbouring ayahs for context. Unclear wording offers sourced starting
+  points and refinement rather than a blank answer. It generates no rulings.
+- `tools/build_guide_index.py`: reproducible English/Arabic inverted index from
+  the unchanged 114 corpus files, with 6,236 coordinates and source digests.
+  The 2.17 MB script is loaded once on demand, never during ordinary startup.
+  Search text is neither transmitted nor stored. There is no AI service.
+- `v15-app-preview-nav.css`: the app's actual five labelled slots, own Guide
+  vector and moving gold ring in all three interactive phone shells. Labels,
+  selection, grabber and elevated pill follow HomeScreen/UmmahtiNavRail;
+  `tools/prepare_preview_nav.py` exports the app geometry read-only. Navigation
+  is decorative preview chrome; the named feature controls own the demo.
 - `v15-preview-audio.js`: user-initiated playback of the exact selected/displayed
   ayah, with pause, progress, retry and one audible player at a time. Read and
   Unlock stay in their phone; scene changes and visibility stop playback.

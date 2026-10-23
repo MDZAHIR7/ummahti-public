@@ -149,7 +149,7 @@
   const refText = ([s, a, e]) => surahName(s) + ' ' + digits.format(s) + ':' + digits.format(a) + (e > a ? '–' + digits.format(e) : '');
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
 
-  let current = -1, passage = 0, passageRequest = 0, passageFailed = false, readerAnimation = null;
+  let current = -1, activeTopic = null, answerRequest = 0, passage = 0, passageRequest = 0, passageFailed = false, readerAnimation = null;
   reader.setAttribute('aria-live', 'off');
   reader.id ||= 'guide-reader';
   $r('[data-guide-title]').tabIndex = -1;
@@ -168,7 +168,7 @@
     $r('[data-guide-ayah-en]').textContent = '';
     $r('[data-guide-ayah-ref]').textContent = refText(ref);
     surah(ref[0]).then(ayat => {
-      if (request !== passageRequest || current < 0 || topics[current] !== tp || passage !== k) return;
+      if (request !== passageRequest || activeTopic !== tp || passage !== k) return;
       const [s, a, e] = ref, slice = ayat.slice(a - 1, e);
       const ar = $r('[data-guide-ayah-ar]'), en = $r('[data-guide-ayah-en]');
       ar.textContent = slice.map((v, n) => v[0] + ' ﴿' + digits.format(a + n) + '﴾').join(' ');
@@ -176,7 +176,7 @@
       box.classList.remove('is-loading');
       box.setAttribute('aria-busy', 'false');
     }, () => {
-      if (request !== passageRequest || current < 0 || topics[current] !== tp || passage !== k) return;
+      if (request !== passageRequest || activeTopic !== tp || passage !== k) return;
       passageFailed = true;
       $r('[data-guide-ayah-en]').textContent = t('verseFailed', 'This verse could not load. Check your connection and try again.');
       box.classList.remove('is-loading');
@@ -184,11 +184,12 @@
     });
   }
   function fill(i) {
-    const tp = topics[i];
-    $r('[data-guide-subject]').textContent = G.categories[tp.k];
+    const tp = typeof i === 'object' ? i : topics[i];
+    activeTopic = tp;
+    $r('[data-guide-subject]').textContent = G.categories[tp.k] || t('guideQuranAnswer', 'FROM THE QURAN');
     const title = $r('[data-guide-title]');
     title.textContent = tp.t;
-    title.lang = tp.l;
+    title.lang = tp.l || root.lang;
     $r('[data-guide-question]').textContent = '“' + tp.s + '”';
     $r('[data-guide-editorial]').textContent = tp.e;
     const refs = $r('[data-guide-refs]');
@@ -303,6 +304,7 @@
     apply();
   }
   const matcher = window.UmmahtiGuideSearch.create(topics);
+  const answers = window.UmmahtiGuideAnswer.create(G, M, key => T[key]);
   let matches = topics.map((_, i) => i);
 
   /* The real query remains local. Matching never changes selection, focus, or document scroll. */
@@ -373,6 +375,8 @@
     select(i, true, 'search-answer');
   }
   function apply() {
+    answerRequest++;
+    form?.setAttribute('aria-busy', 'false');
     section.classList.remove('is-search-answer');
     lightAfterArrival = false;
     const hasQuery = Boolean(search?.value.trim());
@@ -390,9 +394,9 @@
     const tabStop = matches.includes(current) ? current : matches[0];
     stars.forEach((s, i) => { s.tabIndex = i === tabStop ? 0 : -1; });
     sky.querySelectorAll('.v-sky-label').forEach(l => l.classList.toggle('is-dim', subject >= 0 && Number(l.dataset.k) !== subject));
-    if (status) status.textContent = hasQuery || subject >= 0 ? (matches.length ? (matches.length === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(matches.length))) : t('guideNoMatch', 'Nothing matched. Try other words, or choose a subject.')) : '';
+    if (status) status.textContent = hasQuery || subject >= 0 ? (matches.length ? (matches.length === 1 ? t('guideMatchOne', '1 topic matches') : t('guideMatches', '{n} topics match').replace('{n}', digits.format(matches.length))) : t('guideSearchReady', 'Search to explore Quran passages and prepared guidance.')) : '';
     clear.hidden = !search?.value;
-    submit.disabled = !hasQuery || !matches.length;
+    submit.disabled = !hasQuery;
     suggestions.hidden = hasQuery || subject >= 0;
     resultList.hidden = !matches.length || (!hasQuery && subject < 0);
     resultList.replaceChildren(...(hasQuery || subject >= 0 ? matches.slice(0, 6).map(i => {
@@ -406,7 +410,7 @@
       li.append(b);
       return li;
     }) : []));
-    field.dataset.state = hasQuery ? (matches.length ? 'typing' : 'empty') : 'idle';
+    field.dataset.state = hasQuery ? 'typing' : 'idle';
     return matches[0] ?? -1;
   }
   let composing = false;
@@ -422,13 +426,13 @@
     readerAnimation?.cancel();
     if (composing) { reader.hidden = true; resultList.hidden = true; section.classList.remove('is-search-answer'); }
     if (!composing) apply();
-    if (search.value.trim() && (composing || matches.length)) illuminate('typing');
+    if (search.value.trim()) illuminate('typing');
     else stopLight();
   });
-  search?.addEventListener('compositionstart', () => { composing = true; });
+  search?.addEventListener('compositionstart', () => { composing = true; answerRequest++; form?.setAttribute('aria-busy', 'false'); reader.hidden = true; });
   search?.addEventListener('compositionend', () => {
     composing = false; apply();
-    if (search.value.trim() && matches.length) illuminate('typing');
+    if (search.value.trim()) illuminate('typing');
     else stopLight();
   });
   search?.addEventListener('keydown', event => {
@@ -454,11 +458,48 @@
       event.preventDefault(); buttons[Math.max(0, Math.min(buttons.length - 1, at + (event.key === 'ArrowDown' ? 1 : -1)))]?.focus({ preventScroll: true });
     }
   });
+  async function answerSearch() {
+    const query = search.value.trim();
+    if (!query) return;
+    subject = -1;
+    chipButtons.forEach((chip, n) => chip.setAttribute('aria-pressed', String(n === 0)));
+    const request = ++answerRequest;
+    reader.hidden = true; resultList.hidden = true;
+    status.textContent = t('guideSearchingQuran', 'Finding passages for your question…');
+    form.setAttribute('aria-busy', 'true');
+    illuminate('matched');
+    try {
+      const answer = await answers.resolve(query);
+      if (request !== answerRequest || search.value.trim() !== query) return;
+      if (answer.mode === 'topic') {
+        const i = byId.get(answer.topicId);
+        if (i !== undefined) openMatch(i);
+      } else {
+        current = -1;
+        stars.forEach(star => { star.classList.remove('is-on'); star.setAttribute('aria-pressed', 'false'); });
+        fill({ id:'quran-search', k:-1, t:answer.title, s:query, e:answer.intro, l:root.lang, q:answer.q, h:[], d:[], a:[], f:answer.suggestions || [] });
+        reader.hidden = false;
+        section.classList.add('is-search-answer');
+        acknowledge();
+        status.textContent = t('guideResultReady', 'Ready: {topic}').replace('{topic}', answer.title);
+        $r('[data-guide-title]').focus({ preventScroll:true });
+        form.scrollIntoView({ behavior:still() ? 'auto' : 'smooth', block:'start' });
+      }
+    } catch (_) {
+      if (request !== answerRequest) return;
+      status.textContent = t('guideSearchRetry', 'The Quran index could not load. Search again to retry, or choose a prepared subject below.');
+      suggestions.hidden = false;
+      stopLight();
+    } finally {
+      if (request === answerRequest) form.setAttribute('aria-busy', 'false');
+    }
+  }
   form?.addEventListener('submit', event => {
     event.preventDefault();
     if (composing) return;
     const first = apply();
     if (search.value.trim() && first >= 0) openMatch(first);
+    else if (search.value.trim()) answerSearch();
   });
   const stopMotion = () => {
     lightAfterArrival = false;
@@ -468,13 +509,13 @@
   };
   reduced.addEventListener('change', stopMotion);
   motionToggle?.addEventListener('click', stopMotion);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stopMotion(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { answerRequest++; form?.setAttribute('aria-busy', 'false'); stopMotion(); } });
   new IntersectionObserver(entries => { if (!entries[0].isIntersecting) stopMotion(); }).observe(section);
   new IntersectionObserver(entries => {
     if (!entries[0].isIntersecting) stopLight(field.dataset.state === 'matched');
     else if (lightAfterArrival) { lightAfterArrival = false; illuminate('matched'); }
     else if (document.activeElement === search && !['matched', 'empty'].includes(field.dataset.state)) {
-      if (search.value.trim() && (composing || matches.length)) illuminate('typing');
+      if (search.value.trim()) illuminate('typing');
       else if (!search.value.trim()) illuminate('focus');
     }
   }).observe(field);
@@ -487,6 +528,7 @@
     const first = apply();
     if (i !== undefined && (!search.value.trim() || matches.includes(i))) openMatch(i);
     else if (first >= 0 && search.value.trim()) openMatch(first);
+    else if (search.value.trim()) answerSearch();
     else { search.focus({ preventScroll: true }); section.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' }); }
   });
 

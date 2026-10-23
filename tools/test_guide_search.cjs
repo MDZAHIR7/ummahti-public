@@ -32,6 +32,7 @@ function fixture(lang = 'en', reduce = false, loaded = true) {
     constructor(tag) { this.tagName = tag.toUpperCase(); this.children = []; this.attributes = {}; this.dataset = {}; this.style = { values: {}, setProperty(k, v) { this.values[k] = v; }, getPropertyValue(k) { return this.values[k] || ''; } }; this.className = ''; this.classList = new Classes(this); this.listeners = {}; this.clientWidth = 600; this.clientHeight = 58; this.textContent = ''; }
     append(...nodes) { for (const n of nodes) { if (n.parentNode) n.parentNode.children = n.parentNode.children.filter(x => x !== n); n.parentNode = this; this.children.push(n); if (this === doc.head && n.tagName === 'SCRIPT') externalScripts.push(n); } }
     appendChild(n) { this.append(n); return n; }
+    remove() { if (this.parentNode) this.parentNode.children = this.parentNode.children.filter(node => node !== this); this.parentNode = null; }
     insertBefore(n, before) { this.append(n); if (before) { this.children.pop(); this.children.splice(this.children.indexOf(before), 0, n); } }
     replaceChildren(...nodes) { this.children.forEach(n => n.parentNode = null); this.children = []; this.append(...nodes); }
     set innerHTML(value) { this.replaceChildren(); for (const m of value.matchAll(/<(img|b|span|i|svg)(?:\s[^>]*)?>/g)) this.append(new Element(m[1])); }
@@ -81,10 +82,14 @@ function fixture(lang = 'en', reduce = false, loaded = true) {
   context.window = context;
   vm.createContext(context);
   vm.runInContext(read(`media/v15/guide-${lang}.js`), context);
+  vm.runInContext(read(`i18n/v15-${lang}.js`), context);
   // Already loaded Quran data isolates network timing without changing the Guide under test.
   context.UMMAHTI_AYAT = loaded ? Object.fromEntries(Array.from({ length: 114 }, (_, i) => [i + 1, Array.from({ length: 300 }, () => ['source-ar', 'source-en'])])) : {};
   vm.runInContext(read('v15-field-light.js'), context);
   vm.runInContext(read('v15-guide-search.js'), context);
+  vm.runInContext(read('v15-guide-answer.js'), context);
+  vm.runInContext(read('media/v15/guide-index.js'), context);
+  vm.runInContext(read('media/v15/moon-data.js'), context);
   vm.runInContext(guideCode, context);
   const flushTimers = () => { const queued = [...timers.values()]; timers.clear(); queued.forEach(fn => fn()); };
   const input = value => { search.value = value; search.dispatchEvent({ type: 'input' }); flushTimers(); };
@@ -170,8 +175,8 @@ function installHeroHostChange(context) {
   f.input('zyzzyvanotatopic');
   assert(!f.section.classList.contains('is-search-answer'), 'editing returns to discovery without remounting the field');
   assert.equal(results().length, 0);
-  assert.equal(f.form.querySelector('.v-guide-submit').disabled, true);
-  assert.match(f.status.textContent, /Nothing matched/);
+  assert.equal(f.form.querySelector('.v-guide-submit').disabled, false, 'broader questions remain searchable');
+  assert.match(f.status.textContent, /Search to explore/);
   const beforeEmpty = f.scrolls.length;
   f.submit();
   assert.equal(f.scrolls.length, beforeEmpty, 'no-match submit must not navigate to stale result');
@@ -220,7 +225,11 @@ function installHeroHostChange(context) {
       }
     }
     all.input('Happy'); all.submit();
-    assert.equal(all.reader.hidden, true, `${lang} unsupported Happy query hides every old answer`);
+    assert.equal(all.reader.hidden, true, `${lang} a new question hides the old answer while it resolves`);
+    for (let n = 0; n < 4; n++) await Promise.resolve();
+    assert.equal(all.reader.hidden, false, `${lang} Happy now opens a real sourced answer`);
+    assert.equal(all.title.textContent, all.context.UMMAHTI_V15_I18N.guideJoyTitle);
+    assert.match(all.reader.querySelector('[data-guide-ayah-ref]').textContent, /10[:：]58|١٠:٥٨|۱۰:۵۸/);
     assert.equal(all.form.querySelectorAll('button').filter(b => b.dataset.guideResult).length, 0);
   }
   const pending = fixture('en', false, false);
@@ -336,7 +345,7 @@ function installHeroHostChange(context) {
   staleSettle();
   assert.equal(light.form.querySelector('.v-guide-field').dataset.light, 'typing', 'an obsolete surge cannot settle a new query');
   light.search.focus(); light.input('notareviewedtopiczyzzyva');
-  assert(light.animations.filter(job => job.el !== light.reader).every(job => job.cancelled), 'no-match cannot retain a success light');
+  assert.equal(light.form.querySelector('.v-guide-field').dataset.light, 'typing', 'a broader question still receives typing feedback');
   light.input('fajr');
   const fieldObserver = light.io.at(-1);
   fieldObserver.f([{ isIntersecting: false }]);
@@ -421,7 +430,7 @@ function installHeroHostChange(context) {
     fieldObserver.f([{ isIntersecting: true }]);
     assert.equal(activeRim().length, 0, 'unfocused hero arrival never starts motion');
     input.value = 'unmatched'; input.focus(); fieldObserver.f([{ isIntersecting: true }]);
-    assert.equal(activeRim().length, 0, 'unmatched hero input never resumes a success light');
+    assert.equal(activeRim().length, 1, 'a broader query resumes typing light before its Quran search');
   }
   {
     const sizeLine = heroCode.split('\n').find(line => line.includes('const sizeSlot ='));
@@ -489,8 +498,50 @@ function installHeroHostChange(context) {
     const beforeMissing = calls.length; context.openSection('#missing');
     assert.equal(calls.length, beforeMissing, 'a missing destination cannot cancel the current preview or change its URL');
   }
-  console.log('PASS: actual Guide script — mobile typing stability, Fajr ranking, explicit submit, source focus, rapid cancellation, no match, Escape/clear, keyboard result access, dock event, hidden-tab cancellation, four locale scenarios, reduced motion.');
-  console.log('PASS: all 86 topics and every selected Quran reference display their exact corpus range and meaning in all four locales; unsupported Happy clears old answers.');
+  {
+    const broad = fixture();
+    broad.input('Happy'); broad.submit();
+    for (let n=0;n<6;n++) await Promise.resolve();
+    assert.equal(broad.title.textContent,'Joy, gratitude and a peaceful heart');
+    broad.reader.querySelector('[data-guide-refs]').children[1].dispatchEvent({type:'click'});
+    await Promise.resolve();
+    assert.match(broad.reader.querySelector('[data-guide-ayah-ref]').textContent,/13:28/);
+    broad.input('2:255'); broad.submit();
+    for (let n=0;n<6;n++) await Promise.resolve();
+    assert.match(broad.reader.querySelector('[data-guide-ayah-ref]').textContent,/2:255/);
+    // A lazy index response arriving after another question cannot replace it.
+    const cached=broad.context.UMMAHTI_GUIDE_INDEX;
+    broad.context.UMMAHTI_GUIDE_INDEX = null;
+    broad.input('iron'); broad.submit();
+    const tag=broad.externalScripts.at(-1);
+    assert.match(tag.src,/guide-index/);
+    assert.equal(broad.form.getAttribute('aria-busy'),'true');
+    broad.input('Fajr'); broad.submit();
+    broad.context.UMMAHTI_GUIDE_INDEX=cached; tag.onload();
+    for(let n=0;n<8;n++) await Promise.resolve();
+    assert.equal(broad.title.textContent,'Waking for Fajr');
+    assert.equal(broad.form.getAttribute('aria-busy'),'false');
+    const failed=fixture();
+    failed.context.UMMAHTI_GUIDE_INDEX = null;
+    failed.input('iron'); failed.submit(); failed.externalScripts.at(-1).onerror();
+    for(let n=0;n<8;n++) await Promise.resolve();
+    assert.match(failed.status.textContent,/could not load/);
+    assert.equal(failed.form.querySelector('.v-guide-submit').disabled,false);
+    failed.context.UMMAHTI_GUIDE_INDEX=cached; failed.submit();
+    for(let n=0;n<8;n++) await Promise.resolve();
+    assert.equal(failed.title.textContent,'Quran passages to explore');
+    assert.equal(failed.reader.hidden,false);
+  }
+  {
+    let replaced=0;
+    const card={dataset:{guideQuery:'Happy'},classList:{contains:()=>true}};
+    const context=vm.createContext({current:'guide',userQuery:true,card,input:{value:'Happy'},topic:{id:'quran-search'},findTopics:()=>[],showMatches:()=>replaced++});
+    vm.runInContext(heroSlice('    async function settled(id) {','    async function loop(id) {'),context);
+    await context.settled(1);assert.equal(replaced,0,'accepted broad answer survives scene reselection and phone docking');
+    context.input.value='another question';await context.settled(1);assert.equal(replaced,1,'a different query cannot reuse the previous broad answer');
+  }
+  console.log('PASS: actual Guide script — typing stability, prepared and full-Quran answers, direct references, lazy failure/retry, stale-index cancellation, retained broad answer through docking, focus/IME, keyboard access, four locales, reduced motion.');
+  console.log('PASS: all 86 topics and every selected Quran reference display their exact corpus range and meaning in all four locales; Happy replaces old answers with cited joy passages.');
   console.log('PASS: superseded asynchronous passage success/failure cannot overwrite the current source; active source settles busy state; IME confirmation stays separate from submit.');
   console.log('PASS: same-topic Guide failures retry, busy retries deduplicate, and both source loaders recover after network or missing-payload rejection.');
   console.log('PASS: full-rim flow has one phase owner, continuous active typing, immediate results, bounded submit surge and static settlement; no-match/blur/offscreen/reduced cancellation and stale-timer safety.');
