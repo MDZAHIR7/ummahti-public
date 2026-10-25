@@ -1,0 +1,39 @@
+/* Tonight: the live moon, Hijri night and juz. Theme colours stay authoritative. */
+.v15-page .v-tonight{display:grid;grid-template-columns:1.05fr .95fr;gap:8%;align-items:center;scroll-margin-top:75px}
+.v15-page .v-tonight-copy .v-kicker{display:flex;align-items:center;gap:10px}
+.v15-page .v-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-light);box-shadow:0 0 0 0 rgba(var(--gold-rgb),.55);animation:v-live 2.6s ease-out infinite}
+@keyframes v-live{0%{box-shadow:0 0 0 0 rgba(var(--gold-rgb),.55)}70%{box-shadow:0 0 0 9px rgba(var(--gold-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--gold-rgb),0)}}
+.v15-page .v-tonight-facts{display:grid;gap:0;margin:28px 0 18px;border-top:1px solid var(--v-rule)}
+.v15-page .v-tonight-facts>div{display:grid;grid-template-columns:minmax(120px,.42fr) 1fr;gap:18px;align-items:baseline;padding-block:15px;border-bottom:1px solid var(--v-rule)}
+.v15-page .v-tonight-facts dt{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);font-weight:600;line-height:1.6}
+.v15-page .v-tonight-facts dd{margin:0;font-size:15px;line-height:1.7;color:var(--text)}
+.v15-page .v-tonight-facts dd[data-tonight-date]{font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;letter-spacing:-.01em}
+.v15-page .v-tonight-copy>.v-caption{max-width:52ch}
+.v15-page .v-tonight-figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:18px}
+.v15-page .v-tonight-sky{position:relative;width:min(100%,400px);aspect-ratio:1;isolation:isolate}
+.v15-page .v-tonight-sky::before{content:'';position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(var(--gold-rgb),calc(.08 + .16 * var(--lit,.5))),rgba(var(--gold-rgb),.04) 42%,transparent 70%);z-index:-1;pointer-events:none}
+.v15-page .v-tonight-moon{display:block;width:100%;height:100%;overflow:visible}
+.v15-page .v-tonight-moon stop:first-child{stop-color:var(--gold-light)}
+.v15-page .v-tonight-moon stop:last-child{stop-color:var(--gold)}
+.v15-page .v-tonight-halo{fill:rgba(var(--gold-rgb),.05)}
+.v15-page .v-tonight-disc{fill:rgba(var(--ink-rgb),.92);stroke:rgba(var(--gold-rgb),.22);stroke-width:.6}
+.v15-page .v-tonight-lit{fill:url(#v-tonight-light);filter:drop-shadow(0 0 6px rgba(var(--gold-rgb),.45))}
+.v15-page .v-tonight-rim{fill:none;stroke:rgba(var(--gold-rgb),.55);stroke-width:1}
+.v15-page .v-tonight-ring{fill:none;stroke:rgba(var(--gold-rgb),.28);stroke-width:.5}
+.v15-page .v-tonight-ring.is-dashed{stroke-dasharray:1.2 3.1;stroke:rgba(var(--gold-rgb),.42);animation:v-tonight-turn 180s linear infinite;transform-origin:center}
+@keyframes v-tonight-turn{to{rotate:360deg}}
+.v15-page .v-tonight-figure figcaption{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.v15-page .v-tonight-figure figcaption b{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(2.6rem,4.6vw,4rem);line-height:1;letter-spacing:-.04em;color:var(--gold-light)}
+.v15-page .v-tonight-figure figcaption span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.v15-page .v-tonight-line{font-size:14px;line-height:1.75;color:var(--gold-light);margin-top:14px!important;padding-inline-start:14px;border-inline-start:2px solid rgba(var(--gold-rgb),.5)}
+.v15-page.v-light .v-tonight-sky::before{background:radial-gradient(circle,rgba(var(--gold-rgb),calc(.1 + .14 * var(--lit,.5))),rgba(var(--gold-rgb),.05) 42%,transparent 70%)}
+.v15-page.v-light .v-tonight-halo{fill:rgba(var(--gold-rgb),.08)}
+.v15-page.v-light .v-tonight-disc{fill:var(--text);fill-opacity:.84;stroke:rgba(var(--gold-rgb),.5)}
+/* Light surfaces carry a dark gold for contrast; a lit moon on paper is pale, so the lit part is mixed towards white. */
+.v15-page.v-light .v-tonight-lit{fill:var(--surface);fill:color-mix(in srgb,var(--gold-light) 34%,#fff);filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.v15-page.v-light .v-tonight-rim{stroke:rgba(var(--gold-rgb),.75)}
+.v15-page.v-light .v-tonight-figure figcaption b{color:var(--gold-dark,var(--gold))}
+@media(max-width:899px){.v15-page .v-tonight{grid-template-columns:1fr;gap:34px}.v15-page .v-tonight-figure{order:-1}.v15-page .v-tonight-sky{width:min(72vw,320px)}}
+@media(max-width:680px){.v15-page .v-tonight-facts>div{grid-template-columns:1fr;gap:4px;padding-block:13px}.v15-page .v-tonight-facts dd[data-tonight-date]{font-size:20px}.v15-page .v-tonight-facts dd{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.v15-page .v-live,.v15-page .v-tonight-ring.is-dashed{animation:none}}
+@media(forced-colors:active){.v15-page .v-tonight-lit{fill:CanvasText}.v15-page .v-tonight-disc{fill:Canvas;stroke:CanvasText}.v15-page .v-live{background:CanvasText}}

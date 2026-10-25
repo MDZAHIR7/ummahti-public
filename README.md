@@ -123,6 +123,17 @@ Do not replace them with refresh stubs: the mirror does not read `_redirects`.
   no AI backend is implied. This supersedes the earlier SVG dash passes.
 - `v15-flow.js`, `v15-experience.css`: viewport-triggered arrivals that finish
   by time, responsive composition, header utilities and theme-aware light.
+  The experience sheet also holds the hero's segmented preview control, the
+  reading-theme view transition timing and the small-screen install bar.
+- `v15-tonight.js`, `v15-tonight.css`: tonight's moon, drawn live before the
+  closing invitation. The Hijri night comes from the browser's own Umm al-Qura
+  calendar (`Intl`, with an arithmetic fallback), the moon's age and light from
+  the mean synodic month, and tonight's juz from the same thirty-part division
+  the crescent uses. Nothing is requested, sent or stored. The thirty-moons
+  arrangement rings tonight's own moon, and the "Thirty nights" step names it.
+- `v15.js` also owns the install bar (narrow screens only, after the hero,
+  away near the close, dismissable for the session), the `/` shortcut to the
+  Guide and the crossfade when a reader chooses a theme.
 - `styles.css`: the existing twelve app palettes and original reciter system.
 - `theme.js`: restores the validated theme before paint using `ummahti:theme`.
 - `sky.js`: the approved ambient room, called by V1.5's single lifecycle loop.

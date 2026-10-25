@@ -72,3 +72,9 @@
 
 /v15-flow.js
   Cache-Control: public, max-age=600, must-revalidate
+
+/v15-tonight.js
+  Cache-Control: public, max-age=600, must-revalidate
+
+/v15-tonight.css
+  Cache-Control: public, max-age=600, must-revalidate

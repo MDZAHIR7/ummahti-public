@@ -50,3 +50,31 @@
 /* Stacked grid gaps must participate in intrinsic height. Percentage row gaps overflow it. */
 .v15-page .r-proof-dock{align-items:start}
 @media(max-width:800px){.v15-page .r-proof-dock{gap:32px}}
+/* Headings arrive from nothing rather than from a third: the same reveal, and every word a reader can see is readable. */
+.v15-page .v-flow-words .v-word{opacity:var(--w)}
+/* Before the phone arrives the dock dims its empty slot and controls, not the sentence that explains them. */
+.v15-page .r-proof-dock:not(.has-phone) .r-dock-product{opacity:1}
+.v15-page .r-proof-dock:not(.has-phone) .r-dock-product>.r-dock-slot,.v15-page .r-proof-dock:not(.has-phone) .r-dock-product .v-product-controls{opacity:.35}
+/* A chosen reading theme crossfades the whole page. */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.5s;animation-timing-function:var(--v-ease)}
+/* Hero preview control: one segmented pill, the chosen moment lit in gold. */
+.v15-page .r-hero-product>.r-scene-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:4px;border:1px solid var(--v-rule);border-radius:999px;background:rgba(var(--surface-rgb),.5);box-shadow:inset 0 1px 0 rgba(var(--glow-rgb),.06)}
+.v15-page .r-hero-product>.r-scene-choices button{min-height:36px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:11px;line-height:1.3;padding:7px 8px;text-align:center;box-shadow:none;transition:background-color .22s var(--v-ease),color .22s,box-shadow .22s}
+.v15-page .r-hero-product>.r-scene-choices button:hover{color:var(--text);background:rgba(var(--gold-rgb),.07)}
+.v15-page .r-hero-product>.r-scene-choices button[aria-pressed=true]{color:var(--ink);background:linear-gradient(160deg,var(--gold-light),var(--gold));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -12px rgba(var(--gold-rgb),.9)}
+[data-theme='warm-cream'] .r-hero-product>.r-scene-choices button[aria-pressed=true],[data-theme='crisp-light'] .r-hero-product>.r-scene-choices button[aria-pressed=true],[data-theme='classic-ink'] .r-hero-product>.r-scene-choices button[aria-pressed=true]{color:#fff}
+@media(max-width:680px){.v15-page .r-hero-product>.r-scene-choices{grid-template-columns:1fr 1fr;gap:4px;border-radius:22px}.v15-page .r-hero-product>.r-scene-choices button{min-height:44px;font-size:12px;padding:8px}}
+/* The app icon arrives as WebP inside a picture; the closing mark keeps its size. */
+.v15-page .v-close>picture>img{width:76px;height:76px;border-radius:22.5%;margin-bottom:25px;box-shadow:0 12px 30px -20px rgba(0,0,0,.7)}
+@media(max-width:680px){.v15-page .v-close>picture>img{width:64px;height:64px}}
+/* Small-screen install bar: present once the hero has passed, away near the closing invitation, dismissable for the session. */
+.v-install-bar{position:fixed;inset-inline:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:28;display:none;align-items:center;gap:12px;max-width:560px;margin-inline:auto;padding:9px 9px 9px 12px;border:1px solid rgba(var(--gold-rgb),.38);border-radius:20px;background:rgba(var(--ink-rgb),.93);backdrop-filter:blur(16px);box-shadow:0 18px 44px -18px rgba(0,0,0,.75),inset 0 1px 0 rgba(var(--glow-rgb),.08);translate:0 calc(100% + 28px);transition:translate .46s var(--v-ease)}
+.v-install-bar.is-on{translate:0 0}
+.v-install-bar>img{width:40px;height:40px;border-radius:11px;flex-shrink:0}
+.v-install-bar>div{flex:1;min-width:0;line-height:1.35}
+.v-install-bar b{display:block;font-size:13px;font-weight:600;color:var(--text)}
+.v-install-bar small{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-install-bar>.v-button{min-height:40px;padding:8px 15px;font-size:12px;gap:8px;border-radius:999px;flex-shrink:0}
+.v-install-bar>.v-icon-button{width:36px;height:36px;font-size:16px;flex-shrink:0;background:none;border-color:transparent;color:var(--muted)}
+@media(max-width:1000px){.v-install-bar{display:flex}}
+@media(forced-colors:active){.v-install-bar{border-color:ButtonText}}

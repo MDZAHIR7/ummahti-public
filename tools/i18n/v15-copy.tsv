@@ -547,3 +547,26 @@ navRead	القراءة	پڑھیں	Baca
 navGuide	الدليل	رہنما	Panduan
 navSaved	المحفوظات	محفوظات	Tersimpan
 navSettings	إعدادات	ترتیبات	Pengaturan
+tonightLive	مباشر	براہِ راست	Langsung
+tonightKicker	الليلة	آج رات	Malam ini
+tonightTitle	القمر نفسه،<br><em>فوقنا جميعًا.</em>	وہی چاند،<br><em>ہم سب کے اوپر۔</em>	Bulan yang sama,<br><em>di atas kita semua.</em>
+tonightLead	أينما كنت تقرأ هذا، تُحسب الليلة الهجرية من القمر فوقك. هذه ليلتك، مرسومة كما هي الآن.	آپ جہاں بھی یہ پڑھ رہے ہوں، ہجری رات آپ کے اوپر کے چاند سے گنی جاتی ہے۔ یہ آج کی رات ہے، جیسی اس وقت ہے ویسی ہی بنائی گئی۔	Di mana pun Anda membaca ini, malam Hijriah dihitung dari bulan di atas Anda. Inilah malam ini, digambar seperti keadaannya sekarang.
+tonightDateLabel	التاريخ الهجري	ہجری تاریخ	Tanggal Hijriah
+tonightMoonLabel	القمر	چاند	Bulan
+tonightJuzLabel	جزء كل ليلة	ہر رات ایک پارہ	Satu juz setiap malam
+tonightPhase	{phase} · عمره {age} يومًا · مضاء {percent}٪	{phase} · {age} دن کا · {percent}٪ روشن	{phase} · usia {age} hari · {percent}% bercahaya
+tonightJuz	الليلة {night} من الشهر هي الجزء {juz}: {name} {ref}، {ayat} آية.	مہینے کی {night}ویں رات پارہ {juz} ہے: {name} {ref}، {ayat} آیات۔	Malam ke-{night} bulan ini adalah juz {juz}: {name} {ref}, {ayat} ayat.
+tonightLine	الليلة هي الليلة {night}: الجزء {juz}، {name} {ref}.	آج {night}ویں رات ہے: پارہ {juz}، {name} {ref}۔	Malam ini malam ke-{night}: juz {juz}, {name} {ref}.
+tonightNote	التواريخ وفق تقويم أم القرى، وقد تختلف الرؤية المحلية بيوم. يبدأ اليوم الهجري عند المغرب، فهذه هي الليلة التي تبدأ هذا المساء. عمر القمر وإضاءته محسوبان لا مرصودان.	تاریخیں اُمّ القریٰ کیلنڈر کے مطابق ہیں؛ مقامی رؤیتِ ہلال میں ایک دن کا فرق ہو سکتا ہے۔ ہجری دن مغرب سے شروع ہوتا ہے، اس لیے یہ وہ رات ہے جو آج شام شروع ہوتی ہے۔ چاند کی عمر اور روشنی حساب سے ہیں، مشاہدے سے نہیں۔	Tanggal mengikuti kalender Umm al-Qura; rukyat setempat bisa berbeda satu hari. Hari Hijriah dimulai saat Magrib, jadi inilah malam yang dimulai petang ini. Usia dan cahaya bulan dihitung, bukan diamati.
+phaseNew	محاق	نیا چاند	Bulan baru
+phaseWaxingCrescent	هلال متزايد	بڑھتا ہلال	Sabit muda
+phaseFirstQuarter	التربيع الأول	پہلی چوتھائی	Kuartal pertama
+phaseWaxingGibbous	أحدب متزايد	بڑھتا احدب	Cembung awal
+phaseFull	بدر	بدرِ کامل	Purnama
+phaseWaningGibbous	أحدب متناقص	گھٹتا احدب	Cembung akhir
+phaseLastQuarter	التربيع الأخير	آخری چوتھائی	Kuartal akhir
+phaseWaningCrescent	هلال متناقص	گھٹتا ہلال	Sabit tua
+installBarTitle	Ummahti Quran	Ummahti Quran	Ummahti Quran
+installBarBody	مجاني لأندرويد · بلا إعلانات	اینڈرائیڈ پر مفت · بغیر اشتہارات	Gratis di Android · Tanpa iklan
+installBarCta	حمّل التطبيق	ایپ حاصل کریں	Dapatkan aplikasi
+installBarClose	إخفاء هذا الشريط	یہ پٹی چھپائیں	Sembunyikan bilah ini

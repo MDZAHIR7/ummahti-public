@@ -40,6 +40,11 @@
  const themeButtons=$$('[data-v-theme]');
  function setTheme(id,persist=false){
    if(!themeButtons.some(b=>b.dataset.vTheme===id))return;
+   // A chosen theme crossfades the whole page where the browser can; restoration stays instant.
+   if(persist&&root.dataset.theme!==id&&typeof document.startViewTransition==='function'&&!reduced.matches&&!document.hidden){document.startViewTransition(()=>applyTheme(id,persist));return;}
+   applyTheme(id,persist);
+ }
+ function applyTheme(id,persist){
    root.dataset.theme=id;
    if(persist)try{localStorage.setItem('ummahti:theme',id);}catch{}
    themeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.vTheme===id)));
@@ -61,6 +66,34 @@
    if(menu){menu.open=false;$('summary',menu)?.focus({preventScroll:true});}
  }));
  setTheme(root.dataset.theme||'obsidian');
+
+ // "/" reaches the Guide from anywhere on the page, as in a reader's own tools.
+ document.addEventListener('keydown',event=>{
+   if(event.key!=='/'||event.ctrlKey||event.metaKey||event.altKey||event.defaultPrevented)return;
+   const active=document.activeElement;
+   if(active&&active.closest('input,textarea,select,[contenteditable]'))return;
+   if($('dialog[open]'))return;
+   const field=$('#guide-search')||$('#hero-guide-input');if(!field)return;
+   event.preventDefault();
+   field.scrollIntoView({block:'center',behavior:reduced.matches?'auto':'smooth'});
+   field.focus({preventScroll:true});
+ });
+
+ // Small screens lose the header badge; a quiet install bar follows once the hero has passed.
+ const heroSection=$('.v-hero'),closeSection=$('.v-close');
+ if(heroSection&&closeSection&&'IntersectionObserver'in window){
+   let dismissed=false;try{dismissed=sessionStorage.getItem('ummahti:install-bar')==='hidden';}catch{}
+   if(!dismissed){
+     const bar=document.createElement('aside');bar.className='v-install-bar';bar.setAttribute('aria-label',t('installBarTitle'));
+     bar.innerHTML=`<img src="/media/brand/2026-10-17/quran-app-256.webp" width="256" height="256" alt="" decoding="async"><div><b>${escape(t('installBarTitle'))}</b><small>${escape(t('installBarBody'))}</small></div><a class="v-button" href="https://play.google.com/store/apps/details?id=com.ummahti.quran">${escape(t('installBarCta'))}</a><button type="button" class="v-icon-button" aria-label="${escape(t('installBarClose'))}">×</button>`;
+     document.body.append(bar);
+     let heroPassed=false,closeNear=false;
+     const syncBar=()=>bar.classList.toggle('is-on',heroPassed&&!closeNear);
+     new IntersectionObserver(entries=>{heroPassed=!entries[0].isIntersecting&&entries[0].boundingClientRect.bottom<0;syncBar();},{threshold:0}).observe(heroSection);
+     new IntersectionObserver(entries=>{closeNear=entries[0].isIntersecting;syncBar();},{threshold:0,rootMargin:'0px 0px 160px 0px'}).observe(closeSection);
+     $('button',bar).addEventListener('click',()=>{bar.classList.remove('is-on');try{sessionStorage.setItem('ummahti:install-bar','hidden');}catch{}setTimeout(()=>bar.remove(),520);});
+   }
+ }
 
  // This control owns only the long app film's audio, never recitation or background sound.
  const siteSound=$('[data-site-sound]'),soundFilm=$('.v-story-film [data-logo-video]');

@@ -628,6 +628,18 @@
         ctx.globalAlpha = gW * s.alpha; ctx.fillStyle = g;
         ctx.fillRect(d.x - d.r * 2.4, d.y - d.r * 2.4, d.r * 4.8, d.r * 4.8);
       });
+      /* Tonight's own moon, ringed, once the page knows which night this is (v15-tonight.js). */
+      const tonight = window.UMMAHTI_TONIGHT && window.UMMAHTI_TONIGHT.night;
+      if (tonight >= 1 && tonight <= 30 && discs.G[tonight - 1]) {
+        const d = discs.G[tonight - 1], ring = d.r + Math.max(7, d.r * 0.45);
+        ctx.strokeStyle = goldLight; ctx.lineCap = 'round';
+        ctx.globalAlpha = gW * s.alpha * 0.22; ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.arc(d.x, d.y, ring, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = gW * s.alpha * 0.9; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(d.x, d.y, ring, 0, Math.PI * 2); ctx.stroke();
+        ctx.font = '600 9px Jakarta, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = goldLight;
+        ctx.fillText(t('tonightKicker', 'Tonight').toUpperCase(), d.x, d.y - ring - 9);
+      }
     }
     /* The pointed ayah, and the open one tethered to its card. */
     ctx.strokeStyle = goldLight; ctx.lineWidth = 1;
@@ -652,14 +664,18 @@
     ctx.font = '600 10px Jakarta, Arial, sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = muted;
     const thin = vw < 700;
+    const tonightNight = window.UMMAHTI_TONIGHT && window.UMMAHTI_TONIGHT.night;
     for (const [list, weight] of [[labels.X, xW], [labels.G, gW], [labels.P, pW]]) {
       if (weight < 0.05) continue;
       for (const l of list) {
-        if (!l.show || (thin && list !== labels.P && (l.j + 1) % 5 && l.j !== 0)) continue;
-        ctx.globalAlpha = weight * (hoverGroup === l.j ? 1 : 0.7);
+        const own = list === labels.G && tonightNight === l.j + 1;
+        if (!l.show || (thin && !own && list !== labels.P && (l.j + 1) % 5 && l.j !== 0)) continue;
+        ctx.fillStyle = own ? goldLight : muted;
+        ctx.globalAlpha = weight * (own || hoverGroup === l.j ? 1 : 0.7);
         ctx.fillText(l.text, l.x, l.y);
       }
     }
+    ctx.fillStyle = muted;
     ctx.globalAlpha = 1;
 
     if (steps.length) {
@@ -690,7 +706,7 @@
     '<p class="v-translation" data-verse-translation></p>' +
     '<p class="v-translation-source" data-verse-source></p>' +
     '<div class="v-verse-nav" data-verse-nav><button type="button" data-verse-prev></button><span class="v-caption" data-verse-pos></span><button type="button" data-verse-next></button></div>' +
-    '<a class="v-link" data-verse-link></a>';
+    '<a class="v-link" data-verse-link href="https://play.google.com/store/apps/details?id=com.ummahti.quran"></a>';
   document.body.append(card);
   const $c = sel => card.querySelector(sel);
   const PLAY = 'https://play.google.com/store/apps/details?id=com.ummahti.quran';

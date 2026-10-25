@@ -4,6 +4,7 @@ import re, json, html
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE='https://ummahtiofficial.com'
+LASTMOD='2026-10-25'
 COPY=json.loads((ROOT/'i18n/v15.json').read_text(encoding='utf-8'))
 COPY['en'].update({'interfaceLanguages':'Ten app interface languages.','releaseHeading':'The next chapter of Ummahti Quran','supportCurrent':'A place to begin with V1.5','policyDate':'Last updated: October 14, 2026','privacyNewHeading':'My Hifz and voice assistance','privacyState':'Your My Hifz record stays on your device. Nothing is added until you review the ayahs and save.','privacyVoice':'Microphone permission is requested only when you choose a voice step. Manual entry remains available.','privacyRecording':'Recitation recognition happens on the phone. Audio and recognised words stay in memory while the sheet is open and are then forgotten. They are not saved or sent as diagnostics.','privacyOnDevice':'Spoken references use the phone’s own on-device recogniser without a server fallback. Availability depends on the language and device.','privacyModel':'Recite to add has an optional download of about 107 MB from Ummahti’s GitHub releases. Ordinary connection metadata may be visible to GitHub; recitation and reading activity are not sent.'})
 for line in (ROOT/'tools/i18n/v15-copy.tsv').read_text(encoding='utf-8').splitlines():
@@ -19,13 +20,13 @@ RELEASE=json.loads((ROOT/'media/v15/release.json').read_text(encoding='utf-8'))
 _moon=(ROOT/'media/v15/moon-data.js').read_text(encoding='utf-8')
 MOON=json.loads(_moon[_moon.index('{'):_moon.rindex('}')+1])
 snippets=json.loads((ROOT/'tools/v15-snippets.json').read_text(encoding='utf-8'))
-sky=snippets['sky'].replace('\r\n','\n').replace('\r','\n')
+sky=snippets['sky'].replace('\r\n','\n').replace('\r','\n').replace('decoding="async">','decoding="async" fetchpriority="low">')
 HEAD=snippets['head'].replace('\r\n','\n').replace('\r','\n')
 HEAD=re.sub(r'<script type="application/ld\+json">\s*\{\s*"@context": "https://schema.org",\s*"@type": "VideoObject".*?</script>','',HEAD,flags=re.S)
 HEAD=re.sub(r'<link rel="stylesheet" href="/(?:hub|editorial)\.css[^>]+>','',HEAD)
 HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
-STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-renders.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-experience.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-preview-controls.css?v=20261023r15">\n<link rel="stylesheet" href="/v15-hifz-preview.css?v=20261023r15">\n'
-STYLES+='<link rel="stylesheet" href="/v15-app-preview-nav.css?v=20261023r15">\n'
+STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-renders.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-experience.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-preview-controls.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-hifz-preview.css?v=20261025r1">\n'
+STYLES+='<link rel="stylesheet" href="/v15-app-preview-nav.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-tonight.css?v=20261025r1">\n'
 HEAD+=STYLES
 
 def render(text,c):
@@ -59,7 +60,7 @@ def header(c,lang,route=''):
 <span class="r-socials"><a href="https://www.youtube.com/@Ummahti" aria-label="YouTube @Ummahti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="https://www.instagram.com/ummahti_quran/" aria-label="Instagram @ummahti_quran"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"/></svg></a></span>
 <button class="v-utility v-site-sound" type="button" data-site-sound aria-pressed="false" aria-label="{{filmSound}}: {{rSoundOn}}" hidden>{{soundIcon}}<span class="v-utility-label">{{filmSound}}</span></button>
 <details class="v-theme-menu"><summary class="v-utility" aria-label="{{readingTheme}}">{{themeIcon}}<span class="v-utility-label">{{readingTheme}}</span>{{caretIcon}}</summary><div class="v-popover">THEMES</div></details>
-<details class="v-language"><summary class="v-utility" aria-label="{{language}}">{{globeIcon}}<span class="v-language-name">{{currentLanguage}}</span><span class="v-language-code" aria-hidden="true">{{languageCode}}</span>{{caretIcon}}</summary><div class="v-popover">LANGS</div></details>
+<details class="v-language"><summary class="v-utility" aria-label="{{language}}: {{currentLanguage}} ({{languageCode}})">{{globeIcon}}<span class="v-language-name">{{currentLanguage}}</span><span class="v-language-code" aria-hidden="true">{{languageCode}}</span>{{caretIcon}}</summary><div class="v-popover">LANGS</div></details>
 <details class="v-menu"><summary class="v-utility">{{menu}}{{caretIcon}}</summary><div class="v-popover"><a href="HOME#inside">{{navQuran}}</a><a href="HOME#purpose">{{navPurpose}}</a><a href="HOME#community">{{navCommunity}}</a><a href="NEWS">{{whatsNew}}</a><a href="SUPPORT">{{support}}</a><a href="https://www.youtube.com/@Ummahti">YouTube @Ummahti</a><a href="https://www.instagram.com/ummahti_quran/">Instagram @ummahti_quran</a></div></details>
 <a class="v-play-badge" href="https://play.google.com/store/apps/details?id=com.ummahti.quran"><img src="/media/brand/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>
 </div></nav></header>'''
@@ -81,6 +82,8 @@ def head(lang,c,route=''):
     title=c['appPageTitle'] if route=='quran' else c['pageTitle']
     description=c['appDescription'] if route=='quran' else c['description']
     head=HEAD
+    # The hero ayah is the largest first paint; its Arabic face should not wait for the stylesheet.
+    head=head.replace('<link rel="stylesheet" href="/styles.css','<link rel="preload" href="/media/v15/amiri.woff2" as="font" type="font/woff2" crossorigin>\n<link rel="stylesheet" href="/styles.css',1)
     head=re.sub(r'<title>.*?</title>','<title>'+html.escape(title)+'</title>',head,flags=re.S)
     for key in ['description','og:description']:
         head=re.sub(r'(<meta (?:name|property)="'+key+r'" content=")[^"]*',lambda m:m[1]+html.escape(description,quote=True),head)
@@ -103,6 +106,10 @@ def head(lang,c,route=''):
             if entry.get('@type')=='SoftwareApplication':
                 entry['softwareVersion']='1.5.0'
                 entry['description']=re.sub('<[^>]+>','',c['appDescription'])
+        if route=='' and not any(entry.get('@type')=='FAQPage' for entry in graph):
+            plain=lambda key:re.sub('<[^>]+>','',html.unescape(c[key])).strip()
+            pairs=[('faqIdentity','faqIdentityAnswer'),('faqDevices','faqDevicesAnswer'),('faqGuide','faqGuideAnswer'),('faqVoice','faqVoiceAnswer'),('faqSpelling','faqSpellingAnswer')]
+            graph.append({'@type':'FAQPage','@id':canonical+'#faq','inLanguage':lang,'isPartOf':{'@id':canonical+'#page'},'mainEntity':[{'@type':'Question','name':plain(q),'acceptedAnswer':{'@type':'Answer','text':plain(a)}} for q,a in pairs]})
         return '<script type="application/ld+json">'+json.dumps(data,ensure_ascii=False,separators=(',',':'))+'</script>'
     head=re.sub(r'<script type="application/ld\+json">(.*?)</script>',change_graph,head,flags=re.S)
     return head
@@ -227,10 +234,10 @@ def hero_ayah(lang):
             'heroAyahRef':html.escape(name)+f' {s}:{a}'}
 
 def scripts(lang,moon=False):
-    extra=f'\n<script src="/media/v15/moon-data.js?v=20261023r15" defer></script>\n<script src="/v15-moon.js?v=20261023r15" defer></script>\n<script src="/v15-slides.js?v=20261023r15" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261023r15" defer></script>\n<script src="/v15-guide-search.js?v=20261023r15" defer></script>\n<script src="/v15-guide-answer.js?v=20261023r15" defer></script>\n<script src="/v15-guide.js?v=20261023r15" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261023r15" defer></script>\n<script src="/v15-library.js?v=20261023r15" defer></script>\n<script src="/v15-flow.js?v=20261023r15" defer></script>\n<script src="/media/v15/renders-data.js?v=20261023r15" defer></script>\n<script src="/v15-phone-handoff.js?v=20261023r15" defer></script>\n<script src="/v15-preview-audio.js?v=20261023r15" defer></script>\n<script src="/v15-hifz-preview.js?v=20261023r15" defer></script>\n<script src="/v15-renders.js?v=20261023r15" defer></script>' if moon else ''
+    extra=f'\n<script src="/media/v15/moon-data.js?v=20261025r1" defer></script>\n<script src="/v15-moon.js?v=20261025r1" defer></script>\n<script src="/v15-slides.js?v=20261025r1" defer></script>\n<script src="/media/v15/guide-{lang}.js?v=20261025r1" defer></script>\n<script src="/v15-guide-search.js?v=20261025r1" defer></script>\n<script src="/v15-guide-answer.js?v=20261025r1" defer></script>\n<script src="/v15-guide.js?v=20261025r1" defer></script>\n<script src="/media/v15/library-{lang}.js?v=20261025r1" defer></script>\n<script src="/v15-library.js?v=20261025r1" defer></script>\n<script src="/v15-flow.js?v=20261025r1" defer></script>\n<script src="/media/v15/renders-data.js?v=20261025r1" defer></script>\n<script src="/v15-phone-handoff.js?v=20261025r1" defer></script>\n<script src="/v15-preview-audio.js?v=20261025r1" defer></script>\n<script src="/v15-hifz-preview.js?v=20261025r1" defer></script>\n<script src="/v15-renders.js?v=20261025r1" defer></script>\n<script src="/v15-tonight.js?v=20261025r1" defer></script>' if moon else ''
     if moon:
-        extra='\n<script src="/v15-field-light.js?v=20261023r15" defer></script>'+extra
-    return f'<script src="/i18n/v15-{lang}.js?v=20261023r15" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20261023r15" defer></script>\n<script src="/verse.js?v=20261023r15" defer></script>\n<script src="/v15.js?v=20261023r15" defer></script>{extra}'
+        extra='\n<script src="/v15-field-light.js?v=20261025r1" defer></script>'+extra
+    return f'<script src="/i18n/v15-{lang}.js?v=20261025r1" defer></script>\n<script src="/media/v15/content.js?v=20261017v15" defer></script>\n<script src="/sky.js?v=20261025r1" defer></script>\n<script src="/verse.js?v=20261025r1" defer></script>\n<script src="/v15.js?v=20261025r1" defer></script>{extra}'
 
 def write_page(path,text):
     text=text.replace('\r\n','\n').replace('\r','\n')
@@ -325,7 +332,7 @@ def build(languages=None):
     mirror=re.sub(r'Last updated: [^<]+','Last updated: October 14, 2026',mirror,count=1)
     write_page(path,mirror)
   routes=('','quran','support','contact','press','privacy','terms','whats-new')
-  write_page(ROOT/'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('  <url><loc>'+SITE+link('en',route)+'</loc></url>\n' for route in routes)+'</urlset>\n')
+  write_page(ROOT/'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('  <url><loc>'+SITE+link('en',route)+'</loc><lastmod>'+LASTMOD+'</lastmod></url>\n' for route in routes)+'</urlset>\n')
   print('Built V1.5 root, app and shared document pages for '+', '.join(languages or LANGS)+'.')
 
 if __name__=='__main__':
