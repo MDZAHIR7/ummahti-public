@@ -155,6 +155,28 @@ the corpus, not authored promotional copy. The derivative tool checks glyph
 coverage and retains the font licence. English example translations are named
 Saheeh International and marked `lang=en`/`dir=ltr` on translated pages.
 
+## The channel wall keeps itself current
+
+Nobody has to edit the website after posting a video. `media/channel/feed.json`
+holds the channel figures and the newest uploads; `tools/refresh_channels.py`
+refreshes it from public sources only (the YouTube Data API when
+`YOUTUBE_API_KEY` is set, otherwise the channel's public Atom feed and pages,
+with titles from YouTube's oEmbed endpoint), downloads each new upload's
+thumbnail once into `media/channel/latest/` as a 360 × 640 WebP, and never
+fails a build: when nothing can be reached the committed figures stay. The
+build turns the feed into the "New on YouTube" lane, the counted dots and the
+figures on the channel cards. `.github/workflows/channels.yml` runs this every
+day at 03:23 UTC (and on demand from the Actions tab), rebuilds, runs the
+three checkers and commits to `main` only when something changed, which
+Cloudflare deploys like any push. The workflow needs the repository's Actions
+setting "Workflow permissions" to allow read and write.
+
+Instagram has no public feed. The post count updates automatically only when
+an Instagram Graph API user token for @ummahti_quran is stored as the
+`INSTAGRAM_TOKEN` secret; until then the committed count is used. The curated
+six-second loops in `media/channel/` stay editorial: they are cut from the
+owner's masters and are not replaced by the refresh.
+
 ## Evidence and maintenance
 
 `tools/prepare_v15.py` reads the latest local Android trees without changing

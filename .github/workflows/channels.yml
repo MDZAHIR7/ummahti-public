@@ -1,0 +1,54 @@
+name: Refresh channels
+
+# Once a day the wall learns the channel's current video and subscriber counts and its newest
+# uploads, rebuilds the static pages and, only when something actually changed, commits to
+# main. Cloudflare Pages deploys that push like any other. No secrets are required: the public
+# YouTube feed and channel pages are enough. Optional secrets make it exact and add Instagram:
+#   YOUTUBE_API_KEY   a YouTube Data API v3 key (counts straight from the API)
+#   INSTAGRAM_TOKEN   an Instagram Graph API user token for @ummahti_quran (post count)
+# Run it by hand from the Actions tab with "Run workflow".
+
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-channels
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pillow
+      - name: Refresh counts, newest uploads and thumbnails
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+        run: python tools/refresh_channels.py
+      - name: Rebuild and check the pages
+        run: |
+          python tools/refresh_channels.py --check
+          python tools/build_v15.py
+          python tools/check_v15.py
+          python tools/check_site.py
+          python tools/check_experience.py
+      - name: Commit and push when anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing changed since the last refresh."
+            exit 0
+          fi
+          git commit -m "channels: refresh counts and newest uploads ($(date -u +%Y-%m-%d))"
+          git push

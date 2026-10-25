@@ -67,6 +67,10 @@
 /* The app icon arrives as WebP inside a picture; the closing mark keeps its size. */
 .v15-page .v-close>picture>img{width:76px;height:76px;border-radius:22.5%;margin-bottom:25px;box-shadow:0 12px 30px -20px rgba(0,0,0,.7)}
 @media(max-width:680px){.v15-page .v-close>picture>img{width:64px;height:64px}}
+/* The wall's first lane refreshes itself: thumbnail tiles for the newest uploads, a chip for this week's, and counted figures on the cards. */
+.v15-page .r-ch .r-ch-stats{color:var(--text);font-weight:500;letter-spacing:.01em}
+.v15-page .r-tile-latest .r-meta b{font-size:13px}
+.v15-page .r-new{position:absolute;top:10px;inset-inline-start:10px;z-index:2;padding:3px 8px;border-radius:999px;background:linear-gradient(160deg,var(--gold-light),var(--gold));color:#1a1608;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-style:normal;line-height:1.4}
 /* Small-screen install bar: present once the hero has passed, away near the closing invitation, dismissable for the session. */
 .v-install-bar{position:fixed;inset-inline:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:28;display:none;align-items:center;gap:12px;max-width:560px;margin-inline:auto;padding:9px 9px 9px 12px;border:1px solid rgba(var(--gold-rgb),.38);border-radius:20px;background:rgba(var(--ink-rgb),.93);backdrop-filter:blur(16px);box-shadow:0 18px 44px -18px rgba(0,0,0,.75),inset 0 1px 0 rgba(var(--glow-rgb),.08);translate:0 calc(100% + 28px);transition:translate .46s var(--v-ease)}
 .v-install-bar.is-on{translate:0 0}

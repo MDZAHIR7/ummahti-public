@@ -1,6 +1,6 @@
 """Prepare static V1.5 pages locally. No deployment, dependencies or app writes."""
 from pathlib import Path
-import re, json, html
+import re, json, html, datetime
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE='https://ummahtiofficial.com'
@@ -28,6 +28,28 @@ HEAD=re.sub(r'/styles.css\?v=[^"\s]+','/styles.css?v=20261017v15',HEAD)
 STYLES='\n<link rel="stylesheet" href="/v15.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-renders.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-experience.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-handoff-craft.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-hifz-refinement.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-guide-light.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-preview-controls.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-hifz-preview.css?v=20261025r1">\n'
 STYLES+='<link rel="stylesheet" href="/v15-app-preview-nav.css?v=20261025r1">\n<link rel="stylesheet" href="/v15-tonight.css?v=20261025r1">\n'
 HEAD+=STYLES
+
+# The channel figures and the newest uploads, kept current by tools/refresh_channels.py.
+FEED=json.loads((ROOT/'media/channel/feed.json').read_text(encoding='utf-8'))
+MONTHS={'en':['January','February','March','April','May','June','July','August','September','October','November','December'],
+        'ar':['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+        'ur':['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'],
+        'id':['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']}
+def format_date(iso,lang,short=False):
+    if not iso: return ''
+    y,m,d=(int(part) for part in iso.split('-'))
+    month=MONTHS['en'][m-1][:3] if short and lang=='en' else MONTHS.get(lang,MONTHS['en'])[m-1]
+    return f'{d} {month}' if short else f'{d} {month} {y}'
+def compact(n):
+    if not n: return ''
+    for size,suffix in ((1000000,'M'),(1000,'K')):
+        if n>=size: return (f'{n/size:.1f}'.rstrip('0').rstrip('.'))+suffix
+    return str(n)
+def clean_title(text,limit=72):
+    """A YouTube title without its hashtags, trimmed to a caption."""
+    text=re.sub(r'#\S+','',text);text=re.sub(r'\s+',' ',text).strip(' |·-–—:,')
+    if len(text)>limit: text=text[:limit].rsplit(' ',1)[0].rstrip(' |·-–—:,')+'…'
+    return text
 
 def render(text,c):
     def sub(match):
@@ -180,15 +202,35 @@ CHANNEL_STUDIO=[('st-kahf-309','Why not just say 309?','Al-Kahf 18:25'),('st-ar-
     ('st-umm-musa','What did Allah tell her?','Al-Qasas 28:7'),('st-spider','The frailest of homes','Al-Ankabut 29:41'),
     ('st-kursi','First and last names','Al-Baqarah 2:255'),('st-maryam-dates','Why ripe dates?','Maryam 19:25')]
 
-def channel_tiles(c):
-    """Posters and six-second loops cut from the published Ummahti Shorts masters (media/channel)."""
+def channel_tiles(c,lang='en'):
+    """Curated posters and six-second loops cut from the published masters (media/channel), and the
+    newest uploads from feed.json as thumbnail tiles that refresh themselves."""
     def tile(id_,href,title,ref,platform):
         return (f'<li><a class="r-tile" href="{href}"><img src="/media/channel/{id_}.webp" width="360" height="640" loading="lazy" decoding="async" alt="">'
                 f'<video data-src="/media/channel/{id_}.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>'
                 f'<span class="r-play" aria-hidden="true">▶</span><span class="r-meta"><small>{platform} · {html.escape(ref)}</small><b>{html.escape(title)}</b></span></a></li>')
     yt=''.join(tile(i,h,ti,r,'YouTube') for i,h,ti,r in CHANNEL_YT)
     st=''.join(tile(i,'https://www.instagram.com/ummahti_quran/',ti,r,'Instagram') for i,ti,r in CHANNEL_STUDIO)
-    return {'channelLaneYouTube':yt,'channelLaneStudio':st}
+    recent=(datetime.date.fromisoformat(FEED['updated'])-datetime.timedelta(days=7)).isoformat()
+    fresh=''
+    for item in FEED['youtube']['latest']:
+        when=item.get('published') or ''
+        label='YouTube'+(' · '+format_date(when,lang,short=True) if when else '')
+        chip=f'<i class="r-new">{html.escape(c["rNew"])}</i>' if when>=recent else ''
+        fresh+=(f'<li><a class="r-tile r-tile-latest" href="https://www.youtube.com/shorts/{item["id"]}"><img src="/media/channel/latest/yt-{item["id"]}.webp" width="360" height="640" loading="lazy" decoding="async" alt="">{chip}'
+                f'<span class="r-play" aria-hidden="true">▶</span><span class="r-meta"><small>{html.escape(label)}</small><b>{html.escape(clean_title(item["title"]))}</b></span></a></li>')
+    return {'channelLaneLatest':fresh,'channelLaneYouTube':yt,'channelLaneStudio':yt+st}
+
+def channel_figures(c,lang):
+    """Counts for the channel cards: every video is a dot, the ones on the wall are lit."""
+    yt=FEED['youtube'];ig=FEED['instagram'];when=format_date(FEED['updated'],lang)
+    curated={href.rsplit('/',1)[1] for _,href,*_ in CHANNEL_YT}
+    lit=len(curated|{item['id'] for item in yt['latest']})
+    youtube=c['rYoutubeStats']
+    if not yt.get('subscribers'): youtube=re.sub(r'\{subscribers\}[^·]*·\s*','',youtube)
+    youtube=youtube.replace('{subscribers}',compact(yt.get('subscribers'))).replace('{videos}',str(yt['videos'])).replace('{date}',when)
+    instagram=c['rInstagramStats'].replace('{posts}',str(ig.get('posts') or '')).replace('{date}',when) if ig.get('posts') else ''
+    return {'videoCount':str(yt['videos']),'videoLit':str(min(lit,yt['videos'])),'rYoutubeStats':youtube,'rInstagramStats':instagram}
 
 def guide_lead(c,lang):
     """The Guide lead carries the catalogue's own counts, read from the generated data."""
@@ -269,7 +311,7 @@ def build(languages=None):
     c={**COPY['en'],**COPY.get(lang,{})}
     runtime={key:re.sub('<[^>]+>','',re.sub(r'<br\s*/?>',' ',value,flags=re.I)) for key,value in c.items()}
     write_page(ROOT/f'i18n/v15-{lang}.js','window.UMMAHTI_V15_I18N = '+json.dumps(runtime,ensure_ascii=False,separators=(',',':'))+';\n')
-    c={**c,'themeButtons':theme_buttons(c),'reciterWheel':reciter_wheel(lang),'nightsTable':nights_table(c,lang),'slidesList':slides_html(c),**channel_tiles(c),'guideMapLead':guide_lead(c,lang),**library_counts(c,lang),**hero_ayah(lang)}
+    c={**c,'themeButtons':theme_buttons(c),'reciterWheel':reciter_wheel(lang),'nightsTable':nights_table(c,lang),'slidesList':slides_html(c),**channel_tiles(c,lang),**channel_figures(c,lang),'guideMapLead':guide_lead(c,lang),**library_counts(c,lang),**hero_ayah(lang)}
     main=initial_examples(render(TEMPLATE,{**c,'previewNavigation':preview_navigation(c),'previewNavigationHome':preview_navigation(c,0),'previewNavigationRead':preview_navigation(c,1)}),c)
     # Stable old root bookmarks reach the corresponding new story.
     if lang!='en':

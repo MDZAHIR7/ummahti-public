@@ -448,15 +448,15 @@ rMeterChoose	آيات في اختيارك	آپ کے انتخاب کی آیات	a
 rMeterSaved	حُفظ. صار يضيء على الحلقة.	محفوظ ہو گیا۔ اب یہ دائرے پر چمکتا ہے۔	Tersimpan. Kini ia bersinar di cincin.
 rFoundStatus	وُجد {ref}. اختر أين وصلت فيه، ثم احفظ.	{ref} مل گیا۔ بتائیں آپ اس میں کہاں ہیں، پھر محفوظ کریں۔	Ditemukan {ref}. Pilih sejauh mana Anda, lalu simpan.
 channelsLead	Ummahti أكثر من تطبيق. على يوتيوب وإنستغرام نشارك تلاوات ومقالات مرئية قصيرة من القرآن وتذكيرات، تُشاهد في دقيقة وتبقى معك أطول.	Ummahti صرف ایک ایپ نہیں۔ یوٹیوب اور انسٹاگرام پر ہم تلاوتیں، قرآن سے مختصر بصری مضامین اور یاد دہانیاں شیئر کرتے ہیں: ایک منٹ میں دیکھیں، دیر تک ساتھ رکھیں۔	Ummahti lebih dari sebuah aplikasi. Di YouTube dan Instagram kami membagikan tilawah, esai visual singkat dari Al-Qur’an, dan pengingat: ditonton dalam semenit, dibawa lebih lama.
-rVideoDots	كل نقطة مقطع على القناة (أكتوبر ٢٠٢٦). المضيئة منها على هذا الجدار.	ہر نقطہ چینل کی ایک ویڈیو ہے (اکتوبر 2026)۔ روشن نقطے اس دیوار پر ہیں۔	Setiap titik satu video di kanal (Oktober 2026). Yang menyala ada di dinding ini.
+rVideoDots	كل نقطة فيديو واحد على القناة. المضيئة منها معروضة على هذا الجدار.	ہر نقطہ چینل کی ایک ویڈیو ہے۔ روشن نقطے اس دیوار پر موجود ہیں۔	Setiap titik adalah satu video di kanal. Yang menyala ada di dinding ini.
 rSubscribe	اشترك على يوتيوب	یوٹیوب پر سبسکرائب کریں	Berlangganan di YouTube
 rFollow	تابع على إنستغرام	انسٹاگرام پر فالو کریں	Ikuti di Instagram
 rRecTitle	التلاوات في التطبيق	ایپ میں تلاوتیں	Tilawah di aplikasi
 rRecBody	استمع إلى الأنبياء ٢١:٩٢ بكل صوت يحمله Ummahti Quran.	الانبیاء 21:92 کو ہر اس آواز میں سنیں جو Ummahti Quran میں ہے۔	Dengarkan Al-Anbiya 21:92 dalam setiap suara yang ada di Ummahti Quran.
 rRecLink	استمع في الأعلى	اوپر سنیں	Dengarkan di atas
 rLaneRecitations	تلاوات نشرناها على يوتيوب	یوٹیوب پر شیئر کی گئی تلاوتیں	Tilawah yang dibagikan di YouTube
-rLaneStudio	مقالات مرئية من استوديو Ummahti	Ummahti اسٹوڈیو کے بصری مضامین	Esai visual dari studio Ummahti
-rWallNote	أشر إلى مقطع لتشاهد ثواني صامتة منه. كل مقطع يُفتح على يوتيوب أو إنستغرام.	کسی ویڈیو پر پوائنٹر رکھیں تو چند خاموش لمحے چلیں گے۔ ہر ویڈیو یوٹیوب یا انسٹاگرام پر کھلتی ہے۔	Arahkan ke sebuah film untuk memutar beberapa detik tanpa suara. Masing-masing terbuka di YouTube atau Instagram.
+rLaneStudio	تلاوات ومقالات مرئية من استوديو Ummahti	Ummahti اسٹوڈیو سے تلاوتیں اور بصری مضامین	Tilawah dan esai visual dari studio Ummahti
+rWallNote	أحدث المقاطع تصل إلى هنا من تلقاء نفسها كل يوم. أشر إلى فيلم من الاستوديو لتشغيل ثوانٍ صامتة منه. كل واحد يُفتح على يوتيوب أو إنستغرام.	تازہ ترین ویڈیوز ہر روز خود بخود یہاں آ جاتی ہیں۔ اسٹوڈیو فلم پر اشارہ کریں تو چند خاموش سیکنڈ چلتے ہیں۔ ہر ایک یوٹیوب یا انسٹاگرام پر کھلتی ہے۔	Unggahan terbaru tiba di sini dengan sendirinya setiap hari. Arahkan ke film studio untuk memutar beberapa detik tanpa suara. Masing-masing terbuka di YouTube atau Instagram.
 rHeroNoteKicker	Ummahti Quran، مباشرة	Ummahti Quran، براہ راست	Ummahti Quran, langsung
 rHeroNote	الدليل، وآية عند فتح القفل، وسجل الحفظ، والتلاوة، تعمل هنا أمامك.	Guide، Ayah on Unlock، My Hifz اور تلاوت، یہیں چلتے ہوئے۔	Guide, Ayah on Unlock, My Hifz, dan tilawah, berjalan di sini.
 rGuideLabel	دليل Ummahti، معاينة حية	Ummahti Guide، براہ راست جھلک	Ummahti Guide, pratinjau langsung
@@ -570,3 +570,7 @@ installBarTitle	Ummahti Quran	Ummahti Quran	Ummahti Quran
 installBarBody	مجاني لأندرويد · بلا إعلانات	اینڈرائیڈ پر مفت · بغیر اشتہارات	Gratis di Android · Tanpa iklan
 installBarCta	حمّل التطبيق	ایپ حاصل کریں	Dapatkan aplikasi
 installBarClose	إخفاء هذا الشريط	یہ پٹی چھپائیں	Sembunyikan bilah ini
+rLaneLatest	جديد على يوتيوب · يتجدد من تلقاء نفسه كل يوم	یوٹیوب پر نیا · ہر روز خود بخود تازہ ہوتا ہے	Baru di YouTube · diperbarui sendiri setiap hari
+rYoutubeStats	{subscribers} مشترك · {videos} فيديو · حُسبت في {date}	{subscribers} سبسکرائبرز · {videos} ویڈیوز · {date} کو شمار	{subscribers} pelanggan · {videos} video · dihitung {date}
+rInstagramStats	{posts} منشورات · حُسبت في {date}	{posts} پوسٹس · {date} کو شمار	{posts} kiriman · dihitung {date}
+rNew	جديد	نیا	Baru
