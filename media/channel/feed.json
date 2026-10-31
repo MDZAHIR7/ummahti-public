@@ -1,11 +1,16 @@
 {
-  "updated": "2026-10-30",
+  "updated": "2026-10-31",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 126,
+    "videos": 127,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "6sKKJplCvC4",
+        "title": "Beautiful recitation 🤩",
+        "published": "2026-10-31"
+      },
       {
         "id": "vQTgNhq7vmc",
         "title": "Wait for the last word 💔 Surah Al Kahf 18:53",
@@ -60,11 +65,6 @@
         "id": "bAO5TOpjv8k",
         "title": "Its always the low quality videos with the most beautiful Quran recitation🤍 #shorts #quranrecitation",
         "published": "2026-10-09"
-      },
-      {
-        "id": "9VScG7_G3Vw",
-        "title": "POV: You are praying behind a new Imam and he has the most beautiful voice | Soothing & clam #shorts",
-        "published": "2026-10-08"
       }
     ],
     "source": "youtube-feed"
