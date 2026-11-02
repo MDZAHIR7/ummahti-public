@@ -1,11 +1,16 @@
 {
-  "updated": "2026-11-01",
+  "updated": "2026-11-02",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 127,
+    "videos": 128,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "xBKCR8DsZOA",
+        "title": "Soothing recitation 🤲❤️",
+        "published": "2026-11-01"
+      },
       {
         "id": "6sKKJplCvC4",
         "title": "Beautiful recitation 🤩",
@@ -60,11 +65,6 @@
         "id": "IS8Mzh8jNJo",
         "title": "Rare video of Yasser Al-Dosari | Quran | Recitation #surah #yasseraldossary",
         "published": "2026-10-10"
-      },
-      {
-        "id": "bAO5TOpjv8k",
-        "title": "Its always the low quality videos with the most beautiful Quran recitation🤍 #shorts #quranrecitation",
-        "published": "2026-10-09"
       }
     ],
     "source": "youtube-feed"
