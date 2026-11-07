@@ -1,11 +1,16 @@
 {
-  "updated": "2026-11-06",
+  "updated": "2026-11-07",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 129,
+    "videos": 130,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "GxrOiJLlmQU",
+        "title": "Quran Challenge: Whose voice touched your heart the most? 🎧 #shorts #quran",
+        "published": "2026-11-07"
+      },
       {
         "id": "Eq4AwmPMkzA",
         "title": "Wait for it: This brother's voice changes everything | Surah Al-Insan",
@@ -60,11 +65,6 @@
         "id": "V9LI220Ih_0",
         "title": "Surah Maryam | Yasser Al Dossari #quran #recitation #surah #maryam  #islam",
         "published": "2026-10-14"
-      },
-      {
-        "id": "1cZ4tHVHUWc",
-        "title": "POV: You are crying in front of the Kaaba 🥺 #shorts",
-        "published": "2026-10-11"
       }
     ],
     "source": "youtube-feed"
