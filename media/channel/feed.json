@@ -1,11 +1,16 @@
 {
-  "updated": "2026-11-14",
+  "updated": "2026-11-15",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 131,
+    "videos": 132,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "tCMM6KZnkPI",
+        "title": "Ramadan is soon arriving… Allahumma Ballighna Ramadan 🤲 #Shorts",
+        "published": "2026-11-15"
+      },
       {
         "id": "9POBwY5Ygrk",
         "title": "Does he sound like Yasser Al-Dosari?",
@@ -60,11 +65,6 @@
         "id": "6UTGZRFHbUA",
         "title": "Who is Allah?",
         "published": "2026-10-18"
-      },
-      {
-        "id": "_K28G2q7ZmU",
-        "title": "Soothing recitation  | The ungrateful nature of man! 🚢 #viral #islam #quran #surah #fyp #recitation",
-        "published": "2026-10-17"
       }
     ],
     "source": "youtube-feed"
