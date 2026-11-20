@@ -1,11 +1,16 @@
 {
-  "updated": "2026-11-19",
+  "updated": "2026-11-20",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 132,
+    "videos": 133,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "jC_QhZA9HPo",
+        "title": "Do you know anyone equal to him? #allah #recitation #quran #fyp",
+        "published": "2026-11-19"
+      },
       {
         "id": "tCMM6KZnkPI",
         "title": "Ramadan is soon arriving… Allahumma Ballighna Ramadan 🤲 #Shorts",
@@ -60,11 +65,6 @@
         "id": "nz1EBPI8YOA",
         "title": "Watch the Sheikh's reaction to this young brother's Quran recitation 😭 #viral #islam",
         "published": "2026-10-19"
-      },
-      {
-        "id": "6UTGZRFHbUA",
-        "title": "Who is Allah?",
-        "published": "2026-10-18"
       }
     ],
     "source": "youtube-feed"
