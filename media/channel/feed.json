@@ -1,11 +1,16 @@
 {
-  "updated": "2026-11-21",
+  "updated": "2026-11-22",
   "youtube": {
     "channelId": "UCwZp3l_DFMtGEqqYOY9Odxw",
     "handle": "@Ummahti",
-    "videos": 133,
+    "videos": 134,
     "subscribers": 15300,
     "latest": [
+      {
+        "id": "rY2M7rQjlKM",
+        "title": "الأستاذ الفاضل عباس المنشداوي حفظه الله",
+        "published": "2026-11-22"
+      },
       {
         "id": "jC_QhZA9HPo",
         "title": "Do you know anyone equal to him? #allah #recitation #quran #fyp",
@@ -60,11 +65,6 @@
         "id": "J6aND_aRmXk",
         "title": "Salah! Salah! Salah! Watch this if you struggle with praying on time Missing Salah 🕋",
         "published": "2026-10-21"
-      },
-      {
-        "id": "nz1EBPI8YOA",
-        "title": "Watch the Sheikh's reaction to this young brother's Quran recitation 😭 #viral #islam",
-        "published": "2026-10-19"
       }
     ],
     "source": "youtube-feed"
