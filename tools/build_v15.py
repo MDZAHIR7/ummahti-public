@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 SITE='https://ummahtiofficial.com'
 LASTMOD='2026-10-25'
 COPY=json.loads((ROOT/'i18n/v15.json').read_text(encoding='utf-8'))
-COPY['en'].update({'interfaceLanguages':'Ten app interface languages.','releaseHeading':'The next chapter of Ummahti Quran','supportCurrent':'A place to begin with V1.5','policyDate':'Last updated: October 14, 2026','privacyNewHeading':'My Hifz and voice assistance','privacyState':'Your My Hifz record stays on your device. Nothing is added until you review the ayahs and save.','privacyVoice':'Microphone permission is requested only when you choose a voice step. Manual entry remains available.','privacyRecording':'Recitation recognition happens on the phone. Audio and recognised words stay in memory while the sheet is open and are then forgotten. They are not saved or sent as diagnostics.','privacyOnDevice':'Spoken references use the phone’s own on-device recogniser without a server fallback. Availability depends on the language and device.','privacyModel':'Recite to add has an optional download of about 107 MB from Ummahti’s GitHub releases. Ordinary connection metadata may be visible to GitHub; recitation and reading activity are not sent.'})
+COPY['en'].update({'interfaceLanguages':'Ten app interface languages.','releaseHeading':'The next chapter of Ummahti Quran','supportCurrent':'A place to begin with V1.5','policyDate':'Last updated: November 23, 2026','privacyNewHeading':'Recitation, voice and the microphone','privacyState':'Your My Hifz record stays on your device. Nothing is added until you review the ayahs and save.','privacyVoice':'Ummahti asks for the microphone only when you tap one of its four voice features. Typing and choosing by hand stay available. Listening stops when you close the step or leave the app.','privacyRecording':'Recitation recognition happens on the phone. Audio and recognised words stay in memory while the sheet is open and are then forgotten. They are not saved or sent as diagnostics.','privacyOnDevice':'Spoken references use the phone’s own on-device recogniser without a server fallback. Availability depends on the language and device.','privacyModel':'Recite to add, Recite in Hifz practice and Recite Along share one optional download. It is about 112 MB, from Ummahti’s public release on GitHub. GitHub can see ordinary connection data such as your IP address. Your recitation and reading are never sent. You can remove the download, and your My Hifz record stays.','privacyFollow':'In Memorise and Practice, Recite follows your recitation against the hidden ayah. On Qur’an Pages, Recite Along follows it on the printed page. Both recognise your voice on the phone. The sound and words stay in memory for that attempt only. Nothing is saved or sent, and neither changes My Hifz.'})
 for line in (ROOT/'tools/i18n/v15-copy.tsv').read_text(encoding='utf-8').splitlines():
     if not line.strip(): continue
     key,ar,ur,id_=line.split('\t')
@@ -345,20 +345,20 @@ def build(languages=None):
         if route=='whats-new':
             main_doc=re.sub(r'<section class="v-release-current".*?</section>','',main_doc,flags=re.S)
             main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
-            block=render('<section class="v-release-current" id="v1-5"><p class="v-kicker">{{releaseHeading}}</p><h2>1.5.0</h2><h3>My Hifz</h3><p>{{hifzBody}}</p><p>{{reciteDescription}} {{spokenDescription}} {{bulkDescription}}</p>',c)
-            block+=release_items(lang)+'<h3>'+html.escape(c['refinements'])+'</h3><ul>'+''.join('<li>'+html.escape(value)+'</li>' for value in RELEASE[lang]['improvements'])+'</ul><p>'+html.escape(c['reflectionBody'])+'</p><p><a href="'+link(lang,'quran')+'#catalogue">'+html.escape(c['allFeatures'])+' ↗</a></p><hr></section>'
+            block=render('<section class="v-release-current" id="v1-5"><p class="v-kicker">{{releaseHeading}}</p><h2>1.5.0</h2>',c)+'<p>'+html.escape(RELEASE[lang]['tagline'])+'</p>'
+            block+=release_items(lang)+'<h3>'+html.escape(c['refinements'])+'</h3><ul>'+''.join('<li>'+html.escape(value)+'</li>' for value in RELEASE[lang]['improvements'])+'</ul><p><a href="'+link(lang,'quran')+'#catalogue">'+html.escape(c['allFeatures'])+' ↗</a></p><hr></section>'
             main_doc=re.sub(r'(<article\b[^>]*>)',lambda m:m[1]+block,main_doc,count=1)
         if lang!='en':
             main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
             block=''
             if route=='support':
-                block=render('''<section class="v-local-update v-support-current"><h2>{{supportCurrent}}</h2><h3>My Hifz</h3><p>{{findPassageBody}} {{makeItYoursBody}}</p><details><summary>{{faqVoice}}</summary><p>{{spokenDescription}}</p><p>{{reciteDescription}}</p><p>{{privacyModel}}</p></details><h3>My Khatm</h3><p>{{khatmBody}}</p><p>{{khatmHonesty}}</p><h3>Ayah on Unlock</h3><p>{{unlockBody}} {{placeSafe}}</p><p>{{everyUnlock}} · {{hourly}} · {{daily}}</p><h3>{{recitation}}</h3><p>{{offlineBody}} {{audioLimit}}</p><hr></section>''',c)
+                block=render('''<section class="v-local-update v-support-current"><h2>{{supportCurrent}}</h2><h3>My Hifz</h3><p>{{findPassageBody}} {{makeItYoursBody}}</p><details><summary>{{faqVoice}}</summary><p>{{spokenDescription}}</p><p>{{reciteDescription}}</p><p>{{privacyFollow}}</p><p>{{privacyModel}}</p></details><h3>My Khatm</h3><p>{{khatmBody}}</p><p>{{khatmHonesty}}</p><h3>Ayah on Unlock</h3><p>{{unlockBody}} {{placeSafe}}</p><p>{{everyUnlock}} · {{hourly}} · {{daily}}</p><h3>{{recitation}}</h3><p>{{offlineBody}} {{audioLimit}}</p><hr></section>''',c)
             if route=='press':
                 block=render('''<section class="v-local-update"><h2>Ummahti · Ummahti Quran</h2><p>{{faqIdentityAnswer}}</p><h3>V1.5</h3><p>{{khatmShort}} {{hifzShort}} {{translationCount}} {{transliteration}} {{guideScope}} {{duasCount}} {{reflectionBody}} {{adaptiveBody}} {{audioFacts}}</p><hr></section>''',c)
                 main_doc=main_doc.replace('1.4.0','1.5.0')
                 main_doc=main_doc.replace('/media/brand/2026-10/icon-512.png','/media/brand/2026-10-17/quran-app-512.png')
             if route=='privacy':
-                block=render('''<section class="v-local-update"><h2>{{privacyNewHeading}}</h2><p>{{privacyState}}</p><p>{{privacyVoice}}</p><p>{{privacyRecording}}</p><p>{{privacyOnDevice}}</p><p>{{privacyModel}}</p><hr></section>''',c)
+                block=render('''<section class="v-local-update"><h2>{{privacyNewHeading}}</h2><p>{{privacyState}}</p><p>{{privacyVoice}}</p><p>{{privacyRecording}}</p><p>{{privacyOnDevice}}</p><p>{{privacyFollow}}</p><p>{{privacyModel}}</p><hr></section>''',c)
                 main_doc=re.sub(r'<p class="lede"[^>]*>.*?</p>',lambda m:'<p class="lede">'+c['policyDate']+'</p>',main_doc,count=1,flags=re.S)
             if block:
                 main_doc=re.sub(r'(<article\b[^>]*>)',lambda m:m[1]+block,main_doc,count=1)
@@ -371,7 +371,7 @@ def build(languages=None):
     path=ROOT/name
     mirror=path.read_text(encoding='utf-8')
     mirror=re.sub(r'(<article\b[^>]*>).*?(</article>)',lambda m:m[1]+article+m[2],mirror,flags=re.S)
-    mirror=re.sub(r'Last updated: [^<]+','Last updated: October 14, 2026',mirror,count=1)
+    mirror=re.sub(r'Last updated: [^<]+','Last updated: November 23, 2026',mirror,count=1)
     write_page(path,mirror)
   routes=('','quran','support','contact','press','privacy','terms','whats-new')
   write_page(ROOT/'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('  <url><loc>'+SITE+link('en',route)+'</loc><lastmod>'+LASTMOD+'</lastmod></url>\n' for route in routes)+'</urlset>\n')
