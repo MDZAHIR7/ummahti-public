@@ -55,7 +55,7 @@
       {
         "id": "v15_recite_engine",
         "title": "Recitation recognition, on your phone",
-        "summary": "Recite to add, Recite in Memorise and Practice, and Recite Along share one recitation pack. You download it once, about 112 MB, from Ummahti’s public release on GitHub. It runs on your phone. The microphone opens only when you tap. Your voice is never recorded, saved or uploaded. Speech recognition: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
+        "summary": "Recite to add, Recite in Memorise and Practice, and Recite Along share one recitation pack. You download it once, about 107 MB, from Ummahti’s public release on GitHub. It runs on your phone. The microphone opens only when you tap. Your voice is never recorded, saved or uploaded. Speech recognition: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -187,7 +187,7 @@
       {
         "id": "v15_recite_engine",
         "title": "التعرّف على التلاوة على هاتفك",
-        "summary": "تشترك ميزة «أضف بالتلاوة» والتلاوة في الحفظ والتمرين والتلاوة مع الصفحة في حزمة تلاوة واحدة. تنزّلها مرة واحدة، نحو 112 ميغابايت، من إصدار Ummahti العام على GitHub. تعمل على هاتفك. لا يُفتح الميكروفون إلا عندما تنقر. لا يُسجَّل صوتك ولا يُحفظ ولا يُرفع أبدًا. التعرّف على الكلام: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
+        "summary": "تشترك ميزة «أضف بالتلاوة» والتلاوة في الحفظ والتمرين والتلاوة مع الصفحة في حزمة تلاوة واحدة. تنزّلها مرة واحدة، نحو 107 ميغابايت، من إصدار Ummahti العام على GitHub. تعمل على هاتفك. لا يُفتح الميكروفون إلا عندما تنقر. لا يُسجَّل صوتك ولا يُحفظ ولا يُرفع أبدًا. التعرّف على الكلام: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -319,7 +319,7 @@
       {
         "id": "v15_recite_engine",
         "title": "آپ کے فون پر تلاوت کی پہچان",
-        "summary": "تلاوت کر کے شامل کریں، حفظ کریں اور مشق میں تلاوت، اور ساتھ تلاوت ایک ہی تلاوت پیک استعمال کرتے ہیں۔ آپ اسے ایک بار، تقریباً 112 MB، GitHub پر Ummahti کی عوامی ریلیز سے ڈاؤن لوڈ کرتے ہیں۔ یہ آپ کے فون پر چلتا ہے۔ مائیکروفون صرف آپ کے ٹیپ کرنے پر کھلتا ہے۔ آپ کی آواز کبھی ریکارڈ، محفوظ یا اپ لوڈ نہیں ہوتی۔ آواز کی پہچان: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
+        "summary": "تلاوت کر کے شامل کریں، حفظ کریں اور مشق میں تلاوت، اور ساتھ تلاوت ایک ہی تلاوت پیک استعمال کرتے ہیں۔ آپ اسے ایک بار، تقریباً 107 MB، GitHub پر Ummahti کی عوامی ریلیز سے ڈاؤن لوڈ کرتے ہیں۔ یہ آپ کے فون پر چلتا ہے۔ مائیکروفون صرف آپ کے ٹیپ کرنے پر کھلتا ہے۔ آپ کی آواز کبھی ریکارڈ، محفوظ یا اپ لوڈ نہیں ہوتی۔ آواز کی پہچان: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -451,7 +451,7 @@
       {
         "id": "v15_recite_engine",
         "title": "Pengenalan tilawah di ponsel Anda",
-        "summary": "Tambah dengan membaca, Lafalkan di Hafalkan dan Latihan, dan Tilawah Bersama memakai satu paket tilawah yang sama. Anda mengunduhnya sekali, sekitar 112 MB, dari rilis publik Ummahti di GitHub. Paket ini berjalan di ponsel Anda. Mikrofon hanya terbuka saat Anda mengetuk. Suara Anda tidak pernah direkam, disimpan, atau diunggah. Pengenalan suara: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
+        "summary": "Tambah dengan membaca, Lafalkan di Hafalkan dan Latihan, dan Tilawah Bersama memakai satu paket tilawah yang sama. Anda mengunduhnya sekali, sekitar 107 MB, dari rilis publik Ummahti di GitHub. Paket ini berjalan di ponsel Anda. Mikrofon hanya terbuka saat Anda mengetuk. Suara Anda tidak pernah direkam, disimpan, atau diunggah. Pengenalan suara: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
