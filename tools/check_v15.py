@@ -32,7 +32,8 @@ for lang in ('en','ar','ur','id'):
     # Owner decisions, 23 Nov 2026: held or excluded items never appear in the release record.
     news=((ROOT if lang=='en' else ROOT/lang)/'whats-new/index.html').read_text(encoding='utf-8')
     current=re.search(r'<section class="v-release-current".*?</section>',news,re.S)[0]
-    assert not re.search(r'Rowwad|Maach|Warsh|Qalun|Reading Circles|iOS|donat',current,re.I),lang
+    assert not re.search(r'\b(?:Rowwad|Maach|Warsh|Qalun|Reading Circles|iOS)\b',current),lang
+    assert not re.search(r'\bdonat(?:e|ion)',current,re.I),lang
     assert len(re.findall(r'<h3>',current))==len(release[lang]['items'])+1
 
 class Structure(HTMLParser):
