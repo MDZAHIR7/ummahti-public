@@ -1155,7 +1155,7 @@
     "rYoutubeStats": "{subscribers} مشترك · {videos} فيديو · حُسبت في {date}",
     "rInstagramStats": "{posts} منشورات · حُسبت في {date}",
     "rNew": "جديد",
-    "privacyFollow": "في الحفظ والتمرين، تتابع التلاوة ما تتلوه مقابل الآية المخفية. وفي صفحات المصحف، تتابع التلاوة مع الصفحة تلاوتك على الصفحة المطبوعة. كلتاهما تتعرّف على صوتك على الهاتف. يبقى الصوت والكلمات في الذاكرة لتلك المحاولة فقط. لا يُحفظ شيء ولا يُرسل، ولا تغيّر أيٌّ منهما سجل الحفظ."
+    "privacyFollow": "في الحفظ والتمرين، تتابع التلاوة ما تتلوه مقابل الآية المخفية. وعلى جهاز قابل للطي على هيئة كتاب وهو مفتوح، تتابع التلاوة مع الصفحة تلاوتك على الصفحة المطبوعة في صفحات المصحف. كلتاهما تتعرّف على صوتك على الهاتف. يبقى الصوت والكلمات في الذاكرة لتلك المحاولة فقط. لا يُحفظ شيء ولا يُرسل، ولا تغيّر أيٌّ منهما سجل الحفظ."
   },
   "ur": {
     "pageTitle": "Ummahti: ایک امت، قرآن سے جڑی ہوئی",
@@ -1734,7 +1734,7 @@
     "rYoutubeStats": "{subscribers} سبسکرائبرز · {videos} ویڈیوز · {date} کو شمار",
     "rInstagramStats": "{posts} پوسٹس · {date} کو شمار",
     "rNew": "نیا",
-    "privacyFollow": "حفظ کریں اور مشق میں، تلاوت چھپی ہوئی آیت کے مقابلے میں آپ کی تلاوت کے ساتھ چلتی ہے۔ مصحف کے صفحات میں، ساتھ تلاوت مطبوعہ صفحے پر آپ کی تلاوت کے ساتھ چلتی ہے۔ دونوں آپ کی آواز فون پر ہی پہچانتی ہیں۔ آواز اور الفاظ صرف اسی کوشش کے لیے میموری میں رہتے ہیں۔ کچھ بھی محفوظ یا بھیجا نہیں جاتا، اور کوئی بھی My Hifz کو نہیں بدلتی۔"
+    "privacyFollow": "حفظ کریں اور مشق میں، تلاوت چھپی ہوئی آیت کے مقابلے میں آپ کی تلاوت کے ساتھ چلتی ہے۔ کتاب جیسے کھلے فولڈ ایبل فون پر، ساتھ تلاوت مصحف کے صفحات کے مطبوعہ صفحے پر آپ کی تلاوت کے ساتھ چلتی ہے۔ دونوں آپ کی آواز فون پر ہی پہچانتی ہیں۔ آواز اور الفاظ صرف اسی کوشش کے لیے میموری میں رہتے ہیں۔ کچھ بھی محفوظ یا بھیجا نہیں جاتا، اور کوئی بھی My Hifz کو نہیں بدلتی۔"
   },
   "id": {
     "pageTitle": "Ummahti: Satu umat, dipersatukan Al-Qur’an",
@@ -2313,6 +2313,6 @@
     "rYoutubeStats": "{subscribers} pelanggan · {videos} video · dihitung {date}",
     "rInstagramStats": "{posts} kiriman · dihitung {date}",
     "rNew": "Baru",
-    "privacyFollow": "Di Hafalkan dan Latihan, Lafalkan mengikuti bacaan Anda terhadap ayat yang tersembunyi. Di Halaman Al-Qur’an, Tilawah Bersama mengikutinya pada halaman cetak. Keduanya mengenali suara Anda di ponsel. Suara dan kata hanya berada di memori untuk percobaan itu. Tidak ada yang disimpan atau dikirim, dan keduanya tidak mengubah My Hifz."
+    "privacyFollow": "Di Hafalkan dan Latihan, Lafalkan mengikuti bacaan Anda terhadap ayat yang tersembunyi. Di ponsel lipat bergaya buku yang terbuka, Tilawah Bersama mengikutinya pada halaman cetak Halaman Al-Qur’an. Keduanya mengenali suara Anda di ponsel. Suara dan kata hanya berada di memori untuk percobaan itu. Tidak ada yang disimpan atau dikirim, dan keduanya tidak mengubah My Hifz."
   }
 }
