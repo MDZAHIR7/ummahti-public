@@ -12,7 +12,7 @@ assert facts['reflections']==338
 release=json.loads((ROOT/'media/v15/release.json').read_text(encoding='utf-8'))
 for name in ('privacy-policy.html','PRIVACY_POLICY.html'):
     mirror=(ROOT/name).read_text(encoding='utf-8')
-    assert 'October 14, 2026' in mirror and '107' in mirror and 'My Hifz' in mirror
+    assert 'November 23, 2026' in mirror and '107 MB' in mirror and 'Recite Along' in mirror and 'My Hifz' in mirror
 for lang in ('ar','ur','id'):
     missing=set(copy['en'])-set(copy[lang])
     assert not missing,(lang,missing)
