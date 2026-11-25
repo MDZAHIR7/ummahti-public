@@ -1,69 +1,126 @@
 {
   "en": {
+    "tagline": "New ways to keep the Qur’an close every day, and many smaller refinements.",
     "items": [
+      {
+        "id": "v15_guide_expansion",
+        "title": "Ask Guide about more topics",
+        "summary": "Guide now covers wudu, the words after the adhan and after each prayer, and everyday du’as. It also covers family ties and longing for a child. Its Ramadan, travel, illness and loss pages are fuller. An answer opens on the verse itself, under your own words. Each topic carries the du’as from the library that belong to it."
+      },
       {
         "id": "v15_khatm_planner",
         "title": "Plan a khatm",
-        "summary": "Choose a date or a length, and Ummahti divides the Qur'an into daily readings. Home shows today's portion and one way into it, and nothing is ever marked read unless you say so."
+        "summary": "Choose a date or a length, and Ummahti divides the Qur’an into daily readings. Home shows today’s portion and one way into it. Nothing is marked read unless you say so."
       },
       {
-        "id": "v15_dua_library",
-        "title": "A library of du'as",
-        "summary": "The du’as in Guide have grown into a library of 55 supplications on eleven shelves, for hardship, healing, protection, family, travel, sleep and every ordinary day. Every one names its source, and every narration its grading."
+        "id": "v15_my_hifz",
+        "title": "Practise what you’ve memorised",
+        "summary": "Keep a record of what you know or are learning, from one ayah to the whole Quran. See it by surah or by juz, and practise any passage in one tap. Hide an ayah and take a hint when a word will not come."
+      },
+      {
+        "id": "v15_quran_pages",
+        "title": "Read two Mushaf pages side by side",
+        "summary": "On an open book style foldable, or a tablet turned sideways, read two Mushaf pages side by side. They are set line for line as in the Madinah Mushaf, and you turn them like a book. Qur’an Pages opens by itself on these wide screens. You can change it in the reading view menu."
       },
       {
         "id": "v15_offline_recitation",
-        "title": "Recitation you can keep",
-        "summary": "Download surahs in your chosen reciter's voice and listen with no connection at all. You can see what is stored, how much room it takes, and remove any of it whenever you like."
-      },
-      {
-        "id": "v15_home_arrangement",
-        "title": "Arrange Home the way you read",
-        "summary": "Home cards can now be moved, put away, or paired with the card beside it, including My Khatm, which no longer holds a fixed place. Continue Reading always stays first. Press and hold a card to arrange it, and Undo takes back any step."
+        "title": "Listen with no connection",
+        "summary": "Download surahs in your chosen reciter’s voice and listen with no connection at all. See what is stored and how much room it takes. Remove any of it whenever you like."
       },
       {
         "id": "v15_pass_on_light",
         "title": "Pass On the Light",
-        "summary": "Invite one person to the Qur’an in a couple of taps. Choose whether they should install Ummahti, see the website first, or simply listen on YouTube, and send a card that carries its own address so it still works where a caption is thrown away."
+        "summary": "Invite one person to the Qur’an in a couple of taps. Choose where they start: install Ummahti, see the website first, or listen on YouTube. Then send a card that carries its own address, so it still works where a caption is lost."
       },
       {
-        "id": "v15_guide_expansion",
-        "title": "More answers in Guide",
-        "summary": "Guide now answers more of what people ask: wudu, the words after the adhan and after each prayer, everyday du’as, family ties and longing for a child. Ramadan, travel, illness and loss are fuller, and each topic now carries the du’as from the library that belong to it."
+        "id": "v15_dua_library",
+        "title": "A library of du'as",
+        "summary": "Guide’s du’as are now a library on eleven shelves: hardship, healing, protection, family, travel, sleep and every ordinary day. Every du’a names its source, and every narration names its grading."
       },
       {
-        "id": "v15_translation_notes",
-        "title": "New translations, with their notes",
-        "summary": "Rowwad Translation Center’s English and Rachid Maach’s French join the translations you can choose, each with the translator’s explanatory notes kept on your phone. Set your translation language to English or French to choose one, then tap a note number in a verse, or open the verse’s options, to read a note. Translations you download now stay in a library, so switching between them needs no connection."
+        "id": "v15_my_hifz_recite",
+        "title": "Recite to add",
+        "summary": "Recite a passage you remember, and My Hifz finds it with its ayahs and text, ready to save. If you close it before you save, the ayahs it found wait for you."
       },
       {
-        "id": "v15_english_transliteration",
-        "title": "A new English transliteration",
-        "summary": "English transliteration now comes from MuslimNet's edition, carried inside the app. Its underlined and bold letters show how each word is said, and the key sits under the language list."
+        "id": "v15_hifz_practice_recite",
+        "title": "Recite in Memorise and Practice",
+        "summary": "In Memorise and Practice, tap Recite and recite the hidden ayah from memory. Ummahti follows the words you recite against the ayah, on your phone. It marks places to check, with a note under the ayah. It does not check pronunciation, vowels or tajwid. It never marks an ayah memorised or changes your revision schedule."
+      },
+      {
+        "id": "v15_recite_along",
+        "title": "Recite Along on Qur’an Pages",
+        "summary": "On an open book style foldable, tap Recite Along at the edge of the printed page and recite aloud. The printed page marks the words it follows. Tap the control again to stop. It does not check pronunciation, vowels or tajwid."
+      },
+      {
+        "id": "v15_recite_engine",
+        "title": "Recitation recognition, on your phone",
+        "summary": "Recite to add, Recite in Memorise and Practice, and Recite Along share one recitation pack. You download it once, about 107 MB, from Ummahti’s public release on GitHub. It runs on your phone. The microphone opens only when you tap. Your voice is never saved or uploaded. Speech recognition: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
+      },
+      {
+        "id": "v15_home_arrangement",
+        "title": "Arrange Home the way you read",
+        "summary": "Move Home cards, put them away, or pair a card with the one beside it. My Khatm no longer holds a fixed place. Continue Reading always stays first. Press and hold a card to arrange it, and Undo takes back any step."
+      },
+      {
+        "id": "v15_fold_home",
+        "title": "Home opens like a book on a foldable",
+        "summary": "Open a book style foldable and Home uses both halves. The Qur’an waits open at the verse where you stopped, with Resume under your thumb. The rest of Home sits beside it, in your own order. The navigation stands on the outer edge, and Settings can move it to the other side."
+      },
+      {
+        "id": "v15_saved_library",
+        "title": "Saved, like the index of a Mushaf",
+        "summary": "Saved now lists each surah once, with its ayahs beneath it. Select from one tray at your thumb. Deleted bookmarks come back with Undo."
       },
       {
         "id": "v15_juz_navigation",
         "title": "Open any juz, by the name you call it",
-        "summary": "The reading picker now has a Juz / Para list beside the surahs. Browse all thirty, see exactly where each one begins and ends, and open it there. Search finds them too, by number or by the para name you were taught: Juz 30, Para 30 and Amma all reach the same place."
+        "summary": "The reading picker now has a Juz / Para list beside the surahs. Browse all thirty, see where each one begins and ends, and open it there. Search finds them by number or by the para name you were taught. Juz 30, Para 30 and Amma all reach the same place. Each surah now shows its juz."
+      },
+      {
+        "id": "v15_english_transliteration",
+        "title": "A new English transliteration",
+        "summary": "English transliteration now comes from MuslimNet’s edition, carried inside the app. Its underlined and bold letters show how each word is said. The key sits under the language list."
+      },
+      {
+        "id": "v15_widget_chosen_ayahs",
+        "title": "Your own ayahs on the widget",
+        "summary": "Choose ayahs from Saved for your home screen widget. Show them in turn, mix them with the daily ayah, or keep one until you change it."
+      },
+      {
+        "id": "v15_listening_repeat",
+        "title": "Repeat a verse, in Hifz too",
+        "summary": "Tap the loop button on the player, and what plays repeats each time it ends. It works for a single verse or a passage in Hifz. The player shows what repeats and how many times. Tap the loop button again to stop."
+      },
+      {
+        "id": "v15_hifz_practice",
+        "title": "Practise from memory with hints",
+        "summary": "Memorise and Practice now keep the ayah in place. Hide it, take a hint at the next word, and practise the join with the ayah before. Practise any surah, juz or range without recording it first. When a practice ends, one step takes you back to the ayahs where you took a hint."
       },
       {
         "id": "v15_surah_discovery",
         "title": "Find a surah by the name you know it by",
-        "summary": "Search now understands what each surah is called in the languages Ummahti speaks. Bakara, Аль-Бакара and আল-বাকারা all reach Surah 2, alongside every spelling that already worked."
+        "summary": "Search now finds each surah by its name in every language Ummahti speaks, such as Bakara for Surah 2. Every spelling that worked before still works."
       },
       {
         "id": "v15_screens_adaptive",
         "title": "Ummahti fits the screen you are on",
-        "summary": "On a tablet, an unfolded foldable or a phone turned sideways, the reading keeps a column you can comfortably follow and the navigation stays centred within easy reach at the foot of the screen. Settings opens each page beside its list, the Qur'an can keep the surah and juz list open next to the text, and your saved verses and downloads fill the width instead of a single narrow strip."
+        "summary": "On a tablet or a phone turned sideways, the reading keeps a comfortable column. The navigation stays centred at the foot of the screen. Settings opens each page beside its list. Saved verses and downloads fill the width."
       },
       {
         "id": "v15_reading_tile",
         "title": "Carry on reading from anywhere",
-        "summary": "Add a Continue reading tile to the panel you pull down from the top of your screen, and one tap opens Ummahti where you left off. You can add it from Settings."
+        "summary": "Add a Continue reading tile to the panel you pull down from the top of the screen. One tap opens Ummahti where you left off. You can add it from Settings."
+      },
+      {
+        "id": "v15_nav_dock_drag",
+        "title": "Slide the moon to switch tabs",
+        "summary": "Hold the selected moon, slide to another tab, then release to open it."
       }
     ],
     "improvements": [
       "Type a reference such as 2:255 into the surah picker and it offers to open that verse.",
+      "The widget has a new look. It shows the ayah in your reader’s typeface, with its verse sign, on lit glass, at every size.",
       "Settings has a search box, so any option is a few letters away.",
       "A shared verse now names its translator, and you can choose whether to include the translation.",
       "The play button shows when recitation is still loading, and offers to try again if it cannot start.",
@@ -71,25 +128,66 @@
       "Anything you can swipe away can now also be removed with TalkBack, Switch Access or a keyboard.",
       "The navigation bar keeps every label whole at the largest text size.",
       "If Help & FAQ doesn’t answer your question, you can send it to us straight from there.",
-      "Reflection of the Moment now takes turns between a verse and a hadith, draws on more of both, and names who graded each narration from Jamiʽ at-Tirmidhi."
+      "Reflection of the Moment now takes turns between a verse and a hadith, and draws on more of both. It names who graded each narration from Jamiʽ at Tirmidhi."
     ]
   },
   "ar": {
+    "tagline": "طرق جديدة لتُبقي القرآن قريبًا منك كل يوم، وتحسينات صغيرة كثيرة.",
     "items": [
+      {
+        "id": "v15_guide_expansion",
+        "title": "اسأل الدليل عن موضوعات أكثر",
+        "summary": "يغطي الدليل الآن الوضوء، والأذكار بعد الأذان وبعد كل صلاة، والأدعية اليومية. ويغطي أيضًا صلة الرحم والشوق إلى الولد، وصارت صفحات رمضان والسفر والمرض والفقد أوفى. تبدأ الإجابة بالآية نفسها تحت كلماتك، ويحمل كل موضوع أدعيته."
+      },
       {
         "id": "v15_khatm_planner",
         "title": "خطّط لختمة",
         "summary": "اختر تاريخًا أو مدة، وتقسم أمتي القرآن إلى أوراد يومية. تعرض الصفحة الرئيسية ورد اليوم وطريقًا واحدًا إليه، ولا يُسجَّل شيء كمقروء إلا إن قلت ذلك."
       },
       {
-        "id": "v15_dua_library",
-        "title": "مكتبة من الأدعية",
-        "summary": "نمت الأدعية التي في الدليل حتى صارت مكتبةً من 55 دعاءً على أحد عشر رفًّا: للشدّة، والشفاء، والحفظ، والأهل، والسفر، والنوم، ولكلّ يوم عاديّ. وكلّ دعاء يذكر مصدره، وكلّ رواية تذكر درجتها."
+        "id": "v15_my_hifz",
+        "title": "تدرّب على ما حفظته",
+        "summary": "سجّل ما تحفظه أو ما زلت تحفظه، من آية واحدة إلى القرآن كله. انطق موضعه أو اكتبه، أو اختره، ثم اعرضه حسب السور أو الأجزاء، وتدرّب على أي مقطع بلمسة واحدة. أخفِ الآية واستعن بتلميح حين تغيب عنك كلمة."
+      },
+      {
+        "id": "v15_quran_pages",
+        "title": "اقرأ صفحتين من المصحف جنبًا إلى جنب",
+        "summary": "على هاتف قابل للطي مفتوح أو جهاز لوحي عريض، اقرأ صفحتين من المصحف جنبًا إلى جنب، مرتّبتين سطرًا بسطر كما في مصحف المدينة النبوية، وقلّبهما كما تقلّب صفحات الكتاب. تُفتح تلقائيًا على الشاشات العريضة. غيّرها من عرض القراءة."
       },
       {
         "id": "v15_offline_recitation",
-        "title": "تلاوة تبقى معك",
+        "title": "استمع دون اتصال",
         "summary": "نزِّل السور بصوت القارئ الذي اخترته، واستمع دون أيّ اتصال. ترى ما هو محفوظ وكم يشغل من مساحة، ولك أن تحذف منه ما شئت متى شئت."
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "ادعُ أحدًا إلى القرآن",
+        "summary": "ادعُ شخصًا واحدًا إلى القرآن بنقرتين. اختر أيثبّت أمتي، أم ينظر إلى الموقع أولًا، أم يستمع على يوتيوب فحسب، وأرسل بطاقة تحمل عنوانها بنفسها لتظل نافعة حيث يُهمل النص المرافق."
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "مكتبة من الأدعية",
+        "summary": "نمت الأدعية التي في الدليل حتى صارت مكتبةً من الأدعية على أحد عشر رفًّا: للشدّة، والشفاء، والحفظ، والأهل، والسفر، والنوم، ولكلّ يوم عاديّ. وكلّ دعاء يذكر مصدره، وكلّ رواية تذكر درجتها."
+      },
+      {
+        "id": "v15_my_hifz_recite",
+        "title": "أضف بالتلاوة",
+        "summary": "اتلُ مقطعًا تحفظه وسيجده حفظي بآياته ونصّه، جاهزًا للحفظ. وإن أغلقته قبل التسجيل، تبقى الآيات التي وجدها بانتظارك."
+      },
+      {
+        "id": "v15_hifz_practice_recite",
+        "title": "التلاوة في الحفظ والتمرين",
+        "summary": "تتابع التلاوة الكلمات التي تتلوها على هذا الهاتف مقابل الآية المخفية: تظهر الكلمات حين تُسمع، ومواضع المراجعة هي كلمات لم تُسمع أو كلمة مختلفة أو كلمات في غير ترتيبها أو كلمات زائدة. لا تتحقق من النطق ولا الحركات ولا التجويد، ولا تعدّ آية محفوظة ولا تغيّر جدول مراجعتك. تستخدم التنزيل نفسه لمرة واحدة الذي تستخدمه ميزة أضف بالتلاوة، ولا تطلب الميكروفون إلا عند الضغط، ولا يُحفظ شيء مما تتلوه ولا يُرسل. للتصحيح اقرأ على معلم مؤهل."
+      },
+      {
+        "id": "v15_recite_along",
+        "title": "التلاوة مع الصفحة في صفحات المصحف",
+        "summary": "على جهاز قابل للطي على هيئة كتاب وهو مفتوح، تعرض «صفحات المصحف» زرًا صغيرًا للتلاوة مع الصفحة عند الحافة الخارجية للصفحة اليمنى. اضغطه واتلُ من الصفحة بصوت مسموع. تُعلَّم آخر كلمة تبعها التطبيق بلون خفيف، وتُعلَّم الكلمة التي قبلها كاملة. لا يُستعمل الميكروفون إلا والتلاوة مع الصفحة قيد التشغيل. يُتعرَّف على صوتك على هاتفك، ولا يُحفظ ولا يُرسل أبدًا. ولا تتحقق من النطق ولا الحركات ولا التجويد. اضغط الزر مرة أخرى للإيقاف."
+      },
+      {
+        "id": "v15_recite_engine",
+        "title": "التعرّف على التلاوة على هاتفك",
+        "summary": "تشترك ميزة «أضف بالتلاوة» والتلاوة في الحفظ والتمرين والتلاوة مع الصفحة في حزمة تلاوة واحدة. تنزّلها مرة واحدة، نحو 107 ميغابايت، من إصدار Ummahti العام على GitHub. تعمل على هاتفك. لا يُفتح الميكروفون إلا عندما تنقر. لا يُحفظ صوتك ولا يُرفع أبدًا. التعرّف على الكلام: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -97,19 +195,19 @@
         "summary": "يمكن الآن تحريك بطاقات الصفحة الرئيسية أو إخفاؤها أو وضعها بجانب بطاقة أخرى، بما في ذلك «ختمتي» التي لم تعد في موضع ثابت. وتبقى بطاقة «مواصلة القراءة» أولى البطاقات دائمًا. اضغط مطوّلًا على بطاقة لترتيبها، و«تراجع» يلغي أي خطوة."
       },
       {
-        "id": "v15_pass_on_light",
-        "title": "مرِّر النور",
-        "summary": "ادعُ شخصًا واحدًا إلى القرآن بنقرتين. اختر أيثبّت أمتي، أم ينظر إلى الموقع أولًا، أم يستمع على يوتيوب فحسب، وأرسل بطاقة تحمل عنوانها بنفسها لتظل نافعة حيث يُهمل النص المرافق."
+        "id": "v15_fold_home",
+        "title": "الصفحة الرئيسية تُفتح كالكتاب على الهاتف القابل للطي",
+        "summary": "افتح هاتفًا قابلًا للطي على هيئة كتاب فتستعمل الصفحة الرئيسية نصفيه. يبقى القرآن مفتوحًا عند الآية التي توقفت عندها، وزر المتابعة تحت إبهامك، وبقية الصفحة الرئيسية بجانبه بترتيبك أنت. ويقف شريط التنقل على الحافة الخارجية جهة اليمين، وتنقله الإعدادات إلى اليسار ليدك الأخرى."
       },
       {
-        "id": "v15_guide_expansion",
-        "title": "إجابات أكثر في الدليل",
-        "summary": "يجيب الدليل الآن عن مزيد ممّا يسأل عنه الناس: الوضوء، والذكر بعد الأذان وبعد كلّ صلاة، وأدعية الحياة اليومية، وصلة الرحم، والشوق إلى الولد. وصارت موضوعات رمضان والسفر والمرض والفقد أوفى، وكلّ موضوع يحمل الآن الأدعية التي تخصّه من المكتبة."
+        "id": "v15_saved_library",
+        "title": "المحفوظات",
+        "summary": "أصبحت المحفوظات تُقرأ كفهرس المصحف: كل سورة مرة واحدة، وآياتها تحتها. حدّد من شريط واحد في متناول إبهامك، وتعود العلامات المحذوفة بلمسة «تراجع»."
       },
       {
-        "id": "v15_translation_notes",
-        "title": "ترجمات جديدة مع حواشيها",
-        "summary": "تنضمّ ترجمة Rowwad Translation Center الإنجليزية وترجمة Rachid Maach الفرنسية إلى الترجمات التي يمكنك اختيارها، ومع كلٍّ منهما حواشي مترجمها التوضيحية محفوظةً في هاتفك. اجعل لغة الترجمة الإنجليزية أو الفرنسية لتختار إحداهما، ثمّ اضغط رقم الحاشية في الآية، أو افتح خيارات الآية، لتقرأ الحاشية. وصارت الترجمات التي تنزّلها تبقى في مكتبة، فلا يحتاج التنقّل بينها إلى اتصال."
+        "id": "v15_juz_navigation",
+        "title": "افتح أي جزء بالاسم الذي تعرفه",
+        "summary": "صار في قائمة اختيار القراءة قائمة للأجزاء بجانب السور. تصفّح الثلاثين كلها، وانظر أين يبدأ كل جزء وأين ينتهي بالضبط، وافتحه من هناك. والبحث يجدها أيضاً، بالرقم أو باسم الجزء المعروف: «الجزء 30» و«عمّ» يصلان إلى المكان نفسه. واكتب اسم سورة لترى كل جزء هي فيه، وصارت كل سورة تُظهر أجزاءها."
       },
       {
         "id": "v15_english_transliteration",
@@ -117,9 +215,19 @@
         "summary": "أصبح النقل الحرفي الإنجليزي يأتي من طبعة MuslimNet، وهي مضمّنة في التطبيق. الحروف التي تحتها خط والحروف العريضة تبيّن نطق كل كلمة، والمفتاح تحت قائمة اللغات."
       },
       {
-        "id": "v15_juz_navigation",
-        "title": "افتح أي جزء بالاسم الذي تعرفه",
-        "summary": "صار في قائمة اختيار القراءة قائمة للأجزاء بجانب السور. تصفّح الثلاثين كلها، وانظر أين يبدأ كل جزء وأين ينتهي بالضبط، وافتحه من هناك. والبحث يجدها أيضاً، بالرقم أو باسم الجزء المعروف: «الجزء 30» و«عمّ» يصلان إلى المكان نفسه."
+        "id": "v15_widget_chosen_ayahs",
+        "title": "آياتك أنت في الأداة",
+        "summary": "اختر آيات من المحفوظات لأداة شاشتك الرئيسية. اعرضها بالتناوب، أو امزجها مع آية اليوم، أو أبقِ آية واحدة حتى تغيّرها."
+      },
+      {
+        "id": "v15_listening_repeat",
+        "title": "كرّر الآية، وفي الحفظ أيضًا",
+        "summary": "اضغط زر التكرار في المشغّل فيُعاد ما يُتلى الآن كلما انتهى، آية واحدة أو مقطعًا في الحفظ. يعرض المشغّل ما يتكرر وعدد المرات. اضغط زر التكرار مرة أخرى للإيقاف."
+      },
+      {
+        "id": "v15_hifz_practice",
+        "title": "تمرّن من حفظك بالتلميحات",
+        "summary": "أصبح الحفظ والتمرين يُبقيان الآية في مكانها: أخفِها، وخذ تلميحًا عند الكلمة التالية، وتمرّن على وصلها بالآية السابقة. تمرّن على أي سورة أو جزء أو نطاق دون تسجيله أولًا، مقطعًا متصلًا أو آيةً آية، وراجع الآيات المستحقة بالطريقة نفسها. وعند انتهاء التمرين، تعيدك خطوة واحدة إلى الآيات التي أخذت فيها تلميحًا. وفي التمرين، اضغط مطوّلًا على كلمة مخفية لترى تلك الكلمة وحدها. ومع «التلاوة» اتلُ الآية المخفية من حفظك، فيتبع التطبيق كلماتك على هاتفك ويعلّم المواضع التي تحتاج إلى مراجعة. ولا يتحقق من النطق ولا من التجويد."
       },
       {
         "id": "v15_surah_discovery",
@@ -129,16 +237,22 @@
       {
         "id": "v15_screens_adaptive",
         "title": "أُمَّتِي تتكيّف مع الشاشة التي بين يديك",
-        "summary": "على جهاز لوحي أو هاتف قابل للطي مفتوح أو هاتف بالوضع الأفقي، تبقى القراءة في عمود مريح للمتابعة، ويبقى شريط التنقل متوسّطًا أسفل الشاشة في متناول يدك. تفتح الإعدادات كل صفحة بجوار قائمتها، ويمكن للمصحف أن يُبقي قائمة السور والأجزاء مفتوحة بجانب النص، وتملأ آياتك المحفوظة وتنزيلاتك العرض بدل شريط ضيّق واحد."
+        "summary": "على جهاز لوحي أو هاتف بالوضع الأفقي، تبقى القراءة في عمود مريح للمتابعة، ويبقى شريط التنقل متوسّطًا أسفل الشاشة في متناول يدك. تفتح الإعدادات كل صفحة بجوار قائمتها، ويمكن للمصحف أن يُبقي قائمة السور والأجزاء مفتوحة بجانب النص، وتملأ آياتك المحفوظة وتنزيلاتك العرض بدل شريط ضيّق واحد."
       },
       {
         "id": "v15_reading_tile",
         "title": "تابع القراءة من أيّ مكان",
         "summary": "أضِف مربّع «متابعة القراءة» إلى اللوحة التي تسحبها من أعلى الشاشة، فتفتح نقرة واحدة أمتي من حيث توقّفت. ويمكنك إضافته من الإعدادات."
+      },
+      {
+        "id": "v15_nav_dock_drag",
+        "title": "اسحب القمر للتنقّل بين علامات التبويب",
+        "summary": "اضغط مطولًا على القمر المحدّد، واسحبه إلى علامة تبويب أخرى، ثم ارفع إصبعك لفتحها."
       }
     ],
     "improvements": [
       "اكتب مرجعًا مثل 2:255 في قائمة السور، فتعرض عليك فتح تلك الآية.",
+      "للأداة مظهر جديد: الآية بخط القارئ الذي تقرأ به مع علامة نهاية الآية، على زجاج مضيء، وبكل الأحجام.",
       "في الإعدادات حقل للبحث، فأيّ خيار لا يبعد عنك سوى بضعة أحرف.",
       "صارت الآية التي تشاركها تذكر اسم مترجمها، ولك أن تختار هل تُضمّن الترجمة أم لا.",
       "يُظهر زرّ التشغيل متى كانت التلاوة لا تزال قيد التحميل، ويعرض عليك إعادة المحاولة إن تعذّر بدؤها.",
@@ -150,21 +264,62 @@
     ]
   },
   "ur": {
+    "tagline": "قرآن کو ہر روز اپنے قریب رکھنے کے نئے طریقے، اور بہت سی چھوٹی بہتریاں۔",
     "items": [
+      {
+        "id": "v15_guide_expansion",
+        "title": "رہنما سے مزید موضوعات پر پوچھیں",
+        "summary": "گائیڈ اب وضو، اذان کے بعد اور ہر نماز کے بعد کے اذکار، اور روزمرہ کی دعاؤں پر جواب دیتا ہے۔ صلہ رحمی اور اولاد کی آرزو پر بھی جواب ہیں، اور رمضان، سفر، بیماری اور غم کے صفحات اب زیادہ مکمل ہیں۔ جواب آیت ہی سے کھلتا ہے، آپ کے اپنے الفاظ کے نیچے، اور ہر موضوع اپنی دعائیں ساتھ لاتا ہے۔"
+      },
       {
         "id": "v15_khatm_planner",
         "title": "ایک ختم کا منصوبہ",
         "summary": "ایک تاریخ یا مدت منتخب کریں، اور امتی قرآن کو روزانہ کے اسباق میں تقسیم کر دے گی۔ ہوم آج کا حصہ اور اس تک جانے کا ایک راستہ دکھاتا ہے، اور جب تک آپ نہ کہیں کچھ بھی پڑھا ہوا درج نہیں ہوتا۔"
       },
       {
-        "id": "v15_dua_library",
-        "title": "دعاؤں کی ایک لائبریری",
-        "summary": "رہنما میں موجود دعائیں بڑھ کر اب گیارہ خانوں میں 55 دعاؤں کی ایک لائبریری بن گئی ہیں: مصیبت، شفا، حفاظت، گھر والے، سفر، نیند اور ہر عام دن کے لیے۔ ہر دعا اپنا ماخذ بتاتی ہے، اور ہر روایت اپنا درجہ بھی۔"
+        "id": "v15_my_hifz",
+        "title": "جو یاد کیا ہے اس کی مشق کریں",
+        "summary": "جو آپ کو یاد ہے یا یاد کر رہے ہیں اس کا ریکارڈ رکھیں، ایک آیت سے پورے قرآن تک۔ اس کا حوالہ بولیں یا لکھیں، یا خود منتخب کریں، پھر اسے سورت یا پارے کے لحاظ سے دیکھیں اور کسی بھی حصے کی مشق ایک ٹیپ میں کریں۔ آیت چھپائیں، اور کوئی لفظ یاد نہ آئے تو اشارہ لیں۔"
+      },
+      {
+        "id": "v15_quran_pages",
+        "title": "مصحف کے دو صفحات پہلو بہ پہلو پڑھیں",
+        "summary": "کھلے ہوئے فولڈ ایبل فون یا چوڑے ٹیبلٹ پر مصحف کے دو صفحات پہلو بہ پہلو پڑھیں، جو مدینہ مصحف کی طرح سطر بہ سطر ترتیب دیے گئے ہیں، اور انہیں کتاب کی طرح پلٹیں۔ چوڑی اسکرین پر خود بخود کھلتے ہیں۔ مطالعے کا انداز میں بدلیں۔"
       },
       {
         "id": "v15_offline_recitation",
-        "title": "تلاوت جو آپ کے پاس رہے",
+        "title": "بغیر کنکشن کے سنیں",
         "summary": "اپنے منتخب قاری کی آواز میں سورتیں ڈاؤن لوڈ کریں اور بغیر کسی کنکشن کے سنیں۔ آپ دیکھ سکتے ہیں کہ کیا محفوظ ہے اور کتنی جگہ لے رہا ہے، اور جب چاہیں جو چاہیں ہٹا سکتے ہیں۔"
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "کسی کو قرآن کی دعوت دیں",
+        "summary": "دو ٹیپ میں کسی ایک شخص کو قرآن کی دعوت دیں۔ طے کریں کہ وہ Ummahti انسٹال کریں، پہلے ویب سائٹ دیکھیں، یا صرف یوٹیوب پر سنیں، اور ایسا کارڈ بھیجیں جو اپنا پتہ خود لیے ہوئے ہو، تاکہ وہاں بھی کام آئے جہاں کیپشن ضائع ہو جاتا ہے۔"
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "دعاؤں کی ایک لائبریری",
+        "summary": "رہنما میں موجود دعائیں بڑھ کر اب گیارہ خانوں میں دعاؤں کی ایک لائبریری بن گئی ہیں: مصیبت، شفا، حفاظت، گھر والے، سفر، نیند اور ہر عام دن کے لیے۔ ہر دعا اپنا ماخذ بتاتی ہے، اور ہر روایت اپنا درجہ بھی۔"
+      },
+      {
+        "id": "v15_my_hifz_recite",
+        "title": "تلاوت کر کے شامل کریں",
+        "summary": "یاد کیا ہوا کوئی حصہ پڑھیں اور میرا حفظ اسے اس کی آیات اور متن کے ساتھ ڈھونڈ لے گا، محفوظ کرنے کے لیے تیار۔ محفوظ کرنے سے پہلے بند کر دیں تو ملی ہوئی آیات آپ کا انتظار کرتی ہیں۔"
+      },
+      {
+        "id": "v15_hifz_practice_recite",
+        "title": "حفظ کریں اور مشق میں تلاوت",
+        "summary": "تلاوت اسی فون پر چھپی آیت کے مقابلے میں آپ کی تلاوت کے الفاظ کے ساتھ چلتی ہے: سنائی دیتے ہی الفاظ ظاہر ہوتے ہیں، اور دیکھنے کی جگہیں ہیں نہ سنے گئے الفاظ، کوئی دوسرا لفظ، ترتیب سے ہٹے الفاظ یا اضافی الفاظ۔ یہ تلفظ، حرکات یا تجوید کی جانچ نہیں کرتی، کسی آیت کو حفظ شدہ نہیں مانتی اور آپ کی دہرائی کا شیڈول نہیں بدلتی۔ یہ تلاوت کر کے شامل کریں والا ہی ایک بار کا ڈاؤن لوڈ استعمال کرتی ہے، ٹیپ کرنے پر ہی مائیکروفون مانگتی ہے، اور آپ کی تلاوت کا کچھ بھی محفوظ یا بھیجا نہیں جاتا۔ اصلاح کے لیے کسی مستند استاد کے سامنے تلاوت کریں۔"
+      },
+      {
+        "id": "v15_recite_along",
+        "title": "مصحف کے صفحات میں ساتھ تلاوت",
+        "summary": "کتاب جیسے کھلے فولڈ ایبل فون پر «مصحف کے صفحات» دائیں صفحے کے بیرونی کنارے پر ساتھ تلاوت کا چھوٹا بٹن دکھاتے ہیں۔ اسے دبائیں اور صفحے سے بلند آواز سے تلاوت کریں۔ آخری لفظ جس کے ساتھ ایپ چلی ہلکا نشان پاتا ہے، اور اس سے پہلے والا لفظ پورا نشان پاتا ہے۔ مائیکروفون صرف تب استعمال ہوتا ہے جب ساتھ تلاوت چالو ہو۔ آپ کی آواز اسی فون پر پہچانی جاتی ہے اور کبھی محفوظ یا بھیجی نہیں جاتی۔ یہ تلفظ، اعراب یا تجوید نہیں جانچتی۔ روکنے کے لیے بٹن دوبارہ دبائیں۔"
+      },
+      {
+        "id": "v15_recite_engine",
+        "title": "آپ کے فون پر تلاوت کی پہچان",
+        "summary": "تلاوت کر کے شامل کریں، حفظ کریں اور مشق میں تلاوت، اور ساتھ تلاوت ایک ہی تلاوت پیک استعمال کرتے ہیں۔ آپ اسے ایک بار، تقریباً 107 MB، GitHub پر Ummahti کی عوامی ریلیز سے ڈاؤن لوڈ کرتے ہیں۔ یہ آپ کے فون پر چلتا ہے۔ مائیکروفون صرف آپ کے ٹیپ کرنے پر کھلتا ہے۔ آپ کی آواز کبھی محفوظ یا اپ لوڈ نہیں ہوتی۔ آواز کی پہچان: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -172,19 +327,19 @@
         "summary": "اب ہوم کے کارڈ منتقل کیے، چھپائے یا ساتھ والے کارڈ کے برابر رکھے جا سکتے ہیں، بشمول میرا ختم، جس کی اب کوئی مقررہ جگہ نہیں۔ «مطالعہ جاری رکھیں» کا کارڈ ہمیشہ سب سے پہلے رہتا ہے۔ ترتیب دینے کے لیے کارڈ دبا کر رکھیں؛ واپس کسی بھی قدم کو منسوخ کر دیتا ہے۔"
       },
       {
-        "id": "v15_pass_on_light",
-        "title": "روشنی آگے بڑھائیں",
-        "summary": "دو ٹیپ میں کسی ایک شخص کو قرآن کی دعوت دیں۔ طے کریں کہ وہ Ummahti انسٹال کریں، پہلے ویب سائٹ دیکھیں، یا صرف یوٹیوب پر سنیں، اور ایسا کارڈ بھیجیں جو اپنا پتہ خود لیے ہوئے ہو، تاکہ وہاں بھی کام آئے جہاں کیپشن ضائع ہو جاتا ہے۔"
+        "id": "v15_fold_home",
+        "title": "فولڈ ایبل فون پر ہوم کتاب کی طرح کھلتا ہے",
+        "summary": "کتاب نما فولڈ ایبل فون کھولیں تو ہوم دونوں حصے استعمال کرتا ہے۔ قرآن اسی آیت پر کھلا رہتا ہے جہاں آپ رکے تھے، دوبارہ شروع کرنے کا بٹن آپ کے انگوٹھے کے نیچے ہوتا ہے، اور ہوم کا باقی حصہ آپ کی اپنی ترتیب میں ساتھ ہوتا ہے۔ نیویگیشن باہری کنارے پر دائیں طرف رہتی ہے، اور ترتیبات سے اسے دوسرے ہاتھ کے لیے بائیں طرف لے جایا جا سکتا ہے۔"
       },
       {
-        "id": "v15_guide_expansion",
-        "title": "رہنما میں مزید جوابات",
-        "summary": "رہنما اب لوگوں کے مزید سوالوں کا جواب دیتا ہے: وضو، اذان کے بعد اور ہر نماز کے بعد کا ذکر، روزمرہ کی دعائیں، صلہ رحمی اور اولاد کی آرزو۔ رمضان، سفر، بیماری اور غم کے موضوعات زیادہ مکمل ہو گئے ہیں، اور ہر موضوع اب لائبریری سے اپنی دعائیں ساتھ رکھتا ہے۔"
+        "id": "v15_saved_library",
+        "title": "محفوظات",
+        "summary": "محفوظات کا صفحہ اب مصحف کی فہرست کی طرح ہے: ہر سورت ایک بار، اس کے نیچے اس کی آیات۔ انگوٹھے کی پہنچ میں ایک ہی پٹی سے منتخب کریں، اور حذف شدہ بک مارکس “واپس لائیں” سے لوٹ آتے ہیں۔"
       },
       {
-        "id": "v15_translation_notes",
-        "title": "نئے تراجم، اپنے حواشی کے ساتھ",
-        "summary": "Rowwad Translation Center کا انگریزی ترجمہ اور Rachid Maach کا فرانسیسی ترجمہ اب اُن تراجم میں شامل ہیں جنہیں آپ چن سکتے ہیں، اور ہر ایک کے ساتھ مترجم کے وضاحتی حواشی آپ کے فون پر محفوظ رہتے ہیں۔ اِن میں سے کوئی ایک چننے کے لیے ترجمے کی زبان انگریزی یا فرانسیسی پر رکھیں، پھر حاشیہ پڑھنے کے لیے آیت میں حاشیے کے نمبر پر ٹیپ کریں، یا آیت کے اختیارات کھولیں۔ جو تراجم آپ اب ڈاؤن لوڈ کرتے ہیں وہ ایک لائبریری میں رہتے ہیں، اِس لیے اُن کے درمیان بدلنے کے لیے کنکشن کی ضرورت نہیں۔"
+        "id": "v15_juz_navigation",
+        "title": "جو پارہ چاہیں، اُسی نام سے کھولیں",
+        "summary": "پڑھنے کی فہرست میں اب سورتوں کے ساتھ پاروں کی فہرست بھی ہے۔ تیسوں دیکھیں، ہر ایک کا آغاز اور اختتام بالکل ٹھیک دیکھیں، اور وہیں سے کھولیں۔ تلاش بھی انہیں پا لیتی ہے، نمبر سے یا اُسی پارے کے نام سے جو آپ نے پڑھا ہے: پارہ 30، جزو 30 اور عمّ، تینوں ایک ہی جگہ پہنچاتے ہیں۔ کسی سورت کا نام لکھ کر ہر وہ پارہ دیکھیں جس میں وہ ہے، اور اب ہر سورت اپنا پارہ دکھاتی ہے۔"
       },
       {
         "id": "v15_english_transliteration",
@@ -192,9 +347,19 @@
         "summary": "انگریزی نقل حرفی اب MuslimNet کے ایڈیشن سے آتی ہے، جو ایپ کے اندر شامل ہے۔ زیر خط اور موٹے حروف بتاتے ہیں کہ ہر لفظ کیسے ادا ہوتا ہے، اور وضاحت زبانوں کی فہرست کے نیچے ہے۔"
       },
       {
-        "id": "v15_juz_navigation",
-        "title": "جو پارہ چاہیں، اُسی نام سے کھولیں",
-        "summary": "پڑھنے کی فہرست میں اب سورتوں کے ساتھ پاروں کی فہرست بھی ہے۔ تیسوں دیکھیں، ہر ایک کا آغاز اور اختتام بالکل ٹھیک دیکھیں، اور وہیں سے کھولیں۔ تلاش بھی انہیں پا لیتی ہے، نمبر سے یا اُسی پارے کے نام سے جو آپ نے پڑھا ہے: پارہ 30، جزو 30 اور عمّ، تینوں ایک ہی جگہ پہنچاتے ہیں۔"
+        "id": "v15_widget_chosen_ayahs",
+        "title": "ویجیٹ پر آپ کی اپنی آیات",
+        "summary": "اپنی ہوم اسکرین کے ویجیٹ کے لیے محفوظات سے آیات چنیں۔ انہیں باری باری دکھائیں، روزانہ آیت کے ساتھ ملائیں، یا ایک آیت رکھیں جب تک آپ اسے نہ بدلیں۔"
+      },
+      {
+        "id": "v15_listening_repeat",
+        "title": "آیت دہرائیں، حفظ میں بھی",
+        "summary": "پلیئر میں دہرانے کے بٹن کو تھپتھپائیں، ابھی جو چل رہا ہے وہ ہر بار ختم ہونے پر دوبارہ چلے گا، ایک آیت یا حفظ کا ایک حصہ۔ پلیئر دکھاتا ہے کہ کیا کتنی بار دہرایا جا رہا ہے۔ روکنے کے لیے بٹن کو دوبارہ تھپتھپائیں۔"
+      },
+      {
+        "id": "v15_hifz_practice",
+        "title": "اشاروں کے ساتھ یاد سے مشق",
+        "summary": "حفظ اور مشق اب آیت کو اپنی جگہ رکھتے ہیں: اسے چھپائیں، اگلے لفظ پر اشارہ لیں، اور پچھلی آیت سے جوڑ کی مشق کریں۔ کسی بھی سورۃ، پارے یا دائرے کی مشق اسے پہلے محفوظ کیے بغیر کریں، ایک مسلسل حصے کے طور پر یا آیت بہ آیت، اور مقررہ آیات کو بھی اسی طرح دہرائیں۔ مشق مکمل ہونے پر ایک ہی قدم آپ کو ان آیات پر واپس لے جاتا ہے جہاں آپ نے اشارہ لیا تھا۔ مشق میں کسی چھپے لفظ کو دبا کر رکھیں تو صرف وہی لفظ نظر آتا ہے۔ تلاوت کے ساتھ چھپی آیت یاد سے پڑھیں: Ummahti اسی فون پر آپ کے الفاظ کے ساتھ چلتا ہے اور جانچنے کی جگہوں پر نشان لگاتا ہے۔ یہ تلفظ یا تجوید نہیں جانچتا۔"
       },
       {
         "id": "v15_surah_discovery",
@@ -204,16 +369,22 @@
       {
         "id": "v15_screens_adaptive",
         "title": "اُمّتی اُس اسکرین کے مطابق ڈھل جاتی ہے جو آپ کے پاس ہے",
-        "summary": "ٹیبلٹ پر، کھلے ہوئے فولڈ ایبل فون پر یا پہلو کے رخ رکھے فون پر، پڑھائی ایک ایسے کالم میں رہتی ہے جسے آپ آرام سے پڑھ سکیں اور نیویگیشن اسکرین کے نیچے بیچوں بیچ رہتی ہے، جہاں تک ہاتھ آسانی سے پہنچ جائے۔ ترتیبات ہر صفحہ اپنی فہرست کے ساتھ کھولتی ہیں، قرآن سورتوں اور پاروں کی فہرست متن کے پہلو میں کھلی رکھ سکتا ہے، اور آپ کی محفوظ آیات اور ڈاؤن لوڈ ایک تنگ پٹی کی بجائے پوری چوڑائی میں پھیل جاتے ہیں۔"
+        "summary": "ٹیبلٹ پر یا پہلو کے رخ رکھے فون پر، پڑھائی ایک ایسے کالم میں رہتی ہے جسے آپ آرام سے پڑھ سکیں اور نیویگیشن اسکرین کے نیچے بیچوں بیچ رہتی ہے، جہاں تک ہاتھ آسانی سے پہنچ جائے۔ ترتیبات ہر صفحہ اپنی فہرست کے ساتھ کھولتی ہیں، قرآن سورتوں اور پاروں کی فہرست متن کے پہلو میں کھلی رکھ سکتا ہے، اور آپ کی محفوظ آیات اور ڈاؤن لوڈ ایک تنگ پٹی کی بجائے پوری چوڑائی میں پھیل جاتے ہیں۔"
       },
       {
         "id": "v15_reading_tile",
         "title": "کہیں سے بھی پڑھنا جاری رکھیں",
         "summary": "اسکرین کے اوپر سے کھینچے جانے والے پینل میں «مطالعہ جاری رکھیں» کا ٹائل شامل کریں، ایک ٹیپ امتی کو وہیں کھول دے گا جہاں آپ نے چھوڑا تھا۔ اسے ترتیبات سے شامل کیا جا سکتا ہے۔"
+      },
+      {
+        "id": "v15_nav_dock_drag",
+        "title": "چاند کو کھسکا کر ٹیب بدلیں",
+        "summary": "منتخب چاند کو دبا کر رکھیں، دوسرے ٹیب تک کھسکائیں، پھر اسے کھولنے کے لیے انگلی اٹھائیں۔"
       }
     ],
     "improvements": [
       "سورتوں کی فہرست میں 2:255 جیسا حوالہ لکھیں تو وہ اُس آیت کو کھولنے کی پیشکش کرتی ہے۔",
+      "ویجیٹ کی نئی صورت: آیت آپ کے ریڈر کے رسم الخط میں، آیت کے نشان کے ساتھ، روشن شیشے پر، ہر سائز میں۔",
       "ترتیبات میں تلاش کا خانہ ہے، اِس لیے ہر اختیار بس چند حروف کے فاصلے پر ہے۔",
       "شیئر کی گئی آیت اب اپنے مترجم کا نام بتاتی ہے، اور آپ چن سکتے ہیں کہ ترجمہ شامل کریں یا نہیں۔",
       "تلاوت ابھی لوڈ ہو رہی ہو تو پلے بٹن یہ ظاہر کرتا ہے، اور اگر وہ شروع نہ ہو سکے تو دوبارہ کوشش کرنے کی پیشکش کرتا ہے۔",
@@ -225,21 +396,62 @@
     ]
   },
   "id": {
+    "tagline": "Cara baru untuk menjaga Al-Qur’an tetap dekat setiap hari, dan banyak penyempurnaan kecil lainnya.",
     "items": [
+      {
+        "id": "v15_guide_expansion",
+        "title": "Tanyakan lebih banyak topik kepada Panduan",
+        "summary": "Guide kini menjawab tentang wudu, bacaan setelah azan dan setelah setiap salat, serta doa harian. Guide juga membahas hubungan keluarga dan kerinduan akan anak, dan halaman Ramadan, perjalanan, sakit dan kehilangan kini lebih lengkap. Jawaban dibuka langsung pada ayatnya, di bawah ucapan Anda sendiri, dan setiap topik membawa doanya."
+      },
       {
         "id": "v15_khatm_planner",
         "title": "Rencanakan khatam",
         "summary": "Pilih tanggal atau lama waktunya, dan Ummahti membagi Al-Qur'an menjadi bacaan harian. Beranda menampilkan bagian hari ini dan satu jalan masuk ke dalamnya, dan tidak ada yang ditandai terbaca kecuali Anda mengatakannya."
       },
       {
-        "id": "v15_dua_library",
-        "title": "Perpustakaan doa",
-        "summary": "Doa-doa di Panduan kini tumbuh menjadi perpustakaan berisi 55 doa dalam sebelas rak, untuk kesulitan, kesembuhan, perlindungan, keluarga, perjalanan, tidur, dan setiap hari biasa. Masing-masing menyebut sumbernya, dan setiap riwayat menyebut derajatnya."
+        "id": "v15_my_hifz",
+        "title": "Latih hafalan Anda",
+        "summary": "Catat apa yang sudah atau sedang Anda hafal, dari satu ayat hingga seluruh Quran. Ucapkan atau ketik rujukannya, atau pilih sendiri, lalu lihat per surah atau per juz dan latih bagian mana pun dengan satu ketukan. Sembunyikan ayat dan ambil petunjuk saat satu kata tak teringat."
+      },
+      {
+        "id": "v15_quran_pages",
+        "title": "Baca dua halaman Mushaf berdampingan",
+        "summary": "Di ponsel lipat yang terbuka atau tablet yang lebar, baca dua halaman Mushaf berdampingan, disusun baris demi baris seperti dalam Mushaf Madinah, lalu balik halamannya seperti buku. Terbuka sendiri di layar lebar. Ubah di Tampilan baca."
       },
       {
         "id": "v15_offline_recitation",
-        "title": "Lantunan yang bisa Anda simpan",
+        "title": "Dengarkan tanpa koneksi",
         "summary": "Unduh surah dengan suara qari pilihan Anda dan dengarkan tanpa koneksi sama sekali. Anda bisa melihat apa yang tersimpan, berapa ruang yang dipakainya, dan menghapus bagian mana pun kapan saja."
+      },
+      {
+        "id": "v15_pass_on_light",
+        "title": "Ajak seseorang kepada Al-Qur’an",
+        "summary": "Ajak satu orang kepada Al-Qur’an hanya dengan beberapa ketukan. Pilih apakah ia sebaiknya memasang Ummahti, melihat situsnya dulu, atau cukup mendengarkan di YouTube, lalu kirim kartu yang membawa alamatnya sendiri sehingga tetap berguna di tempat keterangan gambar dibuang."
+      },
+      {
+        "id": "v15_dua_library",
+        "title": "Perpustakaan doa",
+        "summary": "Doa-doa di Panduan kini tumbuh menjadi perpustakaan doa dalam sebelas rak, untuk kesulitan, kesembuhan, perlindungan, keluarga, perjalanan, tidur, dan setiap hari biasa. Masing-masing menyebut sumbernya, dan setiap riwayat menyebut derajatnya."
+      },
+      {
+        "id": "v15_my_hifz_recite",
+        "title": "Tambah dengan membaca",
+        "summary": "Bacakan bagian yang Anda hafal dan Hifz Saya menemukannya, lengkap dengan ayat dan teksnya, siap disimpan. Jika Anda menutupnya sebelum menyimpan, ayat yang ditemukan tetap menunggu Anda."
+      },
+      {
+        "id": "v15_hifz_practice_recite",
+        "title": "Lafalkan di Hafalkan dan Latihan",
+        "summary": "Lafalkan mengikuti kata-kata bacaan Anda di ponsel ini terhadap ayat yang tersembunyi: kata muncul saat terdengar, dan tempat untuk diperiksa adalah kata yang tidak terdengar, kata yang berbeda, kata yang tidak berurutan, atau kata tambahan. Pelafalan, harakat, dan tajwid tidak diperiksa; tidak ada ayat yang ditandai hafal dan jadwal pengulangan Anda tidak berubah. Fitur ini memakai unduhan satu kali yang sama dengan Tambah dengan membaca, hanya meminta mikrofon saat Anda mengetuknya, dan tidak ada bacaan Anda yang disimpan atau dikirim. Untuk koreksi, bacalah di hadapan guru yang mumpuni."
+      },
+      {
+        "id": "v15_recite_along",
+        "title": "Tilawah Bersama di Halaman Al-Qur’an",
+        "summary": "Di ponsel lipat bergaya buku yang terbuka, Halaman Al-Qur’an menampilkan tombol kecil Tilawah Bersama di tepi luar halaman kanan. Ketuk tombol itu dan bacalah halaman dengan suara keras. Kata terakhir yang diikuti ditandai tipis, dan kata sebelumnya ditandai penuh. Mikrofon hanya dipakai selama Tilawah Bersama aktif. Suara Anda dikenali di ponsel ini dan tidak pernah disimpan atau dikirim. Pelafalan, harakat, dan tajwid tidak diperiksa. Ketuk tombol itu lagi untuk berhenti."
+      },
+      {
+        "id": "v15_recite_engine",
+        "title": "Pengenalan tilawah di ponsel Anda",
+        "summary": "Tambah dengan membaca, Lafalkan di Hafalkan dan Latihan, dan Tilawah Bersama memakai satu paket tilawah yang sama. Anda mengunduhnya sekali, sekitar 107 MB, dari rilis publik Ummahti di GitHub. Paket ini berjalan di ponsel Anda. Mikrofon hanya terbuka saat Anda mengetuk. Suara Anda tidak pernah disimpan atau diunggah. Pengenalan suara: FastConformer Quran by Quran-Lab (NPL-1.1), based on NVIDIA stt_ar_fastconformer_hybrid_large_pcd_v1.0 (CC BY 4.0)."
       },
       {
         "id": "v15_home_arrangement",
@@ -247,19 +459,19 @@
         "summary": "Kartu Beranda kini bisa dipindahkan, disembunyikan, atau disandingkan dengan kartu di sebelahnya, termasuk Khatam Saya, yang tidak lagi menempati posisi tetap. Kartu Lanjutkan Membaca selalu berada di urutan pertama. Tekan lama sebuah kartu untuk mengaturnya; Urungkan membatalkan langkah apa pun."
       },
       {
-        "id": "v15_pass_on_light",
-        "title": "Teruskan Cahayanya",
-        "summary": "Ajak satu orang kepada Al-Qur’an hanya dengan beberapa ketukan. Pilih apakah ia sebaiknya memasang Ummahti, melihat situsnya dulu, atau cukup mendengarkan di YouTube, lalu kirim kartu yang membawa alamatnya sendiri sehingga tetap berguna di tempat keterangan gambar dibuang."
+        "id": "v15_fold_home",
+        "title": "Di ponsel lipat, Beranda terbuka seperti buku",
+        "summary": "Buka ponsel lipat bergaya buku dan Beranda memakai kedua belahannya. Al-Qur'an tetap terbuka di ayat tempat Anda berhenti, dengan tombol Lanjutkan di bawah ibu jari Anda, dan bagian Beranda lainnya ada di sampingnya sesuai urutan Anda sendiri. Navigasi berada di tepi luar, di sebelah kanan, dan Pengaturan dapat memindahkannya ke kiri untuk tangan Anda yang lain."
       },
       {
-        "id": "v15_guide_expansion",
-        "title": "Lebih banyak jawaban di Panduan",
-        "summary": "Panduan kini menjawab lebih banyak hal yang orang tanyakan: wudu, zikir setelah azan dan setelah setiap salat, doa sehari-hari, silaturahmi, dan kerinduan akan anak. Ramadan, perjalanan, sakit, dan duka kini lebih lengkap, dan setiap topik kini membawa doa-doa dari perpustakaan yang menjadi miliknya."
+        "id": "v15_saved_library",
+        "title": "Tersimpan",
+        "summary": "Tersimpan kini terbaca seperti daftar isi Mushaf: setiap surah sekali, ayatnya di bawahnya. Pilih dari satu bilah dalam jangkauan ibu jari, dan markah yang dihapus kembali dengan Urungkan."
       },
       {
-        "id": "v15_translation_notes",
-        "title": "Terjemahan baru, beserta catatannya",
-        "summary": "Terjemahan bahasa Inggris dari Rowwad Translation Center dan terjemahan bahasa Prancis dari Rachid Maach kini ada di antara terjemahan yang bisa Anda pilih, masing-masing dengan catatan penjelasan penerjemahnya yang tersimpan di ponsel Anda. Atur bahasa terjemahan Anda ke Inggris atau Prancis untuk memilih salah satunya, lalu ketuk nomor catatan di sebuah ayat, atau buka opsi ayat itu, untuk membaca catatannya. Terjemahan yang Anda unduh kini tetap tersimpan dalam sebuah perpustakaan, jadi beralih di antaranya tidak memerlukan koneksi."
+        "id": "v15_juz_navigation",
+        "title": "Buka juz mana pun, dengan nama yang Anda kenal",
+        "summary": "Pemilih bacaan kini punya daftar Juz di samping surah. Telusuri ketiga puluhnya, lihat persis di mana masing-masing dimulai dan berakhir, lalu buka di sana. Pencarian juga menemukannya, lewat nomor atau nama juz yang Anda kenal: Juz 30 dan Amma sama-sama menuju tempat yang sama. Ketik nama surah untuk melihat setiap juz yang memuatnya, dan kini setiap surah menampilkan juznya."
       },
       {
         "id": "v15_english_transliteration",
@@ -267,9 +479,19 @@
         "summary": "Transliterasi bahasa Inggris kini berasal dari edisi MuslimNet, yang dibawa di dalam aplikasi. Huruf bergaris bawah dan tebalnya menunjukkan cara mengucapkan setiap kata, dan keterangannya ada di bawah daftar bahasa."
       },
       {
-        "id": "v15_juz_navigation",
-        "title": "Buka juz mana pun, dengan nama yang Anda kenal",
-        "summary": "Pemilih bacaan kini punya daftar Juz di samping surah. Telusuri ketiga puluhnya, lihat persis di mana masing-masing dimulai dan berakhir, lalu buka di sana. Pencarian juga menemukannya, lewat nomor atau nama juz yang Anda kenal: Juz 30 dan Amma sama-sama menuju tempat yang sama."
+        "id": "v15_widget_chosen_ayahs",
+        "title": "Ayat pilihan Anda di widget",
+        "summary": "Pilih ayat dari Tersimpan untuk widget layar beranda Anda. Tampilkan bergiliran, campur dengan ayat harian, atau pertahankan satu ayat sampai Anda menggantinya."
+      },
+      {
+        "id": "v15_listening_repeat",
+        "title": "Ulangi ayat, juga di Hifz",
+        "summary": "Ketuk tombol ulang di pemutar, dan yang sedang diputar akan diulang setiap kali selesai, satu ayat atau satu bagian di Hifz. Pemutar menampilkan apa yang diulang dan berapa kali. Ketuk tombol ulang lagi untuk berhenti."
+      },
+      {
+        "id": "v15_hifz_practice",
+        "title": "Berlatih dari hafalan dengan petunjuk",
+        "summary": "Menghafal dan Latihan kini menjaga ayat tetap di tempatnya: sembunyikan, ambil petunjuk di kata berikutnya, dan latih sambungan dengan ayat sebelumnya. Latih surah, juz, atau rentang mana saja tanpa mencatatnya lebih dulu, sebagai satu bagian bersambung atau per ayat, dan murajaah ayat yang jatuh tempo dengan cara yang sama. Saat latihan selesai, satu langkah membawa Anda kembali ke ayat tempat Anda mengambil petunjuk. Di Latihan, tekan lama kata yang tersembunyi untuk melihat kata itu saja. Dengan Lafalkan, bacalah ayat yang tersembunyi dari hafalan: Ummahti mengikuti kata Anda di ponsel ini dan menandai tempat yang perlu diperiksa. Pelafalan dan tajwid tidak diperiksa."
       },
       {
         "id": "v15_surah_discovery",
@@ -279,16 +501,22 @@
       {
         "id": "v15_screens_adaptive",
         "title": "Ummahti menyesuaikan diri dengan layar Anda",
-        "summary": "Di tablet, ponsel lipat yang terbuka, atau ponsel yang dimiringkan, bacaan tetap dalam kolom yang nyaman diikuti, dan navigasi tetap berada di tengah bagian bawah layar, mudah dijangkau. Pengaturan membuka setiap halaman di samping daftarnya, Al-Qur'an dapat membiarkan daftar surah dan juz terbuka di samping teks, dan ayat tersimpan serta unduhan Anda mengisi lebar layar alih-alih satu jalur sempit."
+        "summary": "Di tablet atau ponsel yang dimiringkan, bacaan tetap dalam kolom yang nyaman diikuti, dan navigasi tetap berada di tengah bagian bawah layar, mudah dijangkau. Pengaturan membuka setiap halaman di samping daftarnya, Al-Qur'an dapat membiarkan daftar surah dan juz terbuka di samping teks, dan ayat tersimpan serta unduhan Anda mengisi lebar layar alih-alih satu jalur sempit."
       },
       {
         "id": "v15_reading_tile",
         "title": "Lanjutkan membaca dari mana saja",
         "summary": "Tambahkan pintasan Lanjutkan membaca ke panel yang Anda tarik dari atas layar, lalu satu ketukan membuka Ummahti di tempat Anda berhenti. Anda bisa menambahkannya dari Pengaturan."
+      },
+      {
+        "id": "v15_nav_dock_drag",
+        "title": "Geser bulan untuk berpindah tab",
+        "summary": "Tekan lama bulan yang dipilih, geser ke tab lain, lalu lepaskan untuk membukanya."
       }
     ],
     "improvements": [
       "Ketik rujukan seperti 2:255 di pemilih surah, dan pemilih itu menawarkan untuk membuka ayat tersebut.",
+      "Widget tampil baru: ayat dalam huruf pembaca Anda beserta tanda akhir ayatnya, di atas kaca bercahaya, di setiap ukuran.",
       "Pengaturan punya kotak pencarian, jadi opsi apa pun hanya berjarak beberapa huruf.",
       "Ayat yang dibagikan kini menyebut penerjemahnya, dan Anda bisa memilih apakah terjemahannya ikut disertakan.",
       "Tombol putar menunjukkan saat lantunan masih dimuat, dan menawarkan untuk mencoba lagi jika lantunan tidak dapat dimulai.",

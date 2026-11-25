@@ -345,14 +345,14 @@ def build(languages=None):
         if route=='whats-new':
             main_doc=re.sub(r'<section class="v-release-current".*?</section>','',main_doc,flags=re.S)
             main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
-            block=render('<section class="v-release-current" id="v1-5"><p class="v-kicker">{{releaseHeading}}</p><h2>1.5.0</h2><h3>My Hifz</h3><p>{{hifzBody}}</p><p>{{reciteDescription}} {{spokenDescription}} {{bulkDescription}}</p>',c)
-            block+=release_items(lang)+'<h3>'+html.escape(c['refinements'])+'</h3><ul>'+''.join('<li>'+html.escape(value)+'</li>' for value in RELEASE[lang]['improvements'])+'</ul><p>'+html.escape(c['reflectionBody'])+'</p><p><a href="'+link(lang,'quran')+'#catalogue">'+html.escape(c['allFeatures'])+' ↗</a></p><hr></section>'
+            block=render('<section class="v-release-current" id="v1-5"><p class="v-kicker">{{releaseHeading}}</p><h2>1.5.0</h2>',c)+'<p>'+html.escape(RELEASE[lang]['tagline'])+'</p>'
+            block+=release_items(lang)+'<h3>'+html.escape(c['refinements'])+'</h3><ul>'+''.join('<li>'+html.escape(value)+'</li>' for value in RELEASE[lang]['improvements'])+'</ul><p><a href="'+link(lang,'quran')+'#catalogue">'+html.escape(c['allFeatures'])+' ↗</a></p><hr></section>'
             main_doc=re.sub(r'(<article\b[^>]*>)',lambda m:m[1]+block,main_doc,count=1)
         if lang!='en':
             main_doc=re.sub(r'<section class="v-local-update(?:\s[^"]*)?".*?</section>','',main_doc,flags=re.S)
             block=''
             if route=='support':
-                block=render('''<section class="v-local-update v-support-current"><h2>{{supportCurrent}}</h2><h3>My Hifz</h3><p>{{findPassageBody}} {{makeItYoursBody}}</p><details><summary>{{faqVoice}}</summary><p>{{spokenDescription}}</p><p>{{reciteDescription}}</p><p>{{privacyModel}}</p></details><h3>My Khatm</h3><p>{{khatmBody}}</p><p>{{khatmHonesty}}</p><h3>Ayah on Unlock</h3><p>{{unlockBody}} {{placeSafe}}</p><p>{{everyUnlock}} · {{hourly}} · {{daily}}</p><h3>{{recitation}}</h3><p>{{offlineBody}} {{audioLimit}}</p><hr></section>''',c)
+                block=render('''<section class="v-local-update v-support-current"><h2>{{supportCurrent}}</h2><h3>My Hifz</h3><p>{{findPassageBody}} {{makeItYoursBody}}</p><details><summary>{{faqVoice}}</summary><p>{{spokenDescription}}</p><p>{{reciteDescription}}</p><p>{{privacyFollow}}</p><p>{{privacyModel}}</p></details><h3>My Khatm</h3><p>{{khatmBody}}</p><p>{{khatmHonesty}}</p><h3>Ayah on Unlock</h3><p>{{unlockBody}} {{placeSafe}}</p><p>{{everyUnlock}} · {{hourly}} · {{daily}}</p><h3>{{recitation}}</h3><p>{{offlineBody}} {{audioLimit}}</p><hr></section>''',c)
             if route=='press':
                 block=render('''<section class="v-local-update"><h2>Ummahti · Ummahti Quran</h2><p>{{faqIdentityAnswer}}</p><h3>V1.5</h3><p>{{khatmShort}} {{hifzShort}} {{translationCount}} {{transliteration}} {{guideScope}} {{duasCount}} {{reflectionBody}} {{adaptiveBody}} {{audioFacts}}</p><hr></section>''',c)
                 main_doc=main_doc.replace('1.4.0','1.5.0')
